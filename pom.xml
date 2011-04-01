@@ -32,7 +32,7 @@
     </dependencies>
     <modules>
        <!-- <module>json</module>-->
-	    <module>fitbit4j</module>
+	   <!-- <module>fitbit4j</module>-->
 		<module>fitbit4j-example-client</module>
     </modules>
 </project>

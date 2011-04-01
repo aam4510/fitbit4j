@@ -1,11 +1,33 @@
 package com.fitbit.app.api.client.context;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Kiryl Kazakevich
- * Date: 3/31/11
- * Time: 8:46 AM
- * To change this template use File | Settings | File Templates.
- */
+import com.fitbit.api.client.FitbitApiClientAgent;
+import com.fitbit.api.client.LocalUserDetail;
+import com.fitbit.api.client.service.FitbitAPIClientService;
+import org.joda.time.LocalDate;
+
 public class RequestContext {
+
+    private LocalDate parsedLocalDate = new LocalDate();
+    private FitbitAPIClientService<FitbitApiClientAgent> apiClientService;
+    private LocalUserDetail ourUser;
+
+    public LocalDate getParsedLocalDate() {
+        return parsedLocalDate;
+    }
+
+    public FitbitAPIClientService<FitbitApiClientAgent> getApiClientService() {
+        return apiClientService;
+    }
+
+    public void setApiClientService(FitbitAPIClientService<FitbitApiClientAgent> apiClientService) {
+        this.apiClientService = apiClientService;
+    }
+
+    public LocalUserDetail getOurUser() {
+        return ourUser;
+    }
+
+    public void setOurUser(LocalUserDetail ourUser) {
+        this.ourUser = ourUser;
+    }
 }
