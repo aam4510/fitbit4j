@@ -1,0 +1,26 @@
+html, body { height: 100%; }
+	body { background: #ebebeb url(../../img/bg.png) repeat-x; color: #666; cursor: default; font: 13px 'Helvetica', 'Lucida Grande', sans-serif; }
+	a { color: #018be3; text-decoration: none; }
+	a:hover { text-decoration: underline; }
+
+h1, h2, h3 { font-weight: normal; }
+h1 { color: #555; font-size: 32px; padding-bottom: 10px; }
+h2, h3 { color: #666; font-size: 20px; padding-bottom: 5px; }
+h3 { font-size: 16px; }
+p { padding-bottom: 5px; }
+
+.parag { padding: 10px 0; }
+	.left { padding-left: 20px; }
+	.left.normal { padding-left: 10px; }
+		.uppercase { text-transform: uppercase; }
+
+.columns { overflow: hidden; }
+	.columns .column { float: left; padding-right: 20px; }
+	.columns .line { padding: 5px 0; }
+	.columns .line.normal { color: #f36; font-size: 15px; text-transform: uppercase; }
+
+.hr { background: #666; clear: both; height: 1px; margin: 20px 0; overflow: hidden; }
+
+.wrap { margin: 0 auto 10px auto; overflow: hidden; width: 975px; }
+	.logo { background: url(../../img/logo.png) no-repeat; height: 30px; margin: 10px 0; width: 114px; }
+	.content { background: #fff; border: 1px solid #ccc; border-top: 6px solid #3cc; overflow: hidden; padding: 40px 20px 0 20px; }

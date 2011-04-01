@@ -29,9 +29,6 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
     private static final int APP_USER_COOKIE_TTL = 60 * 60 * 24 * 7 * 4;
     private static final String APP_USER_COOKIE_NAME = "exampleClientUid";
 
-    public static final String CLIENT_CONSUMER_KEY = "local-fitbit-example-client-application";
-    public static final String CLIENT_SECRECT = "e388e4f4d6f4cc10ff6dc0fd1637da370478e49e2";
-
     public static final String OAUTH_TOKEN = "oauth_token";
     public static final String OAUTH_VERIFIER = "oauth_verifier";
 
@@ -45,6 +42,9 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
     private String apiBaseUrl;
     private String exampleBaseUrl;
 
+    private String clientConsumerKey;
+    private String clientSecret;
+
     public void init() throws ServletException {
         Properties configProperties = new Properties();
         try {
@@ -52,6 +52,8 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
             fitbitSiteBaseUrl = configProperties.getProperty("fitbitSiteBaseUrl");
             apiBaseUrl = configProperties.getProperty("apiBaseUrl");
             exampleBaseUrl = configProperties.getProperty("exampleBaseUrl");
+            clientConsumerKey = configProperties.getProperty("clientConsumerKey");
+            clientSecret = configProperties.getProperty("clientSecret");
         } catch (IOException e) {
             throw new ServletException(e);
         }
@@ -121,7 +123,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
     protected void showAuthorize(RequestContext context, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             // Redirect to page where user can authorize the application:
-            response.sendRedirect(context.getApiClientService().getResourceOwnerAuthorizationURL(context.getOurUser(), getExampleBaseURL(request) + "?completeAuthorization="));
+            response.sendRedirect(context.getApiClientService().getResourceOwnerAuthorizationURL(context.getOurUser(), getExampleBaseURL() + "?completeAuthorization="));
         } catch (FitbitAPIException e) {
             log.error(e);
 //            beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiError", "getting temporary credentials from Fitbit", e.getMessage()));
@@ -224,9 +226,9 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
     public void populate(RequestContext context, HttpServletRequest request, HttpServletResponse response) {
         context.setApiClientService(
                 new FitbitAPIClientService<FitbitApiClientAgent>(
-                        new FitbitApiClientAgent(getApiBaseUrl(request), getFitbitSiteBaseUrl(request), credentialsCache),
-                        CLIENT_CONSUMER_KEY,
-                        CLIENT_SECRECT,
+                        new FitbitApiClientAgent(getApiBaseUrl(), getFitbitSiteBaseUrl(), credentialsCache),
+                        clientConsumerKey,
+                        clientSecret,
                         credentialsCache,
                         entityCache,
                         subscriptionStore
@@ -239,7 +241,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
         }
         request.setAttribute("actionBean", context);
         request.setAttribute("isSubscribed", isSubscribed);
-        request.setAttribute("exampleBaseUrl", getExampleBaseURL(request));
+        request.setAttribute("exampleBaseUrl", getExampleBaseURL());
     }
 
     protected boolean isAuthorized(RequestContext context, HttpServletRequest request) {
@@ -249,7 +251,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
         request.setAttribute("isAuthorized", isAuthorized);
         if (resourceCredentials != null) {
             request.setAttribute("encodedUserId", resourceCredentials.getResourceId());
-            request.setAttribute("userProfileURL", getFitbitSiteBaseUrl(request) + "/user/" + resourceCredentials.getResourceId());
+            request.setAttribute("userProfileURL", getFitbitSiteBaseUrl() + "/user/" + resourceCredentials.getResourceId());
         }
         return isAuthorized;
     }
@@ -287,15 +289,15 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
         return context.getOurUser().getUserId() + ":0";
     }
 
-    protected String getFitbitSiteBaseUrl(HttpServletRequest request) {
+    protected String getFitbitSiteBaseUrl() {
         return fitbitSiteBaseUrl;
     }
 
-    protected String getApiBaseUrl(HttpServletRequest request) {
+    protected String getApiBaseUrl() {
         return apiBaseUrl;
     }
 
-    protected String getExampleBaseURL(HttpServletRequest request) {
+    protected String getExampleBaseURL() {
         return exampleBaseUrl;
     }
 }

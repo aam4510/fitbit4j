@@ -9,77 +9,98 @@
 <%--@elvariable id="exampleBaseUrl" type="java.lang.String"--%>
 <%--@elvariable id="encodedUserId" type="java.lang.String"--%>
 <%--@elvariable id="userProfileURL" type="java.lang.String"--%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-    <head>
-        <title>Fitbit Client Example Application</title>
-        <script type="text/javascript">document.documentElement.className += ' js';</script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Fitbit Client Example Application</title>
+    <link href="ui/css/include.css" rel="stylesheet" type="text/css" />
+</head>
+<%--
+<body>
+    <div class="wrap">
+        <div class="logo"></div>
+        <div class="content">
+            <h1>Fitbit Client Example Application</h1>
 
-        <link rel="stylesheet" type="text/css" href="http://local.fitbit.com/pack?h=11e806b6b63d897379a7741de0631653&item=%2Fyui%2F2.7.0%2Fbuild%2Ffonts%2Ffonts-min.css&item=%2Fyui%2F2.7.0%2Fbuild%2Freset%2Freset-min.css&item=%2Fyui%2F2.7.0%2Fbuild%2Fcontainer%2Fassets%2Fskins%2Fsam%2Fcontainer.css&item=%2Fyui%2F2.7.0%2Fbuild%2Fcalendar%2Fassets%2Fskins%2Fsam%2Fcalendar.css&item=%2Fyui%2F2.7.0%2Fbuild%2Fautocomplete%2Fassets%2Fskins%2Fsam%2Fautocomplete.css&item=%2Fdesign%2F2009-07%2Fcss%2Fcommon.css&item=%2Fdesign%2F2009-07%2Fcss%2Fapp.css&item=%2Fdesign%2F2009-07%2Fcss%2Ffitbit%2Fapp%2Fsite%2Ffitbit101.css"/>
-        <link rel="stylesheet" type="text/css" href="http://local.fitbit.com/pack?h=8a4941d79eb86c7829604e2d6dd56bb9&item=%2Fdesign%2F2009-07%2Fcss%2Ftracker.css&item=%2Fdesign%2F2009-07%2Fcss%2FfoodTracker.css"/>
+            <div class="parag">
+                <h3>Your local user ID in this application is: ${actionBean.ourUser.userId}</h3>
+            </div>
+            <div class="parag left">
+                <c:choose>
+                    <c:when test="${!isAuthorized}">
+                        <p>Status: <b class="uppercase">UNAUTHORIZED</b></p>
 
-        <style type="text/css">
-             ol {
-                 list-style-type: decimal;
-                 padding: 10px;
-             }
+                        <p><a href="${exampleBaseUrl}?authorize=">Authorize this application on Fitbit.</a></p>
+                    </c:when>
+                    <c:otherwise>
+                        <p>Status: <b class="uppercase">AUTHORIZED</b>
+                            (as user <a href="${userProfileURL}">${encodedUserId})</a>
+                        </p>
 
-             ol li {
-                 list-style-type: decimal;
-                 margin-left: 40px;
-                 padding: 5px;
-             }
+                        <p><a href="${exampleBaseUrl}?expireResourceCredentials=">Expire your cached Fitbit token credentials.</a> (You can re-authorize afterwards.)</p>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+            <div class="parag left">
+                <h3>This application's Fitbit API Rate Limit Status</h3>
+            </div>
+            &lt;%&ndash;@elvariable id="ipRateLimitStatus" type="com.fitbit.api.model.ApiRateLimitStatus"&ndash;%&gt;
+            &lt;%&ndash;@elvariable id="clientAndUserRateLimitStatus" type="com.fitbit.api.model.ApiRateLimitStatus"&ndash;%&gt;
+            <div class="parag left">
+                <div class="columns">
+                    <div class="column">
+                        <div class="line">Rate Limit Type</div>
+                        <div class="line normal">IP-ADDRESS:</div>
+                        <div class="line normal">CLIENT+OWNER</div>
+                    </div>
+                    <div class="column">
+                        <div class="line">Remaining Hits</div>
+                        <div class="line normal">${ipRateLimitStatus.remainingHits}</div>
+                        <div class="line normal">${!empty clientAndUserRateLimitStatus ? clientAndUserRateLimitStatus.remainingHits : "N/A"}</div>
+                    </div>
+                    <div class="column">
+                        <div class="line">Hourly Limit</div>
+                        <div class="line normal">${ipRateLimitStatus.hourlyLimit}</div>
+                        <div class="line normal">${!empty clientAndUserRateLimitStatus ? clientAndUserRateLimitStatus.hourlyLimit : "N/A"}</div>
+                    </div>
+                    <div class="column">
+                        <div class="line">Reset Time</div>
+                        <div class="line normal">${ipRateLimitStatus.resetTime}</div>
+                        <div class="line normal">${!empty clientAndUserRateLimitStatus ? clientAndUserRateLimitStatus.resetTime : "N/A"}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hr"></div>
+            <h2>Example User Actions:</h2>
 
-             dl {
-                 padding: 5px;
-             }
+            <div class="parag left normal">
+                <p><a href="#">Expire your cached Fitbit token credentials</a>. (You can re-authorize afterwards.)</p>
 
-             dt {
-                 padding: 5px;
-             }
+                <p><a href="#">Subscribe this application to your activity and food streams</a> (subscription status
+                    tracked locally)</p>
 
-             dd {
-                 margin-left: 40px;
-                 font-style: italic;
-             }
+                <p class="left"><i>If subscribed, the Fitbit server will notify this example application when you change
+                    your data on fitbit.com.</i></p>
+            </div>
+            <h2>Example Global Actions:</h2>
 
-             #subscriptionList thead tr {
-                 background-color: lightblue;
-             }
-             #rateLimitStatus .total {
-                 float: left;
-                 margin-right: 24px;
-                 border: none;
-             }
-                 #rateLimitStatus .total .meter {
-                     /*background: url(../images/tracker/total_meter.gif) no-repeat left top;*/
-                     float: left;
-                     height: 41px;
-                     margin-right: 7px;
-                     width: 11px;
-                 }
-                 #rateLimitStatus .total .warning {
-                     background-position: right;
-                 }
-                 #rateLimitStatus .total .label {
-                     float: left;
-                 }
-                     #rateLimitStatus .total .label .substance {
-                         color: #666666;
-                         line-height: 18px;
-                         font-size: 13px;
-                     }
-                     #rateLimitStatus .total .label .amount {
-                         color: #FF3366;
-                         font-size: 15px;
-                         line-height: 24px;
-                     }
-                         #rateLimitStatus .total .label .amount span.unit {
-                             color: #666666;
-                             font-size: 15px;
-                         }
-        </style>
-    </head>
+            <div class="parag left normal">
+                <p><a href="#">View all of this application's subscriptions and received notifications</a> (local
+                    transient data)</p>
+
+                <p class="left"><i>This application maintains a list of activity stream subscriptions, and the last time
+                    each was updated. This list is transient and may reset periodically.</i></p>
+            </div>
+        </div>
+    </div>
+</body>
+--%>
+
+
+
+
+
 
     <body>
         <a name="top"></a>

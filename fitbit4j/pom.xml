@@ -1,13 +1,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.fitbit</groupId>
-  <artifactId>fitbit4j</artifactId>
-  <version>1.0-SNAPSHOT</version>
+    <parent>
+        <groupId>com.fitbit</groupId>
+        <artifactId>fitbit-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>fitbit4j</artifactId>
+    <packaging>jar</packaging>
+    <name>Fitbit4J</name>
 
-  <dependencies>
+    <dependencies>
+        <!--<dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>json</artifactId>
+          <version>${project.version}</version>
+      </dependency>-->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+            <version>3.4.0.GA</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.oauth</groupId>
+            <artifactId>oauth</artifactId>
+            <version>20090823</version>
+            <scope>compile</scope>
+        </dependency>
 
-  </dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>
