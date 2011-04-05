@@ -16,10 +16,16 @@ p { padding-bottom: 5px; }
 
 .columns { overflow: hidden; }
 	.columns .column { float: left; padding-right: 20px; }
-	.columns .line { padding: 5px 0; }
-	.columns .line.normal { color: #f36; font-size: 15px; text-transform: uppercase; }
+	.columns .column span { color: #666; text-transform: lowercase; }
+	.columns .line { padding: 5px; }
+	.columns .line.red { color: #f36; font-size: 15px; text-transform: uppercase; }
+.blue {}
+	.blue th, .blue td { border-right: 1px solid #fff; padding: 5px 10px; }
+	.blue th { background: #add8e6; }
 
 .hr { background: #666; clear: both; height: 1px; margin: 20px 0; overflow: hidden; }
+
+.message { background: #d6f68a; border: 1px solid #d4e593; font-weight: bold; margin: 10px 0; padding: 10px 40px; }
 
 .wrap { margin: 0 auto 10px auto; overflow: hidden; width: 975px; }
 	.logo { background: url(../../img/logo.png) no-repeat; height: 30px; margin: 10px 0; width: 114px; }
