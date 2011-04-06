@@ -12,27 +12,10 @@
     <name>Fitbit4J</name>
 
     <dependencies>
-        <!--<dependency>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>json</artifactId>
-          <version>${project.version}</version>
-      </dependency>-->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20090211</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.4.0.GA</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.oauth</groupId>
-            <artifactId>oauth</artifactId>
-            <version>20090823</version>
             <scope>compile</scope>
         </dependency>
 

@@ -1,7 +1,5 @@
 package com.fitbit.api.model;
 
-import javax.persistence.Transient;
-
 import org.joda.time.LocalDate;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +51,6 @@ public class UpdatedResource {
 		return subscriptionId;
 	}
 
-	@Transient
 	public FitbitResourceOwner getOwner() {
 		return owner;
 	}
