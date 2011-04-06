@@ -5,20 +5,16 @@ import com.fitbit.api.FitbitAPIException;
 import com.fitbit.api.client.http.AccessToken;
 import com.fitbit.api.client.http.HttpClient;
 import com.fitbit.api.client.http.PostParameter;
-import com.fitbit.api.client.http.TempCredentials;
 import com.fitbit.api.client.http.Response;
-import com.fitbit.api.common.model.devices.DeviceType;
-import com.fitbit.api.common.model.foods.FavoriteFood;
-import com.fitbit.api.common.model.user.UserInfo;
-import com.fitbit.api.common.service.FitbitApiService;
-import com.fitbit.api.model.*;
-
+import com.fitbit.api.client.http.TempCredentials;
 import com.fitbit.api.common.model.activities.Activities;
 import com.fitbit.api.common.model.activities.Activity;
 import com.fitbit.api.common.model.activities.ActivityReference;
 import com.fitbit.api.common.model.activities.LoggedActivityReference;
 import com.fitbit.api.common.model.body.Body;
 import com.fitbit.api.common.model.devices.Device;
+import com.fitbit.api.common.model.devices.DeviceType;
+import com.fitbit.api.common.model.foods.FavoriteFood;
 import com.fitbit.api.common.model.foods.Food;
 import com.fitbit.api.common.model.foods.FoodUnit;
 import com.fitbit.api.common.model.foods.Foods;
@@ -27,6 +23,9 @@ import com.fitbit.api.common.model.foods.Meal;
 import com.fitbit.api.common.model.timeseries.Data;
 import com.fitbit.api.common.model.timeseries.TimePeriod;
 import com.fitbit.api.common.model.timeseries.TimeSeriesResourceType;
+import com.fitbit.api.common.model.user.UserInfo;
+import com.fitbit.api.common.service.FitbitApiService;
+import com.fitbit.api.model.*;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
@@ -616,6 +615,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
         try {
         	return new SubscriptionDetail(httpPost(url, null, true).asJSONObject());
+        } catch (FitbitAPIException e) {
+            throw e;
         } catch (Exception e) {
         	throw new FitbitAPIException("Could not create subscription: " + e, e);
         }
