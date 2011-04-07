@@ -2,7 +2,6 @@ package com.fitbit.api;
 
 import com.fitbit.api.client.http.OAuth;
 import com.fitbit.api.common.model.timeseries.TimeSeriesResourceType;
-import com.fitbit.api.model.APIClient;
 import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIFormat;
 import com.fitbit.api.model.APIVersion;
@@ -223,19 +222,6 @@ public class APIUtil {
                 + "/date/" + startDate
                 + '/' + endDateOrPeriod
                 + '.' + format.toString().toLowerCase();
-    }
-
-    /**
-     *
-     * @return 32 length pseudo random string
-     */
-    public static String generatePseudoRandomString() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
-    }
-
-    public static void resetConsumerKeyAndSecret(APIClient client) {
-        client.setConsumerKey(generatePseudoRandomString());
-        client.setSecret(generatePseudoRandomString());
     }
 
     public static String capitalize(String s) {

@@ -61,6 +61,7 @@ public class FitbitAPIException extends Exception {
 
     public FitbitAPIException(String cause, Response res) throws FitbitAPIException {
         this(cause + '\n' + res.asString(), res.getStatusCode());
+        statusCode = res.getStatusCode();
         apiErrors = FitbitApiError.constructFitbitApiErrorList(res);
     }
 

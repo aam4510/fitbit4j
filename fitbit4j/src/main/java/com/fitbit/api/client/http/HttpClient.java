@@ -26,29 +26,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.fitbit.api.client.http;
 
+import com.fitbit.api.FitbitAPIException;
+import com.fitbit.api.client.Configuration;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.net.Authenticator;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.PasswordAuthentication;
-import java.net.Proxy;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.net.Proxy.Type;
 import java.security.AccessControlException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.Configuration;
-
 /**
  * A utility class to handle HTTP request/response.
  * @author Yusuke Yamamoto - yusuke at mac.com
@@ -67,10 +59,11 @@ public class HttpClient implements Serializable {
     private static final int OK = 200;// OK: Success!
     private static final int NOT_MODIFIED = 304;// Not Modified: There was no new data to return.
     private static final int BAD_REQUEST = 400;// Bad Request: The request was invalid.  An accompanying error message will explain why. This status code will be returned during rate limiting.
-    private static final int NOT_AUTHORIZED = 401;// Not Authorized: Authentication credentials were missing or incorrect.
+    public static final int NOT_AUTHORIZED = 401;// Not Authorized: Authentication credentials were missing or incorrect.
     private static final int FORBIDDEN = 403;// Forbidden: The request is understood, but it has been refused.  An accompanying error message will explain why.
     private static final int NOT_FOUND = 404;// Not Found: The URI requested is invalid or the resource requested, such as a user, does not exists.
     private static final int NOT_ACCEPTABLE = 406;// Not Acceptable: Returned by the Search API when an invalid format is specified in the request.
+    public static final int CONFLICT = 409; // Conflict: Returned by the Subscription API when trying to create a new subscription with a subscription ID which already exists.
     private static final int INTERNAL_SERVER_ERROR = 500;// Internal Server Error: Something is broken.  Please post to the group so the Fitbit team can investigate.
     private static final int BAD_GATEWAY = 502;// Bad Gateway: Fitbit is down or being upgraded.
     private static final int SERVICE_UNAVAILABLE = 503;// Service Unavailable: The Fitbit servers are up, but overloaded with requests. Try again later. The search and trend methods use this to indicate when you are being rate limited.
@@ -559,6 +552,10 @@ public class HttpClient implements Serializable {
         return requestHeaders.get(name);
     }
 
+    public void removeRequestHeader(String name) {
+        requestHeaders.remove(name);
+    }
+
     private HttpURLConnection getConnection(String url) throws IOException {
         HttpURLConnection con;
         if (proxyHost != null && !proxyHost.equals("")) {
@@ -678,6 +675,9 @@ public class HttpClient implements Serializable {
             case NOT_ACCEPTABLE:
                 cause = "Returned by the Search API when an invalid format is specified in the request.";
                 break;
+            case CONFLICT:
+                cause = "Returned by the Subscription API when trying to create a new subscription with a subscription ID which already exists.";
+                break;
             case INTERNAL_SERVER_ERROR:
                 cause = "Something is broken. Please post to the group so the Fitbit team can investigate.";
                 break;
@@ -693,8 +693,4 @@ public class HttpClient implements Serializable {
         return statusCode + ": " + cause;
     }
 
-	public void removeRequestHeader(String string) {
-		// TODO Auto-generated method stub
-		
-	}
 }

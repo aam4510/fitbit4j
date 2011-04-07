@@ -60,13 +60,16 @@ public class FitbitApiError {
     public static List<FitbitApiError> constructFitbitApiErrorList(Response res) throws FitbitAPIException {
         if (res.isError()) {
             try {
-                JSONArray errorArray = res.asJSONObject().getJSONArray("errors");
-                List<FitbitApiError> activityList = new ArrayList<FitbitApiError>(errorArray.length());
-                for (int i = 0; i < errorArray.length(); i++) {
-                    JSONObject activity = errorArray.getJSONObject(i);
-                    activityList.add(new FitbitApiError(activity));
+                JSONObject jsonObject = res.asJSONObject();
+                if( jsonObject.has("errors") ) {
+                    JSONArray errorArray = jsonObject.getJSONArray("errors");
+                    List<FitbitApiError> activityList = new ArrayList<FitbitApiError>(errorArray.length());
+                    for (int i = 0; i < errorArray.length(); i++) {
+                        JSONObject activity = errorArray.getJSONObject(i);
+                        activityList.add(new FitbitApiError(activity));
+                    }
+                    return activityList;
                 }
-                return activityList;
             } catch (JSONException e) {
                 throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
             }

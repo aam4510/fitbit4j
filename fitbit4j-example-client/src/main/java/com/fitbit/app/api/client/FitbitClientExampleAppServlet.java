@@ -186,7 +186,6 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
 //            beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiError", "subscribing", e.getMessage()));
             log.error("Unable to subscribe: " + e, e);
         }
-        showHome(context, request, response);
     }
 
     protected void showUnsubscribe(RequestContext context, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -214,7 +213,6 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
 //            beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiError", "unsubscribing", e.getMessage()));
             log.error("Unable to unsubscribe: " + e, e);
         }
-        showHome(context, request, response);
     }
 
     protected void showAllSubscriptions(RequestContext context, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
