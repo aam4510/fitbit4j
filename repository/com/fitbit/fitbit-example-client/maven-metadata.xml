@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.fitbit</groupId>
+  <artifactId>fitbit-example-client</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20110425075335</lastUpdated>
+  </versioning>
+</metadata>
