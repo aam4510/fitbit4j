@@ -1,1 +1,6 @@
 This will host the public Fitbit Java Client API and Examples project.
+
+Config:
+You can find example of config file in /fitbit4j-example-client/src/main/resources/config.properties.example. 
+You should rename it to config.properties and change properties if needed.
+
