@@ -1,6 +1,11 @@
-fitbitSiteBaseUrl=http://www.fitbit.com
-apiBaseUrl=http://api.fitbit.com
+http.useSSL=false
+fitbitSiteBaseUrl=www.fitbit.com
+apiBaseUrl=api.fitbit.com
 exampleBaseUrl=http://your.application.host/path/
 
 clientConsumerKey=local-fitbit-example-client-application
 clientSecret=your.secret.key.from.dev.fitbit.com
+
+#account registration properties
+showAccountRegistrationForm=true
+partnerSecret = partnerSecret

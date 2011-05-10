@@ -23,9 +23,11 @@ import com.fitbit.api.common.model.foods.Meal;
 import com.fitbit.api.common.model.timeseries.Data;
 import com.fitbit.api.common.model.timeseries.TimePeriod;
 import com.fitbit.api.common.model.timeseries.TimeSeriesResourceType;
+import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
 import com.fitbit.api.model.*;
+import com.google.common.collect.Lists;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
@@ -557,6 +559,31 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
     
+    public Account registerAccount(String partnerSecret, String email, String password, String timezone) throws FitbitAPIException {
+        return registerAccount(partnerSecret, email, password, timezone, false);
+    }
+
+    public Account registerAccount(String partnerSecret, String email, String password, String timezone, boolean emailSubscribe) throws FitbitAPIException {
+
+        List<PostParameter> params = Lists.newArrayList();
+        params.add(new PostParameter("email", email));
+        params.add(new PostParameter("password", password));
+        params.add(new PostParameter("timezone", timezone));
+        params.add(new PostParameter("emailSubscribe", String.valueOf(emailSubscribe)));
+        params.add(new PostParameter("partnerSecret", partnerSecret));
+
+        // POST /1/user/-/account/register.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/account/register", APIFormat.JSON);
+
+        Response response = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+
+        try {
+            return new Account(response.asJSONObject().getJSONObject("account"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error parsing json response to Account object: ", e);
+        }
+    }
+
     public ApiRateLimitStatus getIpRateLimitStatus() throws FitbitAPIException {
         return getRateLimitStatus(ApiQuotaType.IP_ADDRESS);
     }
