@@ -1,6 +1,7 @@
 package com.fitbit.api;
 
 import com.fitbit.api.client.http.Response;
+import com.google.common.collect.Lists;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,7 +61,13 @@ public class FitbitApiError {
     public static List<FitbitApiError> constructFitbitApiErrorList(Response res) throws FitbitAPIException {
         if (res.isError()) {
             try {
-                JSONObject jsonObject = res.asJSONObject();
+                JSONObject jsonObject;
+                //check if it's not json object but bad request with custom message
+                try {
+                    jsonObject = res.asJSONObject();
+                } catch (FitbitAPIException e) {
+                    return Lists.newArrayList(new FitbitApiError(FitbitApiError.ErrorType.Request, res.asString()));
+                }
                 if( jsonObject.has("errors") ) {
                     JSONArray errorArray = jsonObject.getJSONArray("errors");
                     List<FitbitApiError> activityList = new ArrayList<FitbitApiError>(errorArray.length());

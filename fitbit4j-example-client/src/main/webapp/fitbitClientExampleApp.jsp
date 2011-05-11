@@ -8,6 +8,12 @@
 <%--@elvariable id="exampleBaseUrl" type="java.lang.String"--%>
 <%--@elvariable id="encodedUserId" type="java.lang.String"--%>
 <%--@elvariable id="userProfileURL" type="java.lang.String"--%>
+<%--@elvariable id="showAccountRegistrationForm" type="java.lang.Boolean"--%>
+<%--@elvariable id="messages" type="java.util.List"--%>
+<%--@elvariable id="email" type="java.lang.String"--%>
+<%--@elvariable id="password" type="java.lang.String"--%>
+<%--@elvariable id="timezone" type="java.lang.String"--%>
+<%--@elvariable id="emailSubscribe" type="java.lang.Boolean"--%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -278,6 +284,46 @@
     <p class="left"><i>This application maintains a list of activity stream subscriptions, and the last time
         each was updated. This list is transient and may reset periodically.</i></p>
 </div>
+
+<c:if test="${showAccountRegistrationForm}">
+    <div class="hr"></div>
+    <h2>Example of account registration:</h2>
+    <form method="post" action="${exampleBaseUrl}">
+
+        <div class="parag left">
+            <c:if test="${not empty messages}">
+                <div class="columns">
+                    <div class="column">
+                        <c:forEach items="${messages}" var="message">
+                            <div class="line red">${message}</div>
+                        </c:forEach>
+                     </div>
+                 </div>
+            </c:if>
+            <div class="columns">
+                <div class="column">
+                    <div class="line" style="padding:10px;">Email:</div>
+                    <div class="line" style="padding:10px;">Password:</div>
+                    <div class="line" style="padding:10px;">Timezone(RFC 822 ex:-0200) :</div>
+                    <div class="line" style="padding:10px;">Mail subscription :</div>
+                </div>
+                <div class="column">
+                    <div class="line"><input name="email" type="text" value="${email}"/></div>
+                    <div class="line"><input name="password" type="password" value="${password}"/></div>
+                    <div class="line"><input name="timezone" type="text" value="${timezone}"/></div>
+                    <div class="line"><input name="emailSubscribe" type="checkbox" ${emailSubscribe ? 'checked' : ''}/></div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <div class="line"><input type="submit" value="Register Account"/></div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="hr"></div>
+</c:if>
+
 </div>
 </div>
 </body>

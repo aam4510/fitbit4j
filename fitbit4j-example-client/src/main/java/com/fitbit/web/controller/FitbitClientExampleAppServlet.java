@@ -1,15 +1,18 @@
 package com.fitbit.web.controller;
 
 import com.fitbit.api.FitbitAPIException;
+import com.fitbit.api.FitbitApiError;
 import com.fitbit.api.client.*;
 import com.fitbit.api.client.service.FitbitAPIClientService;
 import com.fitbit.api.common.model.activities.Activities;
 import com.fitbit.api.common.model.foods.Foods;
 import com.fitbit.api.common.model.units.UnitSystem;
+import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIResourceCredentials;
 import com.fitbit.api.model.ApiRateLimitStatus;
 import com.fitbit.web.context.RequestContext;
+import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Random;
@@ -44,16 +48,22 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
 
     private String clientConsumerKey;
     private String clientSecret;
+    private String partnerSecret;
 
     public void init() throws ServletException {
         Properties configProperties = new Properties();
         try {
             configProperties.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
-            fitbitSiteBaseUrl = configProperties.getProperty("fitbitSiteBaseUrl");
-            apiBaseUrl = configProperties.getProperty("apiBaseUrl");
+
+            Boolean useSSL = Boolean.valueOf(configProperties.getProperty("http.useSSL", "false"));
+            fitbitSiteBaseUrl = (useSSL ?  "https://" : "http://") + configProperties.getProperty("fitbitSiteBaseUrl");
+            apiBaseUrl = (useSSL ?  "https://" : "http://") + configProperties.getProperty("apiBaseUrl");
             exampleBaseUrl = configProperties.getProperty("exampleBaseUrl");
             clientConsumerKey = configProperties.getProperty("clientConsumerKey");
             clientSecret = configProperties.getProperty("clientSecret");
+            partnerSecret = configProperties.getProperty("partnerSecret");
+            Boolean showAccountRegistrationForm = Boolean.valueOf(configProperties.getProperty("showAccountRegistrationForm", "false"));
+            getServletContext().setAttribute("showAccountRegistrationForm", showAccountRegistrationForm);
         } catch (IOException e) {
             throw new ServletException(e);
         }
@@ -79,6 +89,43 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
         } else {
             showHome(context, request, response);
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String timezone = request.getParameter("timezone");
+        String emailSubscribe = request.getParameter("emailSubscribe");
+        log.info("Creating new account :: email = " + email + ", password = " + password + ", timezone = " + timezone +
+                ", emailSubscribe = " + (emailSubscribe != null));
+        List<String> messages  =  Lists.newArrayList();
+        try {
+            Account account = context.getApiClientService().getClient().registerAccount(partnerSecret, email, password, timezone, emailSubscribe != null);
+            String message = "Account registered :: encodedId = " + account.getEncodedId() + ", profileUpdateUuid = " + account.getProfileUpdateUuid();
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error: e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error registering new account.", e);
+        }
+        request.setAttribute("messages", messages);
+        //return attributes back
+        request.setAttribute("email", email);
+        request.setAttribute("password", password);
+        request.setAttribute("timezone", timezone);
+        request.setAttribute("emailSubscribe", emailSubscribe != null);
+
+        showHome(context, request, response);
     }
 
     protected void showHome(RequestContext context, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
