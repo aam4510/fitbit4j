@@ -26,6 +26,7 @@ p { padding-bottom: 5px; }
 .hr { background: #666; clear: both; height: 1px; margin: 20px 0; overflow: hidden; }
 
 .message { background: #d6f68a; border: 1px solid #d4e593; font-weight: bold; margin: 10px 0; padding: 10px 40px; }
+.error { background: #f36; border: 1px solid #666; font-weight: bold; margin: 10px 0; padding: 10px 40px; }
 
 .wrap { margin: 0 auto 10px auto; overflow: hidden; width: 975px; }
 	.logo { background: url(../../img/logo.png) no-repeat; height: 30px; margin: 10px 0; width: 114px; }

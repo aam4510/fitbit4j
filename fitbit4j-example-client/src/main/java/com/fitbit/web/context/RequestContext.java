@@ -1,4 +1,4 @@
-package com.fitbit.app.api.client.context;
+package com.fitbit.web.context;
 
 import com.fitbit.api.client.FitbitApiClientAgent;
 import com.fitbit.api.client.LocalUserDetail;

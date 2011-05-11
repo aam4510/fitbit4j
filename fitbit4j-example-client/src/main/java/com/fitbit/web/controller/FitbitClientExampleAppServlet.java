@@ -1,4 +1,4 @@
-package com.fitbit.app.api.client;
+package com.fitbit.web.controller;
 
 import com.fitbit.api.FitbitAPIException;
 import com.fitbit.api.client.*;
@@ -9,7 +9,7 @@ import com.fitbit.api.common.model.units.UnitSystem;
 import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIResourceCredentials;
 import com.fitbit.api.model.ApiRateLimitStatus;
-import com.fitbit.app.api.client.context.RequestContext;
+import com.fitbit.web.context.RequestContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -88,21 +88,21 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
                 Activities activities = context.getApiClientService().getActivities(context.getOurUser(), context.getParsedLocalDate());
                 request.setAttribute("activities", activities);
             } catch (FitbitAPIException e) {
-//                beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiErrorRetrievingResource", "activities", e.getMessage()));
+//                beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.apiErrorRetrievingResource", "activities", e.getMessage()));
                 log.error(e);
             }
             try {
                 Foods foods = context.getApiClientService().getFoods(context.getOurUser(), context.getParsedLocalDate());
                 request.setAttribute("foods", foods);
             } catch (FitbitAPIException e) {
-//                beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiErrorRetrievingResource", "foods", e.getMessage()));
+//                beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.apiErrorRetrievingResource", "foods", e.getMessage()));
                 log.error(e);
             }
             try {
                 ApiRateLimitStatus clientAndUserRateLimitStatus = context.getApiClientService().getClientAndUserRateLimitStatus(context.getOurUser());
                 request.setAttribute("clientAndUserRateLimitStatus", clientAndUserRateLimitStatus);
             } catch (FitbitAPIException e) {
-//                beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiErrorRetrievingResource", "retrieving the client+owner rate status", e.getMessage()));
+//                beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.apiErrorRetrievingResource", "retrieving the client+owner rate status", e.getMessage()));
                 log.error(e);
             }
         }
@@ -111,7 +111,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
             ApiRateLimitStatus ipRateLimitStatus = context.getApiClientService().getIpRateLimitStatus();
             request.setAttribute("ipRateLimitStatus", ipRateLimitStatus);
         } catch (FitbitAPIException e) {
-//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiError", "retrieving IP-based rate status", e.getMessage()));
+//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.apiError", "retrieving IP-based rate status", e.getMessage()));
             log.error(e);
         }
 
@@ -126,7 +126,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
             response.sendRedirect(context.getApiClientService().getResourceOwnerAuthorizationURL(context.getOurUser(), getExampleBaseURL() + "?completeAuthorization="));
         } catch (FitbitAPIException e) {
             log.error(e);
-//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiError", "getting temporary credentials from Fitbit", e.getMessage()));
+//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.apiError", "getting temporary credentials from Fitbit", e.getMessage()));
             request.getRequestDispatcher("/fitbitClientExampleApp.jsp").forward(request, response);
         }
     }
@@ -138,7 +138,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
 
         if (resourceCredentials == null) {
             log.error("Unrecognized temporary token when attempting to complete authorization: " + tempTokenReceived);
-//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.unrecognizedTemporaryToken", tempTokenReceived));
+//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.unrecognizedTemporaryToken", tempTokenReceived));
 //            return new SmartResolution();
             throw new RuntimeException();
         }
@@ -152,7 +152,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
                 context.getApiClientService().getTokenCredentials(new LocalUserDetail(resourceCredentials.getLocalUserId()));
             } catch (FitbitAPIException e) {
                 log.error("Unable to finish authorization with Fitbit.", e);
-//                beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiError", "getting token credentials from Fitbit", e.getMessage()));
+//                beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.apiError", "getting token credentials from Fitbit", e.getMessage()));
 //                return new SmartResolution();
             }
         }
@@ -183,7 +183,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
             populate(context, request, response);
             showAllSubscriptions(context, request, response);
         } catch (FitbitAPIException e) {
-//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiError", "subscribing", e.getMessage()));
+//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.apiError", "subscribing", e.getMessage()));
             log.error("Unable to subscribe: " + e, e);
         }
     }
@@ -210,7 +210,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
             populate(context, request, response);
             showAllSubscriptions(context, request, response);
         } catch (FitbitAPIException e) {
-//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("app.api.client.sampleApp.apiError", "unsubscribing", e.getMessage()));
+//            beanContext.getValidationErrors().addGlobalError(new LocalizableError("web.api.client.sampleApp.apiError", "unsubscribing", e.getMessage()));
             log.error("Unable to unsubscribe: " + e, e);
         }
     }
