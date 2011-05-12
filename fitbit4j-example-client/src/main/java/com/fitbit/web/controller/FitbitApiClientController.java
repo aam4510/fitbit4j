@@ -186,6 +186,8 @@ public class FitbitApiClientController {
         return "subscriptions";
     }
 
+
+
     protected void showHome(RequestContext context, HttpServletRequest request, HttpServletResponse response) {
         List<String> errors = new ArrayList<String>();
         if (isAuthorized(context, request)) {

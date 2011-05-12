@@ -12,7 +12,6 @@ import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIResourceCredentials;
 import com.fitbit.api.model.ApiRateLimitStatus;
 import com.fitbit.web.context.RequestContext;
-import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,10 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 public class FitbitClientExampleAppServlet extends HttpServlet {
     protected Log log = LogFactory.getLog(getClass());
@@ -102,7 +98,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
         String emailSubscribe = request.getParameter("emailSubscribe");
         log.info("Creating new account :: email = " + email + ", password = " + password + ", timezone = " + timezone +
                 ", emailSubscribe = " + (emailSubscribe != null));
-        List<String> messages  =  Lists.newArrayList();
+        List<String> messages  =  new ArrayList<String>();
         try {
             Account account = context.getApiClientService().getClient().registerAccount(partnerSecret, email, password, timezone, emailSubscribe != null);
             String message = "Account registered :: encodedId = " + account.getEncodedId() + ", profileUpdateUuid = " + account.getProfileUpdateUuid();

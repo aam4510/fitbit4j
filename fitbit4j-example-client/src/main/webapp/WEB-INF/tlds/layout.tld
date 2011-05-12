@@ -7,7 +7,7 @@
 
     <tlib-version>1.0</tlib-version>
     <short-name>layout</short-name>
-    <uri>http://iba.by/unipro/layout</uri>
+    <uri>http://fitbit.com/api/layout</uri>
 
     <tag-file>
         <name>shell</name>

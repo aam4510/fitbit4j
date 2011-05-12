@@ -27,7 +27,6 @@ import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
 import com.fitbit.api.model.*;
-import com.google.common.collect.Lists;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
@@ -565,7 +564,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     public Account registerAccount(String partnerSecret, String email, String password, String timezone, boolean emailSubscribe) throws FitbitAPIException {
 
-        List<PostParameter> params = Lists.newArrayList();
+        List<PostParameter> params = new ArrayList<PostParameter>();
         params.add(new PostParameter("email", email));
         params.add(new PostParameter("password", password));
         params.add(new PostParameter("timezone", timezone));

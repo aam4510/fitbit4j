@@ -1,12 +1,12 @@
 package com.fitbit.api;
 
 import com.fitbit.api.client.http.Response;
-import com.google.common.collect.Lists;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,7 +66,7 @@ public class FitbitApiError {
                 try {
                     jsonObject = res.asJSONObject();
                 } catch (FitbitAPIException e) {
-                    return Lists.newArrayList(new FitbitApiError(FitbitApiError.ErrorType.Request, res.asString()));
+                    return Collections.singletonList(new FitbitApiError(FitbitApiError.ErrorType.Request, res.asString()));
                 }
                 if( jsonObject.has("errors") ) {
                     JSONArray errorArray = jsonObject.getJSONArray("errors");

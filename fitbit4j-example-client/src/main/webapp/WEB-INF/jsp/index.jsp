@@ -1,6 +1,6 @@
 <%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="layout" uri="http://iba.by/unipro/layout" %>
+<%@ taglib prefix="layout" uri="http://fitbit.com/api/layout" %>
 <%--@elvariable id="activities" type="com.fitbit.api.common.model.activities.Activities"--%>
 <%--@elvariable id="foods" type="com.fitbit.api.common.model.foods.Foods"--%>
 <%--@elvariable id="showSubscriptions" type="java.lang.Boolean"--%>
