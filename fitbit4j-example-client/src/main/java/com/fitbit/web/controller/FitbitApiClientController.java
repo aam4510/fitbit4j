@@ -1,11 +1,13 @@
 package com.fitbit.web.controller;
 
 import com.fitbit.api.FitbitAPIException;
+import com.fitbit.api.FitbitApiError;
 import com.fitbit.api.client.*;
 import com.fitbit.api.client.service.FitbitAPIClientService;
 import com.fitbit.api.common.model.activities.Activities;
 import com.fitbit.api.common.model.foods.Foods;
 import com.fitbit.api.common.model.units.UnitSystem;
+import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIResourceCredentials;
 import com.fitbit.api.model.ApiRateLimitStatus;
@@ -17,10 +19,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -51,6 +56,11 @@ public class FitbitApiClientController {
     private String clientConsumerKey;
     @Value("#{config['clientSecret']}")
     private String clientSecret;
+
+    @Value("#{config['partnerSecret']}")
+    private String partnerSecret;
+    @Value("#{config['showAccountRegistrationForm']}")
+    private Boolean showAccountRegistrationForm;
 
     @RequestMapping("/")
     public String index(HttpServletRequest request, HttpServletResponse response) {
@@ -186,7 +196,50 @@ public class FitbitApiClientController {
         return "subscriptions";
     }
 
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public String showRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
 
+        return "register";
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    protected void processRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String timezone = request.getParameter("timezone");
+        String emailSubscribe = request.getParameter("emailSubscribe");
+        log.info("Creating new account :: email = " + email + ", password = " + password + ", timezone = " + timezone +
+                ", emailSubscribe = " + (emailSubscribe != null));
+        List<String> messages  =  new ArrayList<String>();
+        try {
+            Account account = context.getApiClientService().getClient().registerAccount(partnerSecret, email, password, timezone, emailSubscribe != null);
+            String message = "Account registered :: encodedId = " + account.getEncodedId() + ", profileUpdateUuid = " + account.getProfileUpdateUuid();
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error: e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error registering new account.", e);
+        }
+        request.setAttribute("messages", messages);
+        //return attributes back
+        request.setAttribute("email", email);
+        request.setAttribute("password", password);
+        request.setAttribute("timezone", timezone);
+        request.setAttribute("emailSubscribe", emailSubscribe != null);
+
+
+    }
 
     protected void showHome(RequestContext context, HttpServletRequest request, HttpServletResponse response) {
         List<String> errors = new ArrayList<String>();
@@ -259,6 +312,7 @@ public class FitbitApiClientController {
         request.setAttribute("actionBean", context);
         request.setAttribute("isSubscribed", isSubscribed);
         request.setAttribute("exampleBaseUrl", getExampleBaseUrl());
+        request.setAttribute("showAccountRegistrationForm", showAccountRegistrationForm);
     }
 
     protected LocalUserDetail getOrMakeExampleAppUser(HttpServletRequest request, HttpServletResponse response) {

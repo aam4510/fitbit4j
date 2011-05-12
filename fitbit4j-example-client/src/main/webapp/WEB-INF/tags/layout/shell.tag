@@ -71,6 +71,10 @@
         <h2>Example Global Actions:</h2>
 
         <div class="parag left normal">
+            <c:if test="${showAccountRegistrationForm}">
+                <p><a href="${exampleBaseUrl}/register">Set up a new account</a></p>
+            </c:if>
+
             <p><a href="${exampleBaseUrl}/allSubscriptions">View all of this application's subscriptions and received
                 notifications</a> (local
                 transient data)</p>
