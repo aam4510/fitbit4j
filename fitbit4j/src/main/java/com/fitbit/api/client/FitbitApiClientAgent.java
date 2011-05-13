@@ -50,7 +50,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 	private static final FitbitApiCredentialsCache DEFAULT_CREDENTIALS_CACHE = new FitbitApiCredentialsCacheMapImpl();
 
     private static final String DEFAULT_API_BASE_URL = "api.fitbit.com";
-    private static final String DEFAULT_WEB_BASE_URL = "www.fitbit.com";
+    private static final String DEFAULT_WEB_BASE_URL = "http://www.fitbit.com";
     private static final long serialVersionUID = -1486360080128882436L;
     protected static final String SUBSCRIBER_ID_HEADER_NAME = "X-Fitbit-Subscriber-Id";
 
