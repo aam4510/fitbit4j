@@ -49,8 +49,8 @@ import java.util.TimeZone;
 public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Serializable {
 	private static final FitbitApiCredentialsCache DEFAULT_CREDENTIALS_CACHE = new FitbitApiCredentialsCacheMapImpl();
 
-    private static final String DEFAULT_API_BASE_URL = Configuration.getScheme() + "api.fitbit.com";
-    private static final String DEFAULT_WEB_BASE_URL = Configuration.getScheme() + "www.fitbit.com";
+    private static final String DEFAULT_API_BASE_URL = "api.fitbit.com";
+    private static final String DEFAULT_WEB_BASE_URL = "www.fitbit.com";
     private static final long serialVersionUID = -1486360080128882436L;
     protected static final String SUBSCRIBER_ID_HEADER_NAME = "X-Fitbit-Subscriber-Id";
 
@@ -92,7 +92,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @return the base URL
      */
     public String getApiBaseUrl() {
-        return apiBaseUrl;
+        return "http://" + apiBaseUrl;
+    }
+
+    /**
+     * Returns the base secured URL
+     *
+     * @return the secured base URL
+     */
+    public String getApiBaseSecuredUrl() {
+        return "https://" + apiBaseUrl;
     }
 
     public APIVersion getApiVersion() {
@@ -572,7 +581,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("partnerSecret", partnerSecret));
 
         // POST /1/user/-/account/register.json
-        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/account/register", APIFormat.JSON);
+        String url = APIUtil.contextualizeUrl(getApiBaseSecuredUrl(), getApiVersion(), "/account/register", APIFormat.JSON);
 
         Response response = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
 
