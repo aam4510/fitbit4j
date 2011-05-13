@@ -205,7 +205,7 @@ public class FitbitApiClientController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    protected void processRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
+    protected String processRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
 
@@ -238,7 +238,7 @@ public class FitbitApiClientController {
         request.setAttribute("timezone", timezone);
         request.setAttribute("emailSubscribe", emailSubscribe != null);
 
-
+        return "register";
     }
 
     protected void showHome(RequestContext context, HttpServletRequest request, HttpServletResponse response) {

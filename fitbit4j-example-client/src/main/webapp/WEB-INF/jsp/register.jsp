@@ -12,7 +12,7 @@
 <layout:shell>
     <h2>Example of account registration:</h2>
 
-    <form method="post" action="${exampleBaseUrl}">
+    <form method="post" action="${exampleBaseUrl}/register">
 
         <div class="parag left">
             <c:if test="${not empty messages}">
