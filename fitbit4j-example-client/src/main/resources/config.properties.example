@@ -7,4 +7,3 @@ clientSecret=your.secret.key.from.dev.fitbit.com
 
 #account registration properties
 showAccountRegistrationForm=true
-partnerSecret = partnerSecret

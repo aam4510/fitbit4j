@@ -65,7 +65,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     public FitbitApiClientAgent(String apiBaseUrl, String webBaseUrl, FitbitApiCredentialsCache credentialsCache) {
-        this(apiBaseUrl + "/oauth/request_token", webBaseUrl + "/oauth/authorize", apiBaseUrl + "/oauth/access_token");
+        this("https://" + apiBaseUrl + "/oauth/request_token", webBaseUrl + "/oauth/authorize", "https://" + apiBaseUrl + "/oauth/access_token");
         this.apiBaseUrl = apiBaseUrl;
         if (null==credentialsCache) {
         	this.credentialsCache = DEFAULT_CREDENTIALS_CACHE;
@@ -568,17 +568,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
     
     public Account registerAccount(String partnerSecret, String email, String password, String timezone) throws FitbitAPIException {
-        return registerAccount(partnerSecret, email, password, timezone, false);
+        return registerAccount(email, password, timezone, false);
     }
 
-    public Account registerAccount(String partnerSecret, String email, String password, String timezone, boolean emailSubscribe) throws FitbitAPIException {
+    public Account registerAccount(String email, String password, String timezone, boolean emailSubscribe) throws FitbitAPIException {
 
         List<PostParameter> params = new ArrayList<PostParameter>();
         params.add(new PostParameter("email", email));
         params.add(new PostParameter("password", password));
         params.add(new PostParameter("timezone", timezone));
         params.add(new PostParameter("emailSubscribe", String.valueOf(emailSubscribe)));
-        params.add(new PostParameter("partnerSecret", partnerSecret));
 
         // POST /1/user/-/account/register.json
         String url = APIUtil.contextualizeUrl(getApiBaseSecuredUrl(), getApiVersion(), "/account/register", APIFormat.JSON);

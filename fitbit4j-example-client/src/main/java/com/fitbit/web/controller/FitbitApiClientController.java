@@ -16,17 +16,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
 
 @Controller
@@ -57,8 +52,6 @@ public class FitbitApiClientController {
     @Value("#{config['clientSecret']}")
     private String clientSecret;
 
-    @Value("#{config['partnerSecret']}")
-    private String partnerSecret;
     @Value("#{config['showAccountRegistrationForm']}")
     private Boolean showAccountRegistrationForm;
 
@@ -217,7 +210,7 @@ public class FitbitApiClientController {
                 ", emailSubscribe = " + (emailSubscribe != null));
         List<String> messages  =  new ArrayList<String>();
         try {
-            Account account = context.getApiClientService().getClient().registerAccount(partnerSecret, email, password, timezone, emailSubscribe != null);
+            Account account = context.getApiClientService().getClient().registerAccount(email, password, timezone, emailSubscribe != null);
             String message = "Account registered :: encodedId = " + account.getEncodedId() + ", profileUpdateUuid = " + account.getProfileUpdateUuid();
             messages.add(message);
             log.info(message);

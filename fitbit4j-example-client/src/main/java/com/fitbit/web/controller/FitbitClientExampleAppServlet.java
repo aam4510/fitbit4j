@@ -44,7 +44,6 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
 
     private String clientConsumerKey;
     private String clientSecret;
-    private String partnerSecret;
 
     public void init() throws ServletException {
         Properties configProperties = new Properties();
@@ -57,7 +56,6 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
             exampleBaseUrl = configProperties.getProperty("exampleBaseUrl");
             clientConsumerKey = configProperties.getProperty("clientConsumerKey");
             clientSecret = configProperties.getProperty("clientSecret");
-            partnerSecret = configProperties.getProperty("partnerSecret");
             Boolean showAccountRegistrationForm = Boolean.valueOf(configProperties.getProperty("showAccountRegistrationForm", "false"));
             getServletContext().setAttribute("showAccountRegistrationForm", showAccountRegistrationForm);
         } catch (IOException e) {
@@ -100,7 +98,7 @@ public class FitbitClientExampleAppServlet extends HttpServlet {
                 ", emailSubscribe = " + (emailSubscribe != null));
         List<String> messages  =  new ArrayList<String>();
         try {
-            Account account = context.getApiClientService().getClient().registerAccount(partnerSecret, email, password, timezone, emailSubscribe != null);
+            Account account = context.getApiClientService().getClient().registerAccount(email, password, timezone, emailSubscribe != null);
             String message = "Account registered :: encodedId = " + account.getEncodedId() + ", profileUpdateUuid = " + account.getProfileUpdateUuid();
             messages.add(message);
             log.info(message);
