@@ -18,6 +18,10 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>FitbitApiClient</servlet-name>
+        <url-pattern>/app</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FitbitApiClient</servlet-name>
         <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
 
