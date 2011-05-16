@@ -55,7 +55,7 @@ public class FitbitApiClientController {
     @Value("#{config['showAccountRegistrationForm']}")
     private Boolean showAccountRegistrationForm;
 
-    @RequestMapping("/")
+    @RequestMapping("/app")
     public String index(HttpServletRequest request, HttpServletResponse response) {
         // If the user does not have token credentials, simply show the page with no data:
         RequestContext context = new RequestContext();
@@ -65,7 +65,7 @@ public class FitbitApiClientController {
         return "index";
     }
 
-    @RequestMapping("/authorize")
+    @RequestMapping("/app/authorize")
     public String showAuthorize(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
@@ -79,7 +79,7 @@ public class FitbitApiClientController {
         }
     }
 
-    @RequestMapping("/completeAuthorization")
+    @RequestMapping("/app/completeAuthorization")
     public String showCompleteAuthorization(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
@@ -109,7 +109,7 @@ public class FitbitApiClientController {
         return "index";
     }
 
-    @RequestMapping("/expireResourceCredentials")
+    @RequestMapping("/app/expireResourceCredentials")
     protected String showExpireResourceCredentials(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
@@ -117,7 +117,7 @@ public class FitbitApiClientController {
         return "redirect:/";
     }
 
-    @RequestMapping("/allSubscriptions")
+    @RequestMapping("/app/allSubscriptions")
     public String showAllSubscriptions(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
@@ -129,7 +129,7 @@ public class FitbitApiClientController {
         return "subscriptions";
     }
 
-    @RequestMapping("/subscribe")
+    @RequestMapping("/app/subscribe")
     public String showSubscribe(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
@@ -157,7 +157,7 @@ public class FitbitApiClientController {
         return "subscriptions";
     }
 
-    @RequestMapping("/unsubscribe")
+    @RequestMapping("/app/unsubscribe")
     protected String showUnsubscribe(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
@@ -189,7 +189,7 @@ public class FitbitApiClientController {
         return "subscriptions";
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    @RequestMapping(value = "/app/register", method = RequestMethod.GET)
     public String showRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
@@ -197,7 +197,7 @@ public class FitbitApiClientController {
         return "register";
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/app/register", method = RequestMethod.POST)
     protected String processRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
         populate(context, request, response);
