@@ -12,13 +12,23 @@
     </context-param>
 
     <servlet>
-        <servlet-name>FitbitApiClient</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-name>FriendlyUrlServlet</servlet-name>
+        <servlet-class>com.fitbit.web.controller.FriendlyUrlServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
+        <servlet-name>FriendlyUrlServlet</servlet-name>
+        <url-pattern>/app</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>FitbitApiClient</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FitbitApiClient</servlet-name>
+        <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
 
     <listener>
@@ -26,7 +36,7 @@
     </listener>
 
     <!--<welcome-file-list>-->
-        <!--<welcome-file>index.jsp</welcome-file>-->
+    <!--<welcome-file>index.jsp</welcome-file>-->
     <!--</welcome-file-list>-->
 
 </web-app>
