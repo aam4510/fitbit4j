@@ -49,6 +49,8 @@
         </div>
         <jsp:doBody/>
         <div class="hr"></div>
+
+        <c:if test="${isAuthorized}">
         <h2>Example User Actions:</h2>
 
         <div class="parag left normal">
@@ -68,6 +70,7 @@
             <p class="left"><i>If subscribed, the Fitbit server will notify this example application when you change
                 your data on fitbit.com.</i></p>
         </div>
+        </c:if>
         <h2>Example Global Actions:</h2>
 
         <div class="parag left normal">
@@ -75,12 +78,14 @@
                 <p><a href="${exampleBaseUrl}/register">Set up a new account</a></p>
             </c:if>
 
+            <c:if test="${isAuthorized}">
             <p><a href="${exampleBaseUrl}/allSubscriptions">View all of this application's subscriptions and received
                 notifications</a> (local
                 transient data)</p>
 
             <p class="left"><i>This application maintains a list of activity stream subscriptions, and the last time
                 each was updated. This list is transient and may reset periodically.</i></p>
+            </c:if>
         </div>
     </div>
 </div>
