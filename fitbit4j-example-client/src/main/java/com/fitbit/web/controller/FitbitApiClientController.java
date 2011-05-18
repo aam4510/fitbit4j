@@ -281,7 +281,7 @@ public class FitbitApiClientController {
         request.setAttribute("isAuthorized", isAuthorized);
         if (resourceCredentials != null) {
             request.setAttribute("encodedUserId", resourceCredentials.getResourceId());
-            request.setAttribute("userProfileURL", "http://" + getFitbitSiteBaseUrl() + "/user/" + resourceCredentials.getResourceId());
+            request.setAttribute("userProfileURL", getFitbitSiteBaseUrl() + "/user/" + resourceCredentials.getResourceId());
         }
         return isAuthorized;
     }
