@@ -5,6 +5,8 @@ import com.fitbit.api.FitbitApiError;
 import com.fitbit.api.client.*;
 import com.fitbit.api.client.service.FitbitAPIClientService;
 import com.fitbit.api.common.model.activities.Activities;
+import com.fitbit.api.common.model.foods.Food;
+import com.fitbit.api.common.model.foods.FoodFormType;
 import com.fitbit.api.common.model.foods.Foods;
 import com.fitbit.api.common.model.units.UnitSystem;
 import com.fitbit.api.common.model.user.Account;
@@ -12,6 +14,7 @@ import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIResourceCredentials;
 import com.fitbit.api.model.ApiRateLimitStatus;
 import com.fitbit.web.context.RequestContext;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -234,6 +237,62 @@ public class FitbitApiClientController {
         return "register";
     }
 
+    @RequestMapping(value = "/createFoodForm", method = RequestMethod.GET)
+    public String showCreateFoodForm(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+        return "createFood";
+    }
+
+    @RequestMapping(value = "/createFood", method = RequestMethod.POST)
+    protected String createFood(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        Long defaultFoodMeasurementUnitId = getParameterAsLongOrNull(request, "defaultFoodMeasurementUnitId", (long)0);
+        Float defaultServingSize = getParameterAsFloatOrNull(request, "defaultServingSize", 0f);
+        Integer caloriesPerServingSize = getParameterAsIntegerOrNull(request, "caloriesPerServingSize", 0);
+        String formType = request.getParameter("formType");
+
+        log.info("Creating new food :: name = " + name + ", description = " + description + ", defaultFoodMeasurementUnitId = " + defaultFoodMeasurementUnitId +
+               ", defaultServingSize" + defaultServingSize + ", caloriesPerServingSize" + caloriesPerServingSize + ", formType = " + formType);
+        List<String> messages  =  new ArrayList<String>();
+        try {
+            Food food = context.getApiClientService().getClient().createFood(context.getOurUser(), name, description,
+                    defaultFoodMeasurementUnitId, defaultServingSize, caloriesPerServingSize, FoodFormType.valueOf(formType));
+            String message = "Food created :: foodId = " + food.getFoodId() + ", name = " + food.getName();
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error: e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error creating new food.", e);
+        }
+        request.setAttribute("messages", messages);
+        //return attributes back
+        request.setAttribute("name", name);
+        request.setAttribute("description", description);
+        request.setAttribute("defaultFoodMeasurementUnitId", defaultFoodMeasurementUnitId);
+        request.setAttribute("defaultServingSize", defaultServingSize);
+        request.setAttribute("caloriesPerServingSize", caloriesPerServingSize);
+        request.setAttribute("formType", formType);
+
+        return "createFood";
+    }
+
     protected void showHome(RequestContext context, HttpServletRequest request, HttpServletResponse response) {
         List<String> errors = new ArrayList<String>();
         if (isAuthorized(context, request)) {
@@ -359,5 +418,20 @@ public class FitbitApiClientController {
 
     public String getClientSecret() {
         return clientSecret;
+    }
+
+    private Integer getParameterAsIntegerOrNull(HttpServletRequest request, String parameterName, Integer defaultValue) {
+        String parameterValue = request.getParameter(parameterName);
+        return StringUtils.isEmpty(parameterValue) ? defaultValue : Integer.valueOf(parameterValue);
+    }
+
+    private Long getParameterAsLongOrNull(HttpServletRequest request, String parameterName, Long defaultValue) {
+        String parameterValue = request.getParameter(parameterName);
+        return StringUtils.isEmpty(parameterValue) ? defaultValue : Long.valueOf(parameterValue);
+    }
+
+    private Float getParameterAsFloatOrNull(HttpServletRequest request, String parameterName, Float defaultValue) {
+        String parameterValue = request.getParameter(parameterName);
+        return StringUtils.isEmpty(parameterValue) ? defaultValue : Float.valueOf(parameterValue);
     }
 }
