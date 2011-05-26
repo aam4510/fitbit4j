@@ -397,6 +397,7 @@ public class FitbitApiClientController {
             request.setAttribute("errors", errors);
         }
 
+
         request.setAttribute("unitSystem", UnitSystem.getUnitSystem(Locale.US));
     }
 
