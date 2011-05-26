@@ -8,6 +8,7 @@ import com.fitbit.api.common.model.activities.Activities;
 import com.fitbit.api.common.model.foods.Food;
 import com.fitbit.api.common.model.foods.FoodFormType;
 import com.fitbit.api.common.model.foods.Foods;
+import com.fitbit.api.common.model.foods.NutritionalValuesEntry;
 import com.fitbit.api.common.model.units.UnitSystem;
 import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.model.APICollectionType;
@@ -257,17 +258,81 @@ public class FitbitApiClientController {
 
         String name = request.getParameter("name");
         String description = request.getParameter("description");
-        Long defaultFoodMeasurementUnitId = getParameterAsLongOrNull(request, "defaultFoodMeasurementUnitId", (long)0);
-        Float defaultServingSize = getParameterAsFloatOrNull(request, "defaultServingSize", 0f);
-        Integer caloriesPerServingSize = getParameterAsIntegerOrNull(request, "caloriesPerServingSize", 0);
-        String formType = request.getParameter("formType");
+        Long defaultFoodMeasurementUnitId = getParameterAsLong(request, "defaultFoodMeasurementUnitId", (long) 0);
+        Float defaultServingSize = getParameterAsFloat(request, "defaultServingSize", 0f);
+        FoodFormType formType = FoodFormType.valueOf(request.getParameter("formType"));
+
+        int caloriesPerServingSize = getParameterAsInteger(request, "caloriesPerServingSize", 0);
+        int caloriesFromFat = getParameterAsInteger(request, "caloriesFromFat", 0);
+        float totalFat = getParameterAsFloat(request, "totalFat", 0f);
+        float transFat = getParameterAsFloat(request, "transFat", 0f);
+        float saturatedFat = getParameterAsFloat(request, "saturatedFat", 0f);
+        float cholesterol = getParameterAsFloat(request, "cholesterol", 0f);
+        float sodium = getParameterAsFloat(request, "sodium", 0f);
+        float potassium = getParameterAsFloat(request, "potassium", 0f);
+        float totalCarbohydrate = getParameterAsFloat(request, "totalCarbohydrate", 0f);
+        float dietaryFiber = getParameterAsFloat(request, "dietaryFiber", 0f);
+        float sugars = getParameterAsFloat(request, "sugars", 0f);
+        float protein = getParameterAsFloat(request, "protein", 0f);
+        float vitaminA = getParameterAsFloat(request, "vitaminA", 0f);
+        float vitaminC = getParameterAsFloat(request, "vitaminC", 0f);
+        float iron = getParameterAsFloat(request, "iron", 0f);
+        float calcium = getParameterAsFloat(request, "calcium", 0f);
+        float thiamin = getParameterAsFloat(request, "thiamin", 0f);
+        float riboflavin = getParameterAsFloat(request, "riboflavin", 0f);
+        float vitaminB6 = getParameterAsFloat(request, "vitaminB6", 0f);
+        float vitaminB12 = getParameterAsFloat(request, "vitaminB12", 0f);
+        float vitaminE = getParameterAsFloat(request, "vitaminE", 0f);
+        float folicAcid = getParameterAsFloat(request, "folicAcid", 0f);
+        float niacin = getParameterAsFloat(request, "niacin", 0f);
+        float magnesium = getParameterAsFloat(request, "magnesium", 0f);
+        float phosphorus = getParameterAsFloat(request, "phosphorus", 0f);
+        float iodine = getParameterAsFloat(request, "iodine", 0f);
+        float zinc = getParameterAsFloat(request, "zinc", 0f);
+        float copper = getParameterAsFloat(request, "copper", 0f);
+        float biotin = getParameterAsFloat(request, "biotin", 0f);
+        float pantothenicAcid = getParameterAsFloat(request, "pantothenicAcid", 0f);
+        float vitaminD = getParameterAsFloat(request, "vitaminD", 0f);
+
+        NutritionalValuesEntry nutritionalValuesEntry =  new NutritionalValuesEntry();
+        nutritionalValuesEntry.setCalories(caloriesPerServingSize);
+        nutritionalValuesEntry.setCaloriesFromFat(caloriesFromFat);
+        nutritionalValuesEntry.setTotalFat(totalFat);
+        nutritionalValuesEntry.setTransFat(transFat);
+        nutritionalValuesEntry.setSaturatedFat(saturatedFat);
+        nutritionalValuesEntry.setCholesterol(cholesterol);
+        nutritionalValuesEntry.setSodium(sodium);
+        nutritionalValuesEntry.setPotassium(potassium);
+        nutritionalValuesEntry.setTotalCarbohydrate(totalCarbohydrate);
+        nutritionalValuesEntry.setDietaryFiber(dietaryFiber);
+        nutritionalValuesEntry.setSugars(sugars);
+        nutritionalValuesEntry.setProtein(protein);
+        nutritionalValuesEntry.setVitaminA(vitaminA);
+        nutritionalValuesEntry.setVitaminC(vitaminC);
+        nutritionalValuesEntry.setIron(iron);
+        nutritionalValuesEntry.setCalcium(calcium);
+        nutritionalValuesEntry.setVitaminB6(vitaminB6);
+        nutritionalValuesEntry.setVitaminB12(vitaminB12);
+        nutritionalValuesEntry.setThiamin(thiamin);
+        nutritionalValuesEntry.setRiboflavin(riboflavin);
+        nutritionalValuesEntry.setVitaminE(vitaminE);
+        nutritionalValuesEntry.setFolicAcid(folicAcid);
+        nutritionalValuesEntry.setNiacin(niacin);
+        nutritionalValuesEntry.setMagnesium(magnesium);
+        nutritionalValuesEntry.setPhosphorus(phosphorus);
+        nutritionalValuesEntry.setIodine(iodine);
+        nutritionalValuesEntry.setZinc(zinc);
+        nutritionalValuesEntry.setCopper(copper);
+        nutritionalValuesEntry.setBiotin(biotin);
+        nutritionalValuesEntry.setPantothenicAcid(pantothenicAcid);
+        nutritionalValuesEntry.setVitaminD(vitaminD);
 
         log.info("Creating new food :: name = " + name + ", description = " + description + ", defaultFoodMeasurementUnitId = " + defaultFoodMeasurementUnitId +
                ", defaultServingSize" + defaultServingSize + ", caloriesPerServingSize" + caloriesPerServingSize + ", formType = " + formType);
         List<String> messages  =  new ArrayList<String>();
         try {
             Food food = context.getApiClientService().getClient().createFood(context.getOurUser(), name, description,
-                    defaultFoodMeasurementUnitId, defaultServingSize, caloriesPerServingSize, FoodFormType.valueOf(formType));
+                    defaultFoodMeasurementUnitId, defaultServingSize, formType, nutritionalValuesEntry);
             String message = "Food created :: foodId = " + food.getFoodId() + ", name = " + food.getName();
             messages.add(message);
             log.info(message);
@@ -422,17 +487,17 @@ public class FitbitApiClientController {
         return clientSecret;
     }
 
-    private Integer getParameterAsIntegerOrNull(HttpServletRequest request, String parameterName, Integer defaultValue) {
+    private Integer getParameterAsInteger(HttpServletRequest request, String parameterName, Integer defaultValue) {
         String parameterValue = request.getParameter(parameterName);
         return StringUtils.isEmpty(parameterValue) ? defaultValue : Integer.valueOf(parameterValue);
     }
 
-    private Long getParameterAsLongOrNull(HttpServletRequest request, String parameterName, Long defaultValue) {
+    private Long getParameterAsLong(HttpServletRequest request, String parameterName, Long defaultValue) {
         String parameterValue = request.getParameter(parameterName);
         return StringUtils.isEmpty(parameterValue) ? defaultValue : Long.valueOf(parameterValue);
     }
 
-    private Float getParameterAsFloatOrNull(HttpServletRequest request, String parameterName, Float defaultValue) {
+    private Float getParameterAsFloat(HttpServletRequest request, String parameterName, Float defaultValue) {
         String parameterValue = request.getParameter(parameterName);
         return StringUtils.isEmpty(parameterValue) ? defaultValue : Float.valueOf(parameterValue);
     }
