@@ -74,17 +74,19 @@
         <h2>Example Global Actions:</h2>
 
         <div class="parag left normal">
+            <c:if test="${isAuthorized}">
+                <p><a href="${exampleBaseUrl}/createFoodForm">Create New Food</a></p>
+            </c:if>
+
             <c:if test="${showAccountRegistrationForm}">
                 <p><a href="${exampleBaseUrl}/register">Set up a new account</a></p>
             </c:if>
 
             <c:if test="${isAuthorized}">
-            <p><a href="${exampleBaseUrl}/allSubscriptions">View all of this application's subscriptions and received
-                notifications</a> (local
-                transient data)</p>
-
-            <p class="left"><i>This application maintains a list of activity stream subscriptions, and the last time
-                each was updated. This list is transient and may reset periodically.</i></p>
+                <p><a href="${exampleBaseUrl}/allSubscriptions">View all of this application's subscriptions and received
+                    notifications</a> (localtransient data)</p>
+                <p class="left"><i>This application maintains a list of activity stream subscriptions, and the last time
+                    each was updated. This list is transient and may reset periodically.</i></p>
             </c:if>
         </div>
     </div>

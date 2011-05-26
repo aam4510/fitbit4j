@@ -14,12 +14,7 @@ import com.fitbit.api.common.model.activities.LoggedActivityReference;
 import com.fitbit.api.common.model.body.Body;
 import com.fitbit.api.common.model.devices.Device;
 import com.fitbit.api.common.model.devices.DeviceType;
-import com.fitbit.api.common.model.foods.FavoriteFood;
-import com.fitbit.api.common.model.foods.Food;
-import com.fitbit.api.common.model.foods.FoodUnit;
-import com.fitbit.api.common.model.foods.Foods;
-import com.fitbit.api.common.model.foods.LoggedFood;
-import com.fitbit.api.common.model.foods.Meal;
+import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.timeseries.Data;
 import com.fitbit.api.common.model.timeseries.TimePeriod;
 import com.fitbit.api.common.model.timeseries.TimeSeriesResourceType;
@@ -323,6 +318,68 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     }
 
+    public Food createFood(LocalUserDetail localUser, String name, String description, long defaultFoodMeasurementUnitId,
+                           float defaultServingSize, int caloriesPerServingSize, FoodFormType formType) throws FitbitAPIException {
+        NutritionalValuesEntry nutritionalValuesEntry =  new NutritionalValuesEntry();
+        nutritionalValuesEntry.setCalories(caloriesPerServingSize);
+        return createFood(localUser, name, description, defaultFoodMeasurementUnitId, defaultServingSize, formType, nutritionalValuesEntry);
+    }
+
+    public Food createFood(LocalUserDetail localUser, String name, String description, float defaultFoodMeasurementUnitId,
+                           float defaultServingSize, FoodFormType formType,
+                           NutritionalValuesEntry nutritionalValuesEntry) throws FitbitAPIException {
+        setAccessToken(localUser);
+        List<PostParameter> params = new ArrayList<PostParameter>();
+        params.add(new PostParameter("name", name));
+        params.add(new PostParameter("description", description));
+        params.add(new PostParameter("defaultFoodMeasurementUnitId", defaultFoodMeasurementUnitId));
+        params.add(new PostParameter("defaultServingSize", defaultServingSize));
+        params.add(new PostParameter("formType", formType.toString()));
+
+        params.add(new PostParameter("calories", nutritionalValuesEntry.getCalories()));
+        params.add(new PostParameter("caloriesFromFat", nutritionalValuesEntry.getCaloriesFromFat()));
+        params.add(new PostParameter("totalFat", nutritionalValuesEntry.getTotalFat()));
+        params.add(new PostParameter("transFat", nutritionalValuesEntry.getTransFat()));
+        params.add(new PostParameter("saturatedFat", nutritionalValuesEntry.getSaturatedFat()));
+        params.add(new PostParameter("cholesterol", nutritionalValuesEntry.getCholesterol()));
+        params.add(new PostParameter("sodium", nutritionalValuesEntry.getSodium()));
+        params.add(new PostParameter("potassium", nutritionalValuesEntry.getPotassium()));
+        params.add(new PostParameter("totalCarbohydrate", nutritionalValuesEntry.getTotalCarbohydrate()));
+        params.add(new PostParameter("dietaryFiber", nutritionalValuesEntry.getDietaryFiber()));
+        params.add(new PostParameter("sugars", nutritionalValuesEntry.getSugars()));
+        params.add(new PostParameter("protein", nutritionalValuesEntry.getProtein()));
+        params.add(new PostParameter("vitaminA", nutritionalValuesEntry.getVitaminA()));
+        params.add(new PostParameter("vitaminC", nutritionalValuesEntry.getVitaminC()));
+        params.add(new PostParameter("iron", nutritionalValuesEntry.getIron()));
+        params.add(new PostParameter("calcium", nutritionalValuesEntry.getCalcium()));
+        params.add(new PostParameter("thiamin", nutritionalValuesEntry.getThiamin()));
+        params.add(new PostParameter("riboflavin", nutritionalValuesEntry.getRiboflavin()));
+        params.add(new PostParameter("vitaminB6", nutritionalValuesEntry.getVitaminB6()));
+        params.add(new PostParameter("vitaminB12", nutritionalValuesEntry.getVitaminB12()));
+        params.add(new PostParameter("vitaminE", nutritionalValuesEntry.getVitaminE()));
+        params.add(new PostParameter("folicAcid", nutritionalValuesEntry.getFolicAcid()));
+        params.add(new PostParameter("niacin", nutritionalValuesEntry.getNiacin()));
+        params.add(new PostParameter("magnesium", nutritionalValuesEntry.getMagnesium()));
+        params.add(new PostParameter("phosphorus", nutritionalValuesEntry.getPhosphorus()));
+        params.add(new PostParameter("iodine", nutritionalValuesEntry.getIodine()));
+        params.add(new PostParameter("zinc", nutritionalValuesEntry.getZinc()));
+        params.add(new PostParameter("copper", nutritionalValuesEntry.getCopper()));
+        params.add(new PostParameter("biotin", nutritionalValuesEntry.getBiotin()));
+        params.add(new PostParameter("pantothenicAcid", nutritionalValuesEntry.getPantothenicAcid()));
+        params.add(new PostParameter("vitaminD", nutritionalValuesEntry.getVitaminD()));
+
+        // URL :: /1/food/create.json
+        String url = APIUtil.contextualizeUrl(getApiBaseSecuredUrl(), getApiVersion(), "/foods/create", APIFormat.JSON);
+
+        Response response = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+
+        try {
+            return new Food(response.asJSONObject().getJSONObject("food"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error parsing json response to Food object: ", e);
+        }
+    }
+
     public Foods getFoods(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
         // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/date/2010-02-25.json
         Response res = getCollectionResponseForDate(localUser, fitbitUser, APICollectionType.foods, date);
@@ -567,7 +624,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
     
-    public Account registerAccount(String partnerSecret, String email, String password, String timezone) throws FitbitAPIException {
+    public Account registerAccount(String email, String password, String timezone) throws FitbitAPIException {
         return registerAccount(email, password, timezone, false);
     }
 

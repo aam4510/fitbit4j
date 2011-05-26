@@ -51,6 +51,7 @@ public class UpdatedResource {
 		return subscriptionId;
 	}
 
+    @ApiTransient
 	public FitbitResourceOwner getOwner() {
 		return owner;
 	}
