@@ -325,7 +325,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return createFood(localUser, name, description, defaultFoodMeasurementUnitId, defaultServingSize, formType, nutritionalValuesEntry);
     }
 
-    public Food createFood(LocalUserDetail localUser, String name, String description, float defaultFoodMeasurementUnitId,
+    public Food createFood(LocalUserDetail localUser, String name, String description, long defaultFoodMeasurementUnitId,
                            float defaultServingSize, FoodFormType formType,
                            NutritionalValuesEntry nutritionalValuesEntry) throws FitbitAPIException {
         setAccessToken(localUser);
