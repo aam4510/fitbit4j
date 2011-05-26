@@ -328,7 +328,9 @@ public class FitbitApiClientController {
             log.error(e);
         }
 
-        request.setAttribute("errors", errors);
+        if(errors.size() > 0) {
+            request.setAttribute("errors", errors);
+        }
 
         request.setAttribute("unitSystem", UnitSystem.getUnitSystem(Locale.US));
     }
