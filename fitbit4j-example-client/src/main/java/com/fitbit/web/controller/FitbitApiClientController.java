@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,9 +41,12 @@ public class FitbitApiClientController {
 
     private static final String NOTIFICATION_UPDATES_SUBSCRIBER_ID = "1";
 
-    private static final FitbitAPIEntityCache entityCache = new FitbitApiEntityCacheMapImpl();
-    private static final FitbitApiCredentialsCache credentialsCache = new FitbitApiCredentialsCacheMapImpl();
-    private static final FitbitApiSubscriptionStorage subscriptionStore = new FitbitApiSubscriptionStorageInMemoryImpl();
+    @Resource
+    private FitbitAPIEntityCache entityCache;
+    @Resource
+    private FitbitApiCredentialsCache credentialsCache;
+    @Resource
+    private FitbitApiSubscriptionStorage subscriptionStore;
 
     @Value("#{config['fitbitSiteBaseUrl']}")
     private String fitbitSiteBaseUrl;
