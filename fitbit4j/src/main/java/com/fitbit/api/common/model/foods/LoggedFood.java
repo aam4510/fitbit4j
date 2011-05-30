@@ -20,8 +20,8 @@ public class LoggedFood extends Food {
     private final FoodUnit unit;
     private final byte mealTypeId;
 
-    public LoggedFood(long foodId, String name, String brand, int calories, double amount, FoodUnit unit, byte mealTypeId, int[] units) {
-        super(foodId, name, brand, units);
+    public LoggedFood(long foodId, String name, String brand, String accessLevel, int calories, double amount, FoodUnit unit, byte mealTypeId, int[] units) {
+        super(foodId, name, brand, accessLevel, units);
         this.calories = calories;
         this.amount = amount;
         this.unit = unit;

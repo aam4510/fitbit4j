@@ -157,6 +157,7 @@
                 <div>Sodium: ${foodLog.nutritionalValues.sodium}</div>
                 <div>Protein: ${foodLog.nutritionalValues.protein}</div>
                 <div>Favorite?: ${foodLog.favorite}</div>
+                <div>FoodAccessLevel : ${foodLog.loggedFood.accessLevel}</div>
             </c:forEach>
         </c:if>
     </c:if>

@@ -17,8 +17,8 @@ import java.util.List;
 public class FavoriteFood extends Food {
     private final int calories;
 
-    public FavoriteFood(long foodId, String name, String brand, int[] units, int calories) {
-        super(foodId, name, brand, units);
+    public FavoriteFood(long foodId, String name, String brand, String accessLevel, int[] units, int calories) {
+        super(foodId, name, brand, accessLevel, units);
         this.calories = calories;
     }
 

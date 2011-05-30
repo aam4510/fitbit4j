@@ -19,12 +19,14 @@ public class Food {
     private final String name;
     private final String brand;
     private final int[] units;
+    private final String accessLevel;
 
-    public Food(long foodId, String name, String brand, int[] units) {
+    public Food(long foodId, String name, String brand, String accessLevel, int[] units) {
         this.foodId = foodId;
         this.name = name;
         this.brand = brand;
         this.units = units;
+        this.accessLevel = accessLevel;
     }
 
     public Food(JSONObject json) throws JSONException {
@@ -32,6 +34,7 @@ public class Food {
         name = json.getString("name");
         brand = json.getString("brand");
         units = jsonArrayToUnitIdArray(json.getJSONArray("units"));
+        accessLevel = json.optString("accessLevel");
     }
 
     public static List<Food> constructFoodList(Response res) throws FitbitAPIException {
@@ -78,5 +81,9 @@ public class Food {
 
     public final int[] getUnits() {
         return units;
+    }
+
+    public String getAccessLevel() {
+        return accessLevel;
     }
 }
