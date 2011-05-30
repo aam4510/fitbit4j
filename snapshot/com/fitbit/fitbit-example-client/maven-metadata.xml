@@ -2,11 +2,10 @@
 <metadata>
   <groupId>com.fitbit</groupId>
   <artifactId>fitbit-example-client</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
   <versioning>
     <versions>
       <version>1.0.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20110524095314</lastUpdated>
+    <lastUpdated>20110530144309</lastUpdated>
   </versioning>
 </metadata>
