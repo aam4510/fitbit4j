@@ -9,6 +9,6 @@
 
     <bean id="entityCache" class="com.fitbit.api.client.FitbitApiEntityCacheMapImpl"/>
     <bean id="credentialsCache" class="com.fitbit.api.client.FitbitApiCredentialsCacheMapImpl"/>
-    <bean id="subscriptionStore" class="com.fitbit.api.client.subscription.storage.PersistenceFitbitApiSubscriptionStorage"/>
+    <bean id="subscriptionStore" class="com.fitbit.api.client.FitbitApiSubscriptionStorageInMemoryImpl"/>
 
 </beans>
