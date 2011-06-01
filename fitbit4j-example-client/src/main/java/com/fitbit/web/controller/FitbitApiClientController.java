@@ -455,7 +455,7 @@ public class FitbitApiClientController {
         if (null == userId || userId.length() < 1) {
             userId = String.valueOf(Math.abs(new Random(System.currentTimeMillis()).nextInt()));
             Cookie uidCookie = new Cookie(APP_USER_COOKIE_NAME, userId);
-            uidCookie.setPath(request.getContextPath());
+            uidCookie.setPath("/");
             uidCookie.setMaxAge(APP_USER_COOKIE_TTL);
             response.addCookie(uidCookie);
             log.info("Created new user " + userId);
