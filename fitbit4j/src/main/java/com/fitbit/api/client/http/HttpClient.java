@@ -140,7 +140,6 @@ public class HttpClient implements Serializable {
      * System property -DFitbit4j.oauth.consumerKey and -Dhttp.oauth.consumerSecret override this attribute.
      * @param consumerKey consumer key
      * @param consumerSecret consumer secret
-     * @see <a href="http://fitbit.com/oauth_clients">Applications Using Fitbit</a>
      */
     public void setOAuthConsumer(String consumerKey, String consumerSecret) {
         consumerKey = Configuration.getOAuthConsumerKey(consumerKey);
@@ -177,8 +176,7 @@ public class HttpClient implements Serializable {
      *
      * @param token request token
      * @return access token
-     * @throws Fitbit4j.FitbitAPIException
-     * @since Fitbit4J 2.0.0
+     * @throws
      */
     public AccessToken getOAuthAccessToken(TempCredentials token) throws FitbitAPIException {
         try {
@@ -194,8 +192,7 @@ public class HttpClient implements Serializable {
      *
      * @param token request token
      * @return access token
-     * @throws Fitbit4j.FitbitAPIException
-     * @since Fitbit4J 2.0.8
+     * @throws FitbitAPIException
      */
     public AccessToken getOAuthAccessToken(TempCredentials token, String pin) throws FitbitAPIException {
         try {
@@ -213,8 +210,7 @@ public class HttpClient implements Serializable {
      * @param tokenSecret request token secret
      * @param oauth_verifier oauth_verifier or pin
      * @return access token
-     * @throws Fitbit4j.FitbitAPIException
-     * @since Fitbit4J 2.0.8
+     * @throws FitbitAPIException
      */
     public AccessToken getOAuthAccessToken(String token, String tokenSecret, String oauth_verifier) throws FitbitAPIException {
         try {
@@ -231,7 +227,6 @@ public class HttpClient implements Serializable {
     /**
      * Sets the authorized access token
      * @param token authorized access token
-     * @since Fitbit4J 2.0.0
      */
 
     public void setOAuthAccessToken(AccessToken token){
@@ -255,9 +250,6 @@ public class HttpClient implements Serializable {
         return authorizationURL;
     }
 
-    /**
-     * since Fitbit4J 2.0.10
-     */
     public String getAuthenticationRL() {
         return authenticationURL;
     }

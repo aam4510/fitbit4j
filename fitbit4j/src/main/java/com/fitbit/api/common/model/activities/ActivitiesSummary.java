@@ -7,11 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * User: gkutlu
- * Date: Mar 2, 2010
- * Time: 7:26:43 PM
- */
 public class ActivitiesSummary {
     private int caloriesOut;
     private int activeScore;

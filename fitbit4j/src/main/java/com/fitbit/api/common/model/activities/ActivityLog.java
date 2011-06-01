@@ -3,11 +3,6 @@ package com.fitbit.api.common.model.activities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * User: gkutlu
- * Date: Jul 24, 2010
- * Time: 1:55:43 AM
- */
 public class ActivityLog extends LoggedActivityReference {
     long logId;
     String startTime;

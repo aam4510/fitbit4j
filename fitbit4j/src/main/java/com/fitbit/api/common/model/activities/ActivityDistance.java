@@ -3,11 +3,6 @@ package com.fitbit.api.common.model.activities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * User: gkutlu
- * Date: Mar 2, 2010
- * Time: 7:30:12 PM
- */
 public class ActivityDistance {
     private String activity;
     private double distance;

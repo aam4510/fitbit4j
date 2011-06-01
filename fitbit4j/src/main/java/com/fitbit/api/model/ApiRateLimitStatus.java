@@ -7,11 +7,6 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * User: gkutlu
- * Date: Apr 19, 2010
- * Time: 9:59:11 PM
- */
 public class ApiRateLimitStatus {
     int remainingHits;
     int hourlyLimit;

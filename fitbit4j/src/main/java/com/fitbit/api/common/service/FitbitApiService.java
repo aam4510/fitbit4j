@@ -10,11 +10,6 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-/**
- * User: gkutlu
- * Date: Nov 13, 2010
- * Time: 12:10:16 PM
- */
 public class FitbitApiService {
     protected static final Log log = LogFactory.getLog(FitbitApiService.class);
 

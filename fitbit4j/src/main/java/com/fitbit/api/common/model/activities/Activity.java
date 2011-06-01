@@ -9,11 +9,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: gkutlu
- * Date: Mar 4, 2010
- * Time: 2:53:29 PM
- */
 public class Activity {
     long id;
     String name;

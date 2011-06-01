@@ -24,11 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
-/**
- * User: gkutlu
- * Date: Feb 27, 2010
- * Time: 9:43:12 PM
- */
 public class FitbitAPIClientService<C extends FitbitApiClientAgent> {
     protected static final Log log = LogFactory.getLog(FitbitAPIClientService.class);
 
@@ -170,11 +165,11 @@ public class FitbitAPIClientService<C extends FitbitApiClientAgent> {
     }
 
     /**
-     * Subscribes
+     * Creates new subscription
      *
-     * @param collectionType
-     * @param subscriptionId
-     * @return
+     * @param collectionType Collection to receive notifications from
+     * @param subscriptionId ID associated with subscription
+     * @return SubscriptionDetail
      */
     public SubscriptionDetail subscribe(String subscriberId, LocalUserDetail user, APICollectionType collectionType, final String subscriptionId) throws FitbitAPIException {
         if (null == subscriptionStore) {
@@ -192,6 +187,12 @@ public class FitbitAPIClientService<C extends FitbitApiClientAgent> {
         return result;
     }
 
+    /**
+     * Removes subscription
+     *
+     * @param collectionType
+     * @param subscriptionId
+     */
     public void unsubscribe(String subscriberId, LocalUserDetail user, APICollectionType collectionType, final String subscriptionId) throws FitbitAPIException {
         if (null == subscriptionStore) {
             throw new FitbitAPIException("Can not deal with subscriptions without a place to store information about them.");

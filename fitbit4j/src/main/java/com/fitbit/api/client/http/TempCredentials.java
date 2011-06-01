@@ -61,9 +61,6 @@ public class TempCredentials extends OAuthToken {
         return httpClient.getAuthorizationURL() + "?oauth_token=" + getToken();
     }
 
-    /**
-     * since Fitbit4J 0.0.1
-     */
     public String getAuthenticationURL() {
         return httpClient.getAuthenticationRL() + "?oauth_token=" + getToken();
     }

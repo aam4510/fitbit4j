@@ -9,11 +9,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: gkutlu
- * Date: Jun 19, 2010
- * Time: 9:20:43 PM
- */
 public class Device {
     /**
      * Device id

@@ -1,10 +1,5 @@
 package com.fitbit.api.model;
 
-/**
- * User: gkutlu
- * Date: Feb 22, 2010
- * Time: 5:35:38 PM
- */
 public enum APIAccessType {
     READ((byte) 0, "Read-only", "read"),
     READ_WRITE((byte) 1, "Read & Write", "read and write");

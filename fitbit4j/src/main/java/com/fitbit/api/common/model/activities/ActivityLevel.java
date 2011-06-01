@@ -3,11 +3,6 @@ package com.fitbit.api.common.model.activities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * User: gkutlu
- * Date: Aug 5, 2010
- * Time: 1:32:48 PM
- */
 public class ActivityLevel {
     long id;
     String name;

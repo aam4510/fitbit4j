@@ -19,11 +19,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.UUID;
 
-/**
- * User: gkutlu
- * Date: Mar 7, 2010
- * Time: 2:49:11 PM
- */
 public class APIUtil {
 
 	private static final Log log = LogFactory.getLog(APIUtil.class);

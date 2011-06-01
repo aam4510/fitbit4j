@@ -1,10 +1,5 @@
 package com.fitbit.api.model;
 
-/**
- * User: gkutlu
- * Date: Feb 27, 2010
- * Time: 9:28:40 PM
- */
 public class APIResourceCredentials {
     String tempToken;
     String tempTokenSecret;

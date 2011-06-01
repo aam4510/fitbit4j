@@ -6,11 +6,6 @@ import org.joda.time.LocalDate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * User: Kiryl Kazakevich
- * Date: 2/6/11
- * Time: 11:56 PM
- */
 public class UserInfo {
 
     private final String encodedId;

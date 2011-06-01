@@ -10,11 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * User: gkutlu
- * Date: Mar 2, 2010
- * Time: 7:24:32 PM
- */
 public class Activities {
     private ActivitiesSummary summary;
     private List<ActivityLog> activities;

@@ -2,11 +2,6 @@ package com.fitbit.api.common.model.units;
 
 import java.util.Locale;
 
-/**
- * User: gkutlu
- * Date: Mar 25, 2010
- * Time: 4:06:33 PM
- */
 public enum UnitSystem {
     METRIC(DurationUnits.MS, DistanceUnits.METRIC, HeightUnits.CM, WeightUnits.KG, MeasurementUnits.CM, VolumeUnits.ML),
     UK(DurationUnits.MS, DistanceUnits.METRIC, HeightUnits.CM, WeightUnits.STONE, MeasurementUnits.CM, VolumeUnits.ML),

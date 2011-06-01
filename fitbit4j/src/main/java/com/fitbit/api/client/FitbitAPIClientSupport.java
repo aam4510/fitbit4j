@@ -55,8 +55,7 @@ class FitbitAPIClientSupport {
 
     /**
      * Sets the User-Agent header. System property -Dfitbit4j.http.userAgent overrides this attribute.
-     * @param userAgent UserAgent
-     * @since Fitbit4J 0.0.1
+     * @param userAgent new UserAgent
      */
     public void setUserAgent(String userAgent){
         http.setUserAgent(userAgent);
@@ -65,7 +64,6 @@ class FitbitAPIClientSupport {
     /**
      *
      * @return UserAgent
-     * @since Fitbit4J 0.0.1
      */
     public String getUserAgent(){
         return http.getUserAgent();
@@ -74,16 +72,15 @@ class FitbitAPIClientSupport {
     /**
      * Sets the X-Fitbit-Client-Version header. System property -Dfitbit4j.clientVersion overrides this attribute.
      * @param version client version
-     * @since Fitbit4J 0.0.1
      */
     public void setClientVersion(String version){
         setRequestHeader("X-Fitbit-Client-Version", Configuration.getClientVersion(version));
     }
 
     /**
+     * Fetches the X-Fitbit-Client-Version header. Client version
      *
      * @return client version
-     * @since Fitbit4J 0.0.1
      */
     public String getClientVersion(){
         return http.getRequestHeader("X-Fitbit-Client-Version");
@@ -92,7 +89,6 @@ class FitbitAPIClientSupport {
     /**
      * Sets the X-Fitbit-Client-URL header. System property -DFitbit4j.clientURL overrides this attribute.
      * @param clientURL client URL
-     * @since Fitbit4J 1.1.8
      */
     public void setClientURL(String clientURL){
         setRequestHeader("X-Fitbit-Client-URL", Configuration.getClientURL(clientURL));
@@ -101,7 +97,6 @@ class FitbitAPIClientSupport {
     /**
      *
      * @return client URL
-     * @since Fitbit4J 1.1.8
      */
     public String getClientURL(){
         return http.getRequestHeader("X-Fitbit-Client-URL");
@@ -148,7 +143,6 @@ class FitbitAPIClientSupport {
      *
      * @param proxyHost proxy host, can be overridden system property -DFitbit4j.http.proxyHost , -Dhttp.proxyHost
      * @param proxyPort proxy port, can be overridden system property -DFitbit4j.http.proxyPort , -Dhttp.proxyPort
-     * @since Fitbit4J 1.1.6
      */
     public void setHttpProxy(String proxyHost, int proxyPort) {
         http.setProxyHost(proxyHost);
@@ -160,7 +154,6 @@ class FitbitAPIClientSupport {
      *
      * @param proxyUser proxy user, can be overridden system property -DFitbit4j.http.proxyUser
      * @param proxyPass proxy password, can be overridden system property -DFitbit4j.http.proxyPassword
-     * @since Fitbit4J 1.1.6
      */
     public void setHttpProxyAuth(String proxyUser, String proxyPass) {
         http.setProxyAuthUser(proxyUser);
@@ -172,7 +165,6 @@ class FitbitAPIClientSupport {
      * System property -DFitbit4j.http.connectionTimeout overrides this attribute.
      *
      * @param connectionTimeout an int that specifies the connect timeout value in milliseconds
-     * @since Fitbit4J 1.1.6
      */
     public void setHttpConnectionTimeout(int connectionTimeout) {
         http.setConnectionTimeout(connectionTimeout);
@@ -182,7 +174,6 @@ class FitbitAPIClientSupport {
      * Sets the read timeout to a specified timeout, in milliseconds.
      *
      * @param readTimeoutMilliSecs an int that specifies the timeout value to be used in milliseconds
-     * @since Fitbit4J 1.1.6
      */
     public void setHttpReadTimeout(int readTimeoutMilliSecs) {
         http.setReadTimeout(readTimeoutMilliSecs);
@@ -193,8 +184,6 @@ class FitbitAPIClientSupport {
      * System property -DFitbit4j.source overrides this attribute.
      *
      * @param source the new source
-     * @see <a href='http://apiwiki.Fitbit.com/FAQ#HowdoIget"fromMyApp"appendedtoupdatessentfrommyAPIapplication'>How do I get "from [MyApp]" appended to updates sent from my API application?</a>
-     * @see <a href="http://Fitbit.com/help/request_source">Fitbit - Request a link to your application</a>
      */
     public void setSource(String source) {
         this.source = Configuration.getSource(source);
@@ -212,8 +201,6 @@ class FitbitAPIClientSupport {
 
     /**
      * Sets the request header name/value combination
-     * see Fitbit Fan Wiki for detail.
-     * http://Fitbit.pbwiki.com/API-Docs#RequestHeaders
      *
      * @param name  the name of the request header
      * @param value the value of the request header

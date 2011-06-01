@@ -35,14 +35,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-/**
- * User: gkutlu
- * Date: Feb 17, 2010
- * Time: 7:26:39 PM
- */
+
 @SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext"})
 public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Serializable {
-	private static final FitbitApiCredentialsCache DEFAULT_CREDENTIALS_CACHE = new FitbitApiCredentialsCacheMapImpl();
+    private static final FitbitApiCredentialsCache DEFAULT_CREDENTIALS_CACHE = new FitbitApiCredentialsCacheMapImpl();
 
     private static final String DEFAULT_API_BASE_URL = "api.fitbit.com";
     private static final String DEFAULT_WEB_BASE_URL = "http://www.fitbit.com";
@@ -55,20 +51,38 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     private FitbitApiCredentialsCache credentialsCache;
 
+
+    /**
+     * Default constructor. Creates FitbitApiClientAgent with default API hosts and credentials cache.
+     */
     public FitbitApiClientAgent() {
         this(DEFAULT_API_BASE_URL, DEFAULT_WEB_BASE_URL, (FitbitApiCredentialsCache) null);
     }
 
+    /**
+     * Creates FitbitApiClientAgent with custom API hosts and credentials cache.
+     *
+     * @param apiBaseUrl       e.g. api.fitbit.com
+     * @param webBaseUrl       e.g. http://www.fitbit.com
+     * @param credentialsCache Credentials cache
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Client-Reference-App">Fitbit API: API-Client-Reference-App</a>
+     */
     public FitbitApiClientAgent(String apiBaseUrl, String webBaseUrl, FitbitApiCredentialsCache credentialsCache) {
         this("https://" + apiBaseUrl + "/oauth/request_token", webBaseUrl + "/oauth/authorize", "https://" + apiBaseUrl + "/oauth/access_token");
         this.apiBaseUrl = apiBaseUrl;
-        if (null==credentialsCache) {
-        	this.credentialsCache = DEFAULT_CREDENTIALS_CACHE;
+        if (null == credentialsCache) {
+            this.credentialsCache = DEFAULT_CREDENTIALS_CACHE;
         } else {
-        	this.credentialsCache = credentialsCache;
+            this.credentialsCache = credentialsCache;
         }
     }
 
+    /**
+     * @param requestTokenURL  e.g. https://api.fitbit.com/oauth/request_token
+     * @param authorizationURL e.g. http://www.fitbit.com/oauth/authorize
+     * @param accessTokenURL   https://api.fitbit.com/oauth/access_token
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Client-Reference-App">Fitbit API: API-Client-Reference-App</a>
+     */
     public FitbitApiClientAgent(String requestTokenURL, String authorizationURL, String accessTokenURL) {
         super();
         init(requestTokenURL, authorizationURL, accessTokenURL);
@@ -82,25 +96,30 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
-     * Returns the base URL
+     * Returns the base API URL
      *
-     * @return the base URL
+     * @return the base API URL
      */
     public String getApiBaseUrl() {
         return "http://" + apiBaseUrl;
     }
 
     /**
-     * Returns the base secured URL
+     * Returns the base API SSL URL
      *
-     * @return the secured base URL
+     * @return the secured base API URL
      */
     public String getApiBaseSecuredUrl() {
         return "https://" + apiBaseUrl;
     }
 
+    /**
+     * Returns currently used API version
+     *
+     * @return API version
+     */
     public APIVersion getApiVersion() {
-    	return apiVersion;
+        return apiVersion;
     }
 
     /**
@@ -108,40 +127,47 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      *
      * @return retrieved request token@since Fitbit 1.0
      * @throws FitbitAPIException when Fitbit API service or network is unavailable
-     * @see <a href="https://berryfit.pbworks.com//OAuth-FAQ">Fitbit API Wiki - OAuth FAQ</a>
+     * @see <a href="http://wiki.fitbit.com/display/API/OAuth-Authentication-API">Fitbit API: OAuth-Authentication-API<</a>
      * @see <a href="http://oauth.net/core/1.0/#auth_step1">OAuth Core 1.0 - 6.1.  Obtaining an Unauthorized Request Token</a>
-     * @since Fitbit 1.0
      */
     public TempCredentials getOAuthTempToken() throws FitbitAPIException {
         return http.getOAuthRequestToken();
     }
 
+    /**
+     * Retrieves a request token, providing custom callback url
+     *
+     * @return retrieved request token@since Fitbit 1.0
+     * @throws FitbitAPIException when Fitbit API service or network is unavailable
+     * @see <a href="http://wiki.fitbit.com/display/API/OAuth-Authentication-API">Fitbit API: OAuth-Authentication-API</a>
+     * @see <a href="http://oauth.net/core/1.0/#auth_step1">OAuth Core 1.0 - 6.1.  Obtaining an Unauthorized Request Token</a>
+     */
     public TempCredentials getOAuthTempToken(String callback_url) throws FitbitAPIException {
         return http.getOauthRequestToken(callback_url);
     }
 
     /**
-     * Retrieves an access token assosiated with the supplied request token.
+     * Retrieves an access token associated with the supplied request token.
+     *
      * @param tempToken the request token
      * @return access token associated with the supplied request token.
      * @throws FitbitAPIException when Fitbit service or network is unavailable, or the user has not authorized
-     * @see <a href="http://wiki.fitbit.com/OAuth-Authentication-API">Fitbit API Wiki - How long does an access token last?</a>
+     * @see <a href="http://wiki.fitbit.com/OAuth-Authentication-API">Fitbit API: OAuth-Authentication-API<</a>
      * @see <a href="http://oauth.net/core/1.0/#auth_step2">OAuth Core 1.0 - 6.2.  Obtaining User Authorization</a>
-     * @since Fitbit API 1.0
      */
     public synchronized AccessToken getOAuthAccessToken(TempCredentials tempToken) throws FitbitAPIException {
         return http.getOAuthAccessToken(tempToken);
     }
 
     /**
-     * Retrieves an access token assosiated with the supplied request token and sets userId.
+     * Retrieves an access token associated with the supplied request token and retrieved pin, sets userId.
+     *
      * @param tempToken the request token
-     * @param pin pin
+     * @param pin       pin
      * @return access token associsted with the supplied request token.
      * @throws FitbitAPIException when Fitbit service or network is unavailable, or the user has not authorized
-     * @see <a href="http://wiki.fitbit.com/OAuth-Authenticaion-API">Fitbit API Wiki - How long does an access token last?</a>
+     * @see <a href="http://wiki.fitbit.com/OAuth-Authenticaion-API">Fitbit API: OAuth-Authentication-API</a>
      * @see <a href="http://oauth.net/core/1.0/#auth_step2">OAuth Core 1.0 - 6.2.  Obtaining User Authorization</a>
-     * @since Fitbit 2.0.8
      */
     public synchronized AccessToken getOAuthAccessToken(TempCredentials tempToken, String pin) throws FitbitAPIException {
         AccessToken accessToken = http.getOAuthAccessToken(tempToken, pin);
@@ -150,15 +176,15 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
-     * Retrieves an access token assosiated with the supplied request token.
-     * @param token request token
-     * @param tokenSecret request token secret
+     * Retrieves an access token associated with the supplied request token, retrieved tokenSecret and oauth_verifier or pin
+     *
+     * @param token          request token
+     * @param tokenSecret    request token secret
      * @param oauth_verifier oauth_verifier or pin
      * @return access token associsted with the supplied request token.
      * @throws FitbitAPIException when Fitbit service or network is unavailable, or the user has not authorized
-     * @see <a href="http://wiki.fitbit.com/OAuth-Authenticaion-API">Fitbit API Wiki - How long does an access token last?</a>
+     * @see <a href="http://wiki.fitbit.com/OAuth-Authenticaion-API">Fitbit API: OAuth-Authentication-API</a>
      * @see <a href="http://oauth.net/core/1.0/#auth_step2">OAuth Core 1.0 - 6.2.  Obtaining User Authorization</a>
-     * @since Fitbit 2.0.8
      */
     public synchronized AccessToken getOAuthAccessToken(String token, String tokenSecret, String oauth_verifier) throws FitbitAPIException {
         return http.getOAuthAccessToken(token, tokenSecret, oauth_verifier);
@@ -166,69 +192,140 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     /**
      * Sets the access token
-     * @param accessToken accessToken
-     * @since Fitbit 1.0
+     *
+     * @param accessToken access token
+     * @see <a href="http://wiki.fitbit.com/OAuth-Authenticaion-API">Fitbit API: OAuth-Authentication-API</a>
+     * @see <a href="http://oauth.net/core/1.0/#auth_step2">OAuth Core 1.0 - 6.2.  Obtaining User Authorization</a>
      */
-    public void setOAuthAccessToken(AccessToken accessToken){
+    public void setOAuthAccessToken(AccessToken accessToken) {
         http.setOAuthAccessToken(accessToken);
     }
 
     /**
-     * Sets the access token
-     * @param token token
-     * @param tokenSecret token secret
-     * @since Fitbit 1.0
+     * Sets the access token and secret
+     *
+     * @param token       access token
+     * @param tokenSecret access token secret
      */
     public void setOAuthAccessToken(String token, String tokenSecret) {
         setOAuthAccessToken(new AccessToken(token, tokenSecret));
     }
 
+    /**
+     * Sets the access token and secret
+     *
+     * @param token         access token
+     * @param tokenSecret   access token secret
+     * @param encodedUserId userId
+     */
     public void setOAuthAccessToken(String token, String tokenSecret, String encodedUserId) {
         setOAuthAccessToken(new AccessToken(token, tokenSecret));
     }
 
-    public synchronized void setOAuthConsumer(String consumerKey, String consumerSecret){
+    /**
+     * Sets the OAuth consumer credentials
+     *
+     * @param consumerKey consumer key
+     * @param consumerKey consumer secret
+     */
+    public synchronized void setOAuthConsumer(String consumerKey, String consumerSecret) {
         http.setOAuthConsumer(consumerKey, consumerSecret);
     }
 
+    /**
+     * Sets id of a default subscriber for subscription requests
+     *
+     * @param subscriberId default subscriber id
+     * @see <a href="http://wiki.fitbit.com/display/API/Subscriptions-API#Subscriptions-API-Configureyouraccountwithasubscriberendpoint">Fitbit API: Subscriptions-API</a>
+     */
     protected void setSubscriberId(String subscriberId) {
-    	if (null!=subscriberId) {
-    		http.setRequestHeader(SUBSCRIBER_ID_HEADER_NAME, subscriberId);
-    	}
+        if (null != subscriberId) {
+            http.setRequestHeader(SUBSCRIBER_ID_HEADER_NAME, subscriberId);
+        }
     }
 
+    /**
+     * Retrieves credentials cache
+     *
+     * @return credentials cache
+     */
     public FitbitApiCredentialsCache getCredentialsCache() {
         return credentialsCache;
     }
 
+    /**
+     * Get a summary and list of a user's activities and activity log entries for a given day
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @param date       date to retrieve data dor
+     * @return activities for a given day
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Activities">Fitbit API: API-Get-Activities</a>
+     */
     public Activities getActivities(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/activities/date/2010-02-25.json
-        // /1/user/228TQ4/activities/date/2010-02-25.xml
+        // Example: GET /1/user/228TQ4/activities/date/2010-02-25.json
         Response res = getCollectionResponseForDate(localUser, fitbitUser, APICollectionType.activities, date);
         throwExceptionIfError(res);
         return Activities.constructActivities(res);
     }
 
+    /**
+     * Get a list of a user's favorite activities. The activity id contained in the record retrieved can be used to log the activity
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @return list of user's favorite activities
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Favorite-Activities">Fitbit API: API-Get-Favorite-Activities</a>
+     */
     public List<ActivityReference> getFavoriteActivities(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/log/favorite.json
+        // Example: GET /1/user/228TQ4/activities/favorite.json
         Response res = getCollectionResponseForProperty(localUser, fitbitUser, APICollectionType.activities, ApiCollectionProperty.favorite);
         throwExceptionIfError(res);
         return ActivityReference.constructActivityReferenceList(res);
     }
+
+    /**
+     * Get a list of a user's recent activities. The activity id contained in the record retrieved can be used to log the activity
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @return list of user's recent activities
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Recent-Activities">Fitbit API: API-Get-Recent-Activities</a>
+     */
     public List<LoggedActivityReference> getRecentActivities(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/recent.json
+        // Example: GET /1/user/228TQ4/activities/recent.json
         Response res = getCollectionResponseForProperty(localUser, fitbitUser, APICollectionType.activities, ApiCollectionProperty.recent);
         throwExceptionIfError(res);
         return LoggedActivityReference.constructLoggedActivityReferenceList(res);
     }
 
+    /**
+     * Get a list of a user's frequent activities. The activity id contained in the record retrieved can be used to log the activity
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @return list of user's frequent activities
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Frequent-Activities">Fitbit API: API-Get-Frequent-Activities</a>
+     */
     public List<LoggedActivityReference> getFrequentActivities(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/recent.json
+        // Example: GET /1/user/228TQ4/activities/recent.json
         Response res = getCollectionResponseForProperty(localUser, fitbitUser, APICollectionType.activities, ApiCollectionProperty.frequent);
         throwExceptionIfError(res);
         return LoggedActivityReference.constructLoggedActivityReferenceList(res);
     }
 
+    /**
+     * Create log entry for an activity
+     *
+     * @param localUser      authorized user
+     * @param activityId     Activity id
+     * @param steps          Start time
+     * @param durationMillis Duration
+     * @param distance       Distance
+     * @param date           Log entry date
+     * @param startTime      Start time
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
+     */
     public void logActivity(LocalUserDetail localUser,
                             long activityId,
                             int steps,
@@ -248,9 +345,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         logActivity(localUser, params);
     }
 
+    /**
+     * Create log entry for an activity
+     *
+     * @param localUser authorized user
+     * @param params    POST request parameters
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
+     */
     public void logActivity(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
         setAccessToken(localUser);
-        // POST /1/user/-/activities.json
+        // Example: POST /1/user/-/activities.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/activities", APIFormat.JSON);
 
         Response res;
@@ -265,9 +369,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Delete user's activity log entry with the given id
+     *
+     * @param localUser     authorized user
+     * @param activityLogId Activity log entry id
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Delete-Activity-Log">Fitbit API: API-Delete-Activity-Log</a>
+     */
     public void deleteActivityLog(LocalUserDetail localUser, String activityLogId) throws FitbitAPIException {
         setAccessToken(localUser);
-        // DELETE /1/user/-/activities/123.json
+        // Example: DELETE /1/user/-/activities/123.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/activities/" + activityLogId, APIFormat.JSON);
         try {
             httpDelete(url, true);
@@ -276,28 +387,49 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Get the details of a specific activity in Fitbit activities database. If activity has levels, also get list of activity level details.
+     *
+     * @param localUser  authorized user
+     * @param activityId Activity id
+     * @return activity description
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Activity">Fitbit API: API-Get-Activity</a>
+     */
     public Activity getActivity(LocalUserDetail localUser, long activityId) throws FitbitAPIException {
         return getActivity(localUser, String.valueOf(activityId));
     }
 
+    /**
+     * Get the details of a specific activity in Fitbit activities database. If activity has levels, also get list of activity level details.
+     *
+     * @param localUser  authorized user
+     * @param activityId Activity id
+     * @return activity description
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Activity">Fitbit API: API-Get-Activity</a>
+     */
     public Activity getActivity(LocalUserDetail localUser, String activityId) throws FitbitAPIException {
         setAccessToken(localUser);
-
-        // GET /1/activities/90001/levels.json
-        // GET /1/activities/90001/levels.xml
+        // Example: GET /1/activities/90009.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/activities/" + activityId, APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
         try {
             return Activity.constructActivity(res.asJSONObject());
         } catch (JSONException e) {
-             throw new FitbitAPIException("Error retrieving activity: " + e, e);
+            throw new FitbitAPIException("Error retrieving activity: " + e, e);
         }
     }
 
+    /**
+     * Adds the activity with the given id to user's list of favorite activities.
+     *
+     * @param localUser  authorized user
+     * @param activityId Activity id
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Add-Favorite-Activity">Fitbit API: API-Add-Favorite-Activity</a>
+     */
     public void addFavoriteActivity(LocalUserDetail localUser, String activityId) throws FitbitAPIException {
         setAccessToken(localUser);
-        // POST /1/user/-/activities/log/favorite/123.json
+        // Example: POST /1/user/-/activities/log/favorite/123.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/activities/log/favorite/" + activityId, APIFormat.JSON);
         try {
             httpPost(url, null, true);
@@ -306,9 +438,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Delete the activity with the given id from user's list of favorite activities.
+     *
+     * @param localUser  authorized user
+     * @param activityId Activity id
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Delete-Favorite-Activity">Fitbit API: API-Delete-Favorite-Activity</a>
+     */
     public void deleteFavoriteActivity(LocalUserDetail localUser, String activityId) throws FitbitAPIException {
         setAccessToken(localUser);
-        // DELETE /1/user/-/activities/log/favorite/123.json
+        // Example: DELETE /1/user/-/activities/log/favorite/123.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/activities/log/favorite/" + activityId, APIFormat.JSON);
         try {
             httpDelete(url, true);
@@ -318,13 +457,37 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     }
 
+    /**
+     * Create new private food for a user
+     *
+     * @param localUser                    authorized user
+     * @param name                         Food name
+     * @param description                  Food description
+     * @param defaultFoodMeasurementUnitId Default measurement unit for a food
+     * @param defaultServingSize           Default size of a serving
+     * @param caloriesPerServingSize       Calories in default serving
+     * @param formType                     Form type
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Create-Food">Fitbit API: API-Create-Food</a>
+     */
     public Food createFood(LocalUserDetail localUser, String name, String description, long defaultFoodMeasurementUnitId,
                            float defaultServingSize, int caloriesPerServingSize, FoodFormType formType) throws FitbitAPIException {
-        NutritionalValuesEntry nutritionalValuesEntry =  new NutritionalValuesEntry();
+        NutritionalValuesEntry nutritionalValuesEntry = new NutritionalValuesEntry();
         nutritionalValuesEntry.setCalories(caloriesPerServingSize);
         return createFood(localUser, name, description, defaultFoodMeasurementUnitId, defaultServingSize, formType, nutritionalValuesEntry);
     }
 
+    /**
+     * Create new private food for a user
+     *
+     * @param localUser                    authorized user
+     * @param name                         Food name
+     * @param description                  Food description
+     * @param defaultFoodMeasurementUnitId Default measurement unit for a food
+     * @param defaultServingSize           Default size of a serving
+     * @param formType                     Form type
+     * @param nutritionalValuesEntry       Set of nutritional values for a default serving
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Create-Food">Fitbit API: API-Create-Food</a>
+     */
     public Food createFood(LocalUserDetail localUser, String name, String description, long defaultFoodMeasurementUnitId,
                            float defaultServingSize, FoodFormType formType,
                            NutritionalValuesEntry nutritionalValuesEntry) throws FitbitAPIException {
@@ -368,7 +531,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("pantothenicAcid", nutritionalValuesEntry.getPantothenicAcid()));
         params.add(new PostParameter("vitaminD", nutritionalValuesEntry.getVitaminD()));
 
-        // URL :: /1/food/create.json
+        // Example: POST /1/food/create.json
         String url = APIUtil.contextualizeUrl(getApiBaseSecuredUrl(), getApiVersion(), "/foods/create", APIFormat.JSON);
 
         Response response = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
@@ -380,37 +543,78 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Get a summary and list of a user's food log entries for a given day
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @param date       date to retrieve data dor
+     * @return food records for a given day
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Foods">Fitbit API: API-Get-Foods</a>
+     */
     public Foods getFoods(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/date/2010-02-25.json
+        // Example: GET /1/user/228TQ4/foods/log/date/2010-02-25.json
         Response res = getCollectionResponseForDate(localUser, fitbitUser, APICollectionType.foods, date);
         return Foods.constructFoods(res);
     }
 
     public List<LoggedFood> getLoggedFoods(LocalUserDetail localUser, FitbitUser fitbitUser, ApiCollectionProperty property) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/log/recent.json
+        // Example: GET /1/user/228TQ4/foods/log/recent.json
         Response res = getCollectionResponseForProperty(localUser, fitbitUser, APICollectionType.foods, property);
         return LoggedFood.constructLoggedFoodReferenceList(res);
     }
 
+    /**
+     * Get a list of a user's favorite foods. A favorite food provides a quick way to log the food
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @return list of user's favorite foods
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Favorite-Foods">Fitbit API: API-Get-Favorite-Foods</a>
+     */
     public List<FavoriteFood> getFavoriteFoods(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/log/favorite.json
+        // Example: GET /1/user/228TQ4/foods/log/favorite.json
         Response res = getCollectionResponseForProperty(localUser, fitbitUser, APICollectionType.foods, ApiCollectionProperty.favorite);
         return FavoriteFood.constructFavoriteFoodList(res);
     }
 
+    /**
+     * Get a list of a user's recent foods
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @return list of user's recent foods
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Recent-Foods">Fitbit API: API-Get-Recent-Foods</a>
+     */
     public List<LoggedFood> getRecentFoods(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/log/recent.json
+        // Example: GET /1/user/228TQ4/foods/log/recent.json
         return getLoggedFoods(localUser, fitbitUser, ApiCollectionProperty.recent);
     }
 
+    /**
+     * Get a list of a user's frequent foods
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @return list of user's frequent foods
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Frequent-Foods">Fitbit API: API-Get-Frequent-Foods</a>
+     */
     public List<LoggedFood> getFrequentFoods(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/log/frequent.json
+        // Example: GET /1/user/228TQ4/foods/log/frequent.json
         return getLoggedFoods(localUser, fitbitUser, ApiCollectionProperty.frequent);
     }
 
+    /**
+     * Given a search query, get a list of public foods from Fitbit foods database and private foods the user created
+     *
+     * @param localUser authorized user
+     * @param query     search query
+     * @return list of food search results
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Search-Foods">Fitbit API: API-Search-Foods</a>
+     */
     public List<Food> searchFoods(LocalUserDetail localUser, String query) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/foods/search.json?query=apple
+        // Example: GET /1/user/228TQ4/foods/search.json?query=apple
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/foods/search", APIFormat.JSON);
         List<PostParameter> params = new ArrayList<PostParameter>(1);
         params.add(new PostParameter("query", query));
@@ -418,15 +622,32 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return Food.constructFoodList(res);
     }
 
+    /**
+     * Get list of all valid Fitbit food units
+     *
+     * @return list of valid food units
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Food-Units">Fitbit API: API-Get-Food-Units</a>
+     */
     public List<FoodUnit> getFoodUnits() throws FitbitAPIException {
         clearAccessToken();
-        // Example URL: http://api.fitbit.com/1/foods/units.json
+        // Example: GET http://api.fitbit.com/1/foods/units.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/foods/units", APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
         return FoodUnit.constructFoodUnitList(res);
     }
 
+    /**
+     * Create log entry for a food
+     *
+     * @param localUser  authorized user
+     * @param foodId     Food id
+     * @param mealTypeId Meal type id
+     * @param unitId     Unit id
+     * @param amount     Amount consumed
+     * @param date       Log entry date
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Food">Fitbit API: API-Log-Food</a>
+     */
     public void logFood(LocalUserDetail localUser, long foodId, int mealTypeId, int unitId, String amount, LocalDate date) throws FitbitAPIException {
         List<PostParameter> params = new ArrayList<PostParameter>(5);
         params.add(new PostParameter("foodId", String.valueOf(foodId)));
@@ -438,9 +659,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         logFood(localUser, params);
     }
 
+    /**
+     * Create log entry for a food
+     *
+     * @param localUser authorized user
+     * @param params    POST request parameters
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Food">Fitbit API: API-Log-Food</a>
+     */
     public void logFood(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
         setAccessToken(localUser);
-        // POST /1/user/-/food/log.json?foodId=123&unit=servings&quantityConsumed=1
+        // Example: POST /1/user/-/food/log.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/foods/log", APIFormat.JSON);
         try {
             httpPost(url, params.toArray(new PostParameter[params.size()]), true);
@@ -449,9 +677,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Delete the user's food log entry with the given id
+     *
+     * @param localUser authorized user
+     * @param foodLogId Food log entry id
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Delete-Food-Log">Fitbit API: API-Delete-Food-Log</a>
+     */
     public void deleteFoodLog(LocalUserDetail localUser, String foodLogId) throws FitbitAPIException {
         setAccessToken(localUser);
-        // DELETE /1/user/-/food/log/123.json
+        // Example: DELETE /1/user/-/food/log/123.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/foods/log/" + foodLogId, APIFormat.JSON);
         try {
             httpDelete(url, true);
@@ -460,9 +695,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Add the food with the given id to user's list of favorite foods
+     *
+     * @param localUser authorized user
+     * @param foodId    Food id
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Add-Favorite-Food">Fitbit API: API-Add-Favorite-Food</a>
+     */
     public void addFavoriteFood(LocalUserDetail localUser, String foodId) throws FitbitAPIException {
         setAccessToken(localUser);
-        // POST /1/user/-/food/log/favorite/123.json
+        // Example: POST /1/user/-/food/log/favorite/123.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/foods/log/favorite/" + foodId, APIFormat.JSON);
         try {
             httpPost(url, null, true);
@@ -471,9 +713,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Delete the food with the given id from user's list of favorite foods
+     *
+     * @param localUser authorized user
+     * @param foodId    Food id
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Delete-Favorite-Food">Fitbit API: API-Delete-Favorite-Food</a>
+     */
     public void deleteFavoriteFood(LocalUserDetail localUser, String foodId) throws FitbitAPIException {
         setAccessToken(localUser);
-        // DELETE /1/user/-/food/log/favorite/123.json
+        // Example: DELETE /1/user/-/food/log/favorite/123.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/foods/log/favorite/" + foodId, APIFormat.JSON);
         try {
             httpDelete(url, true);
@@ -483,9 +732,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     }
 
+    /**
+     * Get a list of meals created by user
+     *
+     * @param localUser authorized user
+     * @return list of meals
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Meals">Fitbit API: API-Get-Meals</a>
+     */
     public List<Meal> getMeals(LocalUserDetail localUser) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example URL: http://api.fitbit.com/1/user/228TQ4/meals.json
+        // Example: GET /1/user/228TQ4/meals.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/meals", APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
@@ -496,32 +752,45 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Retrieves the list of Fitbit devices for a user
+     *
+     * @param localUser authorized user
+     * @return list of devices
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Devices">Fitbit API: API-Get-Devices</a>
+     */
     public List<Device> getDevices(LocalUserDetail localUser) throws FitbitAPIException {
         setAccessToken(localUser);
-        // /1/user/-/tracker.json
+        // Example: GET /1/user/-/devices.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/devices", APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
         return Device.constructDeviceList(res);
     }
 
+    /**
+     * Retrieve the attributes of user's Fitbit device
+     *
+     * @param localUser authorized user
+     * @return device
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Device">Fitbit API: API-Get-Device</a>
+     */
     public Device getDevice(LocalUserDetail localUser, String deviceId, DeviceType type) throws FitbitAPIException {
         setAccessToken(localUser);
-        // /1/user/-/devices/tracker/1234.json
+        // Example: GET /1/user/-/devices/1234.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/devices/" + type.name().toLowerCase() + '/' + deviceId, APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
         try {
             return new Device(res.asJSONObject().getJSONObject("device"));
         } catch (JSONException e) {
-             throw new FitbitAPIException("Error retrieving device: " + e, e);
+            throw new FitbitAPIException("Error retrieving device: " + e, e);
         }
     }
 
     public Response getCollectionResponseForDate(LocalUserDetail localUser, FitbitUser fitbitUser, APICollectionType type, LocalDate date) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example: http://api.fitbit.com/1/user/228TQ4/foods/date/2010-02-25.xml
-        // /1/user/228TQ4/foods/date/2010-02-25.xml
+        // Example: GET /1/user/228TQ4/foods/log/date/2010-02-25.xml
         String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, type, date, APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
@@ -530,8 +799,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     public Response getCollectionResponseForProperty(LocalUserDetail localUser, FitbitUser fitbitUser, APICollectionType type, ApiCollectionProperty property) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example: http://api.fitbit.com/1/user/228TQ4/foods/recent.xml
-        // /1/user/228TQ4/foods/recent.xml
+        // Example: GET /1/user/228TQ4/foods/log/recent.xml
         String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, type, property, APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
@@ -540,25 +808,54 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     public Object getCollectionForDate(LocalUserDetail localUser, FitbitUser fitbitUser, APICollectionType type, LocalDate date) throws FitbitAPIException {
         switch (type) {
-            case activities: return getActivities(localUser, fitbitUser, date);
-            case foods: return getFoods(localUser, fitbitUser, date);
-            case meals: return getMeals(localUser);
-            default: return null;
+            case activities:
+                return getActivities(localUser, fitbitUser, date);
+            case foods:
+                return getFoods(localUser, fitbitUser, date);
+            case meals:
+                return getMeals(localUser);
+            default:
+                return null;
         }
     }
 
+    /**
+     * Retrieve a user's body measurements for a given day
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @param date       day to retrieve data for
+     * @return body measurements for a give date
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Body-Measurements">Fitbit API: API-Get-Body-Measurements</a>
+     */
     public double getWeight(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
         return getBody(localUser, fitbitUser, date).getWeight();
     }
 
+    /**
+     * Retrieve a user's body measurements for a given day
+     *
+     * @param localUser authorized user
+     * @param date      day to retrieve data for
+     * @return body measurements for a give date
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Body-Measurements">Fitbit API: API-Get-Body-Measurements</a>
+     */
     public double getWeight(LocalUserDetail localUser, String date) throws FitbitAPIException {
         return getBody(localUser, date).getWeight();
     }
 
+    /**
+     * Get a summary of a user's body measurements for a given day
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @param date       day to retrieve data for
+     * @return body measurements for a give date
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Body-Measurements">Fitbit API: API-Get-Body-Measurements</a>
+     */
     public Body getBody(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example: http://api.fitbit.com/1/user/228TQ4/body/2010-02-25.xml
-        // /1/user/228TQ4/body/2010-02-25.xml
+        // Example: GET /1/user/228TQ4/body/2010-02-25.xml
         String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, APICollectionType.body, date, APIFormat.JSON);
 
         Response res = httpGet(url, true);
@@ -566,13 +863,21 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         try {
             return new Body(res.asJSONObject());
         } catch (JSONException e) {
-             throw new FitbitAPIException("Error retrieving body: " + e, e);
+            throw new FitbitAPIException("Error retrieving body: " + e, e);
         }
     }
 
+    /**
+     * Get a summary of a user's body measurements for a given day
+     *
+     * @param localUser authorized user
+     * @param date      day to retrieve data for
+     * @return body measurements for a give date
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Body-Measurements">Fitbit API: API-Get-Body-Measurements</a>
+     */
     public Body getBody(LocalUserDetail localUser, String date) throws FitbitAPIException {
         setAccessToken(localUser);
-        // GET /1/user/-/body/date/2010-02-25.xml
+        // Example: GET /1/user/-/body/date/2010-02-25.xml
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/body/date/" + date, APIFormat.JSON);
 
         Response res = httpGet(url, true);
@@ -580,10 +885,18 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         try {
             return new Body(res.asJSONObject());
         } catch (JSONException e) {
-             throw new FitbitAPIException("Error retrieving body: " + e, e);
+            throw new FitbitAPIException("Error retrieving body: " + e, e);
         }
     }
 
+    /**
+     * Log weight
+     *
+     * @param localUser authorized user
+     * @param weight    Weight
+     * @param date      Log entry date
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Weight">Fitbit API: API-Log-Weight</a>
+     */
     public void logWeight(LocalUserDetail localUser, float weight, LocalDate date) throws FitbitAPIException {
         List<PostParameter> params = new ArrayList<PostParameter>(2);
         params.add(new PostParameter("weight", weight));
@@ -592,9 +905,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         logWeight(localUser, params);
     }
 
+    /**
+     * Log weight
+     *
+     * @param localUser authorized user
+     * @param params    POST request parameters
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Weight">Fitbit API: API-Log-Weight</a>
+     */
     public void logWeight(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
         setAccessToken(localUser);
-        // /1/user/-/body/weight.json
+        // Example: POST /1/user/-/body/weight.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/body/weight", APIFormat.JSON);
 
         try {
@@ -604,13 +924,28 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Get a user's profile
+     *
+     * @param localUser authorized user
+     * @return profile of a user
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-User-Info">Fitbit API: API-Get-User-Info</a>
+     */
     public UserInfo getUserInfo(LocalUserDetail localUser) throws FitbitAPIException {
         return getUserInfo(localUser, FitbitUser.CURRENT_AUTHORIZED_USER);
     }
 
+    /**
+     * Get a user's profile
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @return profile of a user
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-User-Info">Fitbit API: API-Get-User-Info</a>
+     */
     public UserInfo getUserInfo(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
         setAccessToken(localUser);
-        // /1/user/-/profile.json
+        // Example: GET /1/user/-/profile.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/" + fitbitUser.getId() + "/profile", APIFormat.JSON);
 
         try {
@@ -620,14 +955,35 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         } catch (FitbitAPIException e) {
             throw new FitbitAPIException("Error getting user info: " + e, e);
         } catch (JSONException e) {
-             throw new FitbitAPIException("Error getting user info: " + e, e);
+            throw new FitbitAPIException("Error getting user info: " + e, e);
         }
     }
-    
+
+    /**
+     * Register new Fitbit user account
+     * <p/>
+     * <b>Info: This method is not generally available in public API, though this permission could be given to partners that need this functionality</b>
+     *
+     * @param email    Email
+     * @param password password
+     * @param timezone timezone string
+     * @return Account
+     */
     public Account registerAccount(String email, String password, String timezone) throws FitbitAPIException {
         return registerAccount(email, password, timezone, false);
     }
 
+    /**
+     * Register new Fitbit user account
+     * <p/>
+     * <b>Info: This method is not generally available in public API, though this permission could be given to partners that need this functionality</b>
+     *
+     * @param email          Email
+     * @param password       password
+     * @param timezone       timezone string
+     * @param emailSubscribe Subscribe to email newsletter
+     * @return Account
+     */
     public Account registerAccount(String email, String password, String timezone, boolean emailSubscribe) throws FitbitAPIException {
 
         List<PostParameter> params = new ArrayList<PostParameter>();
@@ -648,44 +1004,115 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+
+    /**
+     * Get Rate Limiting Quota left for the IP
+     *
+     * @return quota
+     */
     public ApiRateLimitStatus getIpRateLimitStatus() throws FitbitAPIException {
         return getRateLimitStatus(ApiQuotaType.IP_ADDRESS);
     }
 
+    /**
+     * Get Rate Limiting Quota left for the Client+Owner
+     *
+     * @param localUser authorized user
+     * @return quota
+     */
     public ApiRateLimitStatus getClientAndUserRateLimitStatus(LocalUserDetail localUser) throws FitbitAPIException {
         setAccessToken(localUser);
         return getRateLimitStatus(ApiQuotaType.CLIENT_AND_OWNER);
     }
 
     public ApiRateLimitStatus getRateLimitStatus(ApiQuotaType quotaType) throws FitbitAPIException {
-        // /1/account/clientAndUserRateLimitStatus.json OR /1/account/ipRateLimitStatus.json
+        // Example: GET /1/account/clientAndUserRateLimitStatus.json OR /1/account/ipRateLimitStatus.json
         String relativePath = "/account/" + (quotaType == ApiQuotaType.CLIENT_AND_OWNER ? "clientAndUser" : "ip") + "RateLimitStatus";
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), APIVersion.BETA_1, relativePath, APIFormat.JSON);
         return new ApiRateLimitStatus(httpGet(url, true));
     }
 
+    /**
+     * Adds a subscription to all user's collections
+     *
+     * @param subscriberId ID of a subscriber for this subscription, defined on <a href="https://dev.fitbit.com/apps">dev.fitbit.com</a>
+     * @param localUser    authorized user
+     * @param fitbitUser   user to subscribe to
+     * @return details of a new subscription
+     * @see <a href="http://wiki.fitbit.com/display/API/Subscriptions-API#Subscriptions-API-Addasubscription">Fitbit API: Subscriptions-API</a>
+     */
     public SubscriptionDetail subscribe(String subscriberId, LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
-    	return nullSafeSubscribe(subscriberId, localUser, fitbitUser, null, null);
+        return nullSafeSubscribe(subscriberId, localUser, fitbitUser, null, null);
     }
 
+    /**
+     * Adds a subscription to user's collection
+     *
+     * @param subscriberId   ID of a subscriber for this subscription, defined on <a href="https://dev.fitbit.com/apps">dev.fitbit.com</a>
+     * @param localUser      authorized user
+     * @param fitbitUser     user to subscribe to
+     * @param collectionType type of a collection to subscribe to
+     * @return details of a new subscription
+     * @see <a href="http://wiki.fitbit.com/display/API/Subscriptions-API#Subscriptions-API-Addasubscription">Fitbit API: Subscriptions-API</a>
+     */
     public SubscriptionDetail subscribe(String subscriberId, LocalUserDetail localUser, FitbitUser fitbitUser, APICollectionType collectionType) throws FitbitAPIException {
-    	return nullSafeSubscribe(subscriberId, localUser, fitbitUser, collectionType, null);
+        return nullSafeSubscribe(subscriberId, localUser, fitbitUser, collectionType, null);
     }
 
+    /**
+     * Adds a subscription with given id to all user's collections
+     *
+     * @param subscriberId   ID of a subscriber for this subscription, defined on <a href="https://dev.fitbit.com/apps">dev.fitbit.com</a>
+     * @param localUser      authorized user
+     * @param fitbitUser     user to subscribe to
+     * @param subscriptionId The ID of the subscription that makes sense to your application
+     * @return details of a new subscription
+     * @see <a href="http://wiki.fitbit.com/display/API/Subscriptions-API#Subscriptions-API-Addasubscription">Fitbit API: Subscriptions-API</a>
+     */
     public SubscriptionDetail subscribe(String subscriberId, LocalUserDetail localUser, FitbitUser fitbitUser, String subscriptionId) throws FitbitAPIException {
-    	return nullSafeSubscribe(subscriberId, localUser, fitbitUser, null, subscriptionId);
+        return nullSafeSubscribe(subscriberId, localUser, fitbitUser, null, subscriptionId);
     }
 
+    /**
+     * Adds a subscription with given id to user's collection
+     *
+     * @param subscriberId   ID of a subscriber for this subscription, defined on <a href="https://dev.fitbit.com/apps">dev.fitbit.com</a>
+     * @param localUser      authorized user
+     * @param fitbitUser     user to subscribe to
+     * @param collectionType type of a collection to subscribe to
+     * @param subscriptionId The ID of the subscription that makes sense to your application
+     * @return details of a new subscription
+     * @see <a href="http://wiki.fitbit.com/display/API/Subscriptions-API#Subscriptions-API-Addasubscription">Fitbit API: Subscriptions-API</a>
+     */
     public SubscriptionDetail subscribe(String subscriberId, LocalUserDetail localUser, FitbitUser fitbitUser, APICollectionType collectionType, String subscriptionId) throws FitbitAPIException {
-    	return nullSafeSubscribe(subscriberId, localUser, fitbitUser, collectionType, subscriptionId);
+        return nullSafeSubscribe(subscriberId, localUser, fitbitUser, collectionType, subscriptionId);
     }
 
+    /**
+     * Removes a subscription with given id from all user's collections
+     *
+     * @param subscriberId   ID of a subscriber for this subscription, defined on <a href="https://dev.fitbit.com/apps">dev.fitbit.com</a>
+     * @param localUser      authorized user
+     * @param fitbitUser     user to subscribe to
+     * @param subscriptionId The ID of the subscription
+     * @see <a href="http://wiki.fitbit.com/display/API/Subscriptions-API#Subscriptions-API-Removeasubscription">Fitbit API: Subscriptions-API</a>
+     */
     public void unsubscribe(String subscriberId, LocalUserDetail localUser, FitbitUser fitbitUser, String subscriptionId) throws FitbitAPIException {
-    	nullSafeUnsubscribe(subscriberId, localUser, fitbitUser, null, subscriptionId);
+        nullSafeUnsubscribe(subscriberId, localUser, fitbitUser, null, subscriptionId);
     }
 
+    /**
+     * Removes a subscription with given id from user's collection
+     *
+     * @param subscriberId   ID of a subscriber for this subscription, defined on <a href="https://dev.fitbit.com/apps">dev.fitbit.com</a>
+     * @param localUser      authorized user
+     * @param fitbitUser     user to subscribe to
+     * @param collectionType type of a collection to unsubscribe from
+     * @param subscriptionId The ID of the subscription
+     * @see <a href="http://wiki.fitbit.com/display/API/Subscriptions-API#Subscriptions-API-Removeasubscription">Fitbit API: Subscriptions-API</a>
+     */
     public void unsubscribe(String subscriberId, LocalUserDetail localUser, FitbitUser fitbitUser, APICollectionType collectionType, String subscriptionId) throws FitbitAPIException {
-    	nullSafeUnsubscribe(subscriberId, localUser, fitbitUser, collectionType, subscriptionId);
+        nullSafeUnsubscribe(subscriberId, localUser, fitbitUser, collectionType, subscriptionId);
     }
 
     /* ********************************************************************* */
@@ -694,22 +1121,22 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         setAccessToken(localUser);
 
         String url =
-        	APIUtil.constructFullSubscriptionUrl(
-        		getApiBaseUrl(),
-        		getApiVersion(),
-        		fitbitUser,
-        		collectionType,
-        		null==subscriptionId ? APIUtil.UNSPECIFIED_SUBSCRIPTION_ID : subscriptionId,
-        		APIFormat.JSON
-        	);
+                APIUtil.constructFullSubscriptionUrl(
+                        getApiBaseUrl(),
+                        getApiVersion(),
+                        fitbitUser,
+                        collectionType,
+                        null == subscriptionId ? APIUtil.UNSPECIFIED_SUBSCRIPTION_ID : subscriptionId,
+                        APIFormat.JSON
+                );
         setSubscriberId(subscriberId);
 
         try {
-        	return new SubscriptionDetail(httpPost(url, null, true).asJSONObject());
+            return new SubscriptionDetail(httpPost(url, null, true).asJSONObject());
         } catch (FitbitAPIException e) {
             throw e;
         } catch (Exception e) {
-        	throw new FitbitAPIException("Could not create subscription: " + e, e);
+            throw new FitbitAPIException("Could not create subscription: " + e, e);
         }
     }
 
@@ -717,51 +1144,98 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         setAccessToken(localUser);
 
         String url =
-        	APIUtil.constructFullSubscriptionUrl(
-        		getApiBaseUrl(),
-        		getApiVersion(),
-        		fitbitUser,
-        		collectionType,
-        		subscriptionId,
-        		APIFormat.JSON
-        	);
+                APIUtil.constructFullSubscriptionUrl(
+                        getApiBaseUrl(),
+                        getApiVersion(),
+                        fitbitUser,
+                        collectionType,
+                        subscriptionId,
+                        APIFormat.JSON
+                );
         setSubscriberId(subscriberId);
 
         httpDelete(url, true);
     }
 
-    /*
-     * Time Series
-     */
-
     /**
-     * Get time series for anonymous user.
+     * Get time series in the specified range for a given resource of a user (as an unauthorized)
+     *
+     * @param user         user to fetch data from
+     * @param resourceType type of a resource
+     * @param startDate    End date of a time range
+     * @param period       Depth of a time range
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
      */
     public Map<String, List<Data>> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, TimePeriod period) throws FitbitAPIException {
         return getTimeSeries(null, user, resourceType, startDate.toString(), period.getShortForm());
     }
 
+    /**
+     * Get time series in the specified range for a given resource of a user (as an unauthorized)
+     *
+     * @param user         user to fetch data from
+     * @param resourceType type of a resource
+     * @param startDate    End date of a time range
+     * @param period       Depth of a time range
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
+     */
     public Map<String, List<Data>> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, String startDate, TimePeriod period) throws FitbitAPIException {
-        return getTimeSeries(null, user, resourceType, startDate,  period.getShortForm());
-    }
-
-    public Map<String, List<Data>> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, LocalDate endDate) throws FitbitAPIException {
-        return getTimeSeries(null, user, resourceType, startDate.toString(),  endDate.toString());
+        return getTimeSeries(null, user, resourceType, startDate, period.getShortForm());
     }
 
     /**
-     * Get time series for authorized user.
+     * Get time series in the specified range for a given resource of a user (as an unauthorized)
+     *
+     * @param user         user to fetch data from
+     * @param resourceType type of a resource
+     * @param startDate    Start date of a time range
+     * @param endDate      End date of a time range
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
+     */
+    public Map<String, List<Data>> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, LocalDate endDate) throws FitbitAPIException {
+        return getTimeSeries(null, user, resourceType, startDate.toString(), endDate.toString());
+    }
+
+    /**
+     * Get time series in the specified range for a given resource of a user
+     *
+     * @param localUser    authorized user
+     * @param user         user to fetch data from
+     * @param resourceType type of a resource
+     * @param startDate    End date of a time range
+     * @param period       Depth of a time range
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
      */
     public Map<String, List<Data>> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, TimePeriod period) throws FitbitAPIException {
         return getTimeSeries(localUser, user, resourceType, startDate.toString(), period.getShortForm());
     }
 
+    /**
+     * Get time series in the specified range for a given resource of a user
+     *
+     * @param localUser    authorized user
+     * @param user         user to fetch data from
+     * @param resourceType type of a resource
+     * @param startDate    End date of a time range
+     * @param period       Depth of a time range
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
+     */
     public Map<String, List<Data>> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String startDate, TimePeriod period) throws FitbitAPIException {
-        return getTimeSeries(localUser, user, resourceType, startDate,  period.getShortForm());
+        return getTimeSeries(localUser, user, resourceType, startDate, period.getShortForm());
     }
 
+    /**
+     * Get time series in the specified range for a given resource of a user
+     *
+     * @param localUser    authorized user
+     * @param user         user to fetch data from
+     * @param resourceType type of a resource
+     * @param startDate    Start date of a time range
+     * @param endDate      End date of a time range
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
+     */
     public Map<String, List<Data>> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, LocalDate endDate) throws FitbitAPIException {
-        return getTimeSeries(localUser, user, resourceType, startDate.toString(),  endDate.toString());
+        return getTimeSeries(localUser, user, resourceType, startDate.toString(), endDate.toString());
     }
 
     public Map<String, List<Data>> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String startDate, String periodOrEndDate) throws FitbitAPIException {
@@ -849,22 +1323,22 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     protected Response httpPost(String url, PostParameter[] params, boolean authenticate) throws FitbitAPIException {
-    	return http.post(url, params, authenticate);
+        return http.post(url, params, authenticate);
     }
 
     protected Response httpDelete(String url, boolean authenticate) throws FitbitAPIException {
-    	return httpDelete(url, null, authenticate);
+        return httpDelete(url, null, authenticate);
     }
 
     protected Response httpDelete(String url, PostParameter[] params, boolean authenticate) throws FitbitAPIException {
-    	// We use Sun's HttpURLConnection, which does not like request entities
-    	// submitted on HTTP DELETE
-    	return http.delete(appendParamsToUrl(url, params), authenticate);
+        // We use Sun's HttpURLConnection, which does not like request entities
+        // submitted on HTTP DELETE
+        return http.delete(appendParamsToUrl(url, params), authenticate);
     }
 
     protected static String appendParamsToUrl(String url, PostParameter[] params) {
         if (null != params && params.length > 0) {
-        	return url + '?' + HttpClient.encodeParameters(params);
+            return url + '?' + HttpClient.encodeParameters(params);
         }
         return url;
     }
@@ -879,8 +1353,14 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return res.isError() ? res.asString() : "";
     }
 
+    /**
+     * Set unit system for future API calls
+     *
+     * @param locale requested unit system
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Unit-System">Fitbit API: API-Unit-System</a>
+     */
     public void setLocale(Locale locale) {
-        if( locale == null ) {
+        if (locale == null) {
             http.removeRequestHeader("Accept-Language");
         } else {
             http.setRequestHeader("Accept-Language", locale.toString());

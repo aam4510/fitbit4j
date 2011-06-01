@@ -9,13 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: James Park
- * Date: Jun 5, 2007
- * Time: 10:16:23 AM
- * To change this template use File | Settings | File Templates.
- */
 public class FitbitApiError {
 	public enum ErrorType {
 		System("system"),
