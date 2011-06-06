@@ -968,6 +968,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param password password
      * @param timezone timezone string
      * @return Account
+     * @throws com.fitbit.api.FitbitAPIException fitbit api Exception
      */
     public Account registerAccount(String email, String password, String timezone) throws FitbitAPIException {
         return registerAccount(email, password, timezone, false);
@@ -983,6 +984,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param timezone       timezone string
      * @param emailSubscribe Subscribe to email newsletter
      * @return Account
+     * @throws com.fitbit.api.FitbitAPIException api exception
      */
     public Account registerAccount(String email, String password, String timezone, boolean emailSubscribe) throws FitbitAPIException {
 
@@ -1004,6 +1006,43 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Authorized user invites another user to be a friend by userId
+     *
+     * @param localUser sender
+     * @param invitedUserId invitee user's id
+     * @throws com.fitbit.api.FitbitAPIException api exception
+     */
+    public void inviteByUserId(LocalUserDetail localUser, String invitedUserId) throws FitbitAPIException {
+        setAccessToken(localUser);
+
+        List<PostParameter> params = new ArrayList<PostParameter>();
+        params.add(new PostParameter("invitedUserId", invitedUserId));
+
+        // POST /1/user/-/friends/invitations.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/friends/invitations", APIFormat.JSON);
+
+        httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+    }
+
+    /**
+     * Authorized user invites another user to be a friend by email
+     *
+     * @param localUser sender
+     * @param invitedUserEmail invitee email
+     * @throws com.fitbit.api.FitbitAPIException api exception
+     */
+    public void inviteByEmail(LocalUserDetail localUser, String invitedUserEmail) throws FitbitAPIException {
+        setAccessToken(localUser);
+
+        List<PostParameter> params = new ArrayList<PostParameter>();
+        params.add(new PostParameter("invitedUserEmail", invitedUserEmail));
+
+        // POST /1/user/-/friends/invitations.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/friends/invitations", APIFormat.JSON);
+
+        httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+    }
 
     /**
      * Get Rate Limiting Quota left for the IP
