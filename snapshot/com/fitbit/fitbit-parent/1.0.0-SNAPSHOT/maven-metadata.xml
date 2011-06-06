@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metadata modelVersion="1.1.0">
+<metadata>
   <groupId>com.fitbit</groupId>
   <artifactId>fitbit-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20110530.144258</timestamp>
-      <buildNumber>2</buildNumber>
+      <timestamp>20110606.125039</timestamp>
+      <buildNumber>3</buildNumber>
     </snapshot>
-    <lastUpdated>20110530144258</lastUpdated>
-    <snapshotVersions>
-      <snapshotVersion>
-        <extension>pom</extension>
-        <value>1.0.0-20110530.144258-2</value>
-        <updated>20110530144258</updated>
-      </snapshotVersion>
-    </snapshotVersions>
+    <lastUpdated>20110606125039</lastUpdated>
   </versioning>
 </metadata>
