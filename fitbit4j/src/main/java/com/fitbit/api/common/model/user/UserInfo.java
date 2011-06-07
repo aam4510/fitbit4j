@@ -13,6 +13,7 @@ public class UserInfo {
     private final Gender gender;
     private final LocalDate dateOfBirth;
     private final double height;
+    private final double weight;
     private final double strideLengthWalking;
     private final double strideLengthRunning;
     private final String fullName;
@@ -28,13 +29,14 @@ public class UserInfo {
     private final int offsetFromUTCMillis;
 
     public UserInfo(String encodedId, String displayName, Gender gender, LocalDate dateOfBirth,
-                    double height, double strideLengthWalking, double strideLengthRunning, String fullName,
+                    double height, double weight, double strideLengthWalking, double strideLengthRunning, String fullName,
                     String nickname, String country, String state, String city, String aboutMe, DateTimeZone timezone, int offsetFromUTCMillis) {
         this.encodedId = encodedId;
         this.displayName = displayName;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.height = height;
+        this.weight = weight;
         this.strideLengthWalking = strideLengthWalking;
         this.strideLengthRunning = strideLengthRunning;
         this.fullName = fullName;
@@ -54,6 +56,7 @@ public class UserInfo {
         gender = Gender.valueOf(userJson.getString("gender"));
         dateOfBirth = FitbitApiService.getValidLocalDateOrNull(userJson.optString("dateOfBirth"));
         height = userJson.optDouble("height");
+        weight = userJson.optDouble("weight");
         strideLengthWalking = userJson.optDouble("strideLengthWalking");
         strideLengthRunning = userJson.optDouble("strideLengthRunning");
         fullName = userJson.optString("fullName");
@@ -88,6 +91,10 @@ public class UserInfo {
 
     public double getHeight() {
         return height;
+    }
+
+    public double getWeight() {
+        return weight;
     }
 
     public double getStrideLengthWalking() {

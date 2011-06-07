@@ -959,6 +959,22 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    public UserInfo updateUserInfo(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: GET /1/user/-/profile.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/profile", APIFormat.JSON);
+
+        try {
+            Response response = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+            throwExceptionIfError(response);
+            return new UserInfo(response.asJSONObject());
+        } catch (FitbitAPIException e) {
+            throw new FitbitAPIException("Error updating profile: " + e, e);
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error updating profile: " + e, e);
+        }
+    }
+
     /**
      * Register new Fitbit user account
      * <p/>
