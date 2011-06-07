@@ -1045,6 +1045,45 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
+     * Authorized user accepts invitation from another user
+     *
+     * @param localUser current user
+     * @param fitbitUser inviter
+     * @throws com.fitbit.api.FitbitAPIException api exception
+     */
+    public void acceptInvitationFromUser(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
+        setAccessToken(localUser);
+
+        List<PostParameter> params = new ArrayList<PostParameter>();
+        params.add(new PostParameter("accept", String.valueOf(true)));
+
+        // POST /1/user/-/friends/invitations.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/friends/invitations/" + fitbitUser.getId(), APIFormat.JSON);
+
+        httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+    }
+
+    /**
+     * Authorized user rejects invitation from another user
+     *
+     * @param localUser current user
+     * @param fitbitUser inviter
+     * @throws com.fitbit.api.FitbitAPIException api exception
+     */
+    public void rejectInvitationFromUser(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
+        setAccessToken(localUser);
+
+        List<PostParameter> params = new ArrayList<PostParameter>();
+        params.add(new PostParameter("accept", String.valueOf(false)));
+
+        // POST /1/user/-/friends/invitations.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/friends/invitations/" + fitbitUser.getId(), APIFormat.JSON);
+
+        httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+    }
+
+
+    /**
      * Get Rate Limiting Quota left for the IP
      *
      * @return quota
