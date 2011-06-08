@@ -76,6 +76,7 @@
         <div class="parag left normal">
             <c:if test="${isAuthorized}">
                 <p><a href="${exampleBaseUrl}/createFoodForm">Create New Food</a></p>
+                <p><a href="${exampleBaseUrl}/invitations">Invitations</a></p>
             </c:if>
 
             <c:if test="${showAccountRegistrationForm}">

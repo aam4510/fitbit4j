@@ -14,6 +14,7 @@ import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIResourceCredentials;
 import com.fitbit.api.model.ApiRateLimitStatus;
+import com.fitbit.api.model.FitbitUser;
 import com.fitbit.web.context.RequestContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -361,6 +362,93 @@ public class FitbitApiClientController {
 
         return "createFood";
     }
+
+    @RequestMapping(value = "/invitations", method = RequestMethod.GET)
+    public String showInvitationsPage(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+        return "invitations";
+    }
+
+    @RequestMapping(value = "/sendInvitation", method = RequestMethod.POST)
+    public String sendInvitation(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        String invitationMethod = request.getParameter("invitationMethod");
+        String invitedUserIdOrEMail = request.getParameter("invitedUserIdOrEMail");
+
+        log.info("Sending invitation :: invitationMethod = " + invitationMethod + ", invitedUserIdOrEMail = " + invitedUserIdOrEMail);
+        List<String> messages  =  new ArrayList<String>();
+        try {
+            if (invitationMethod.equals("USER")) {
+                context.getApiClientService().getClient().inviteByUserId(context.getOurUser(), invitedUserIdOrEMail);
+            } else if (invitationMethod.equals("EMAIL")) {
+                context.getApiClientService().getClient().inviteByEmail(context.getOurUser(), invitedUserIdOrEMail);
+            } else {
+                throw new IllegalArgumentException("Unknown invitation method.");
+            }
+            String message = "Invitation for invitedUserIdOrEMail =  " + invitedUserIdOrEMail + "successfully sent.";
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error: e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error during sending invitation.", e);
+        }
+        request.setAttribute("messages", messages);
+        //return attributes back
+        request.setAttribute("invitationMethod", invitationMethod);
+        request.setAttribute("invitedUserIdOrEMail", invitedUserIdOrEMail);
+
+        return "invitations";
+    }
+
+    @RequestMapping(value = "/acceptInvitation", method = RequestMethod.POST)
+    public String acceptInvitation(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        String senderUserId = request.getParameter("senderUserId");
+
+        log.info("Accept invitation :: senderUserId = " + senderUserId);
+        List<String> messages  =  new ArrayList<String>();
+        try {
+            context.getApiClientService().getClient().acceptInvitationFromUser(context.getOurUser(), new FitbitUser(senderUserId));
+            String message = "Invitation from senderUserId =  " + senderUserId + " successfully accepted. Congratulations - you are friends.";
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error: e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error during accepting invitation.", e);
+        }
+        request.setAttribute("messages", messages);
+        //return attributes back
+        request.setAttribute("senderUserId", senderUserId);
+
+        return "invitations";
+    }
+
 
     protected void showHome(RequestContext context, HttpServletRequest request, HttpServletResponse response) {
         List<String> errors = new ArrayList<String>();
