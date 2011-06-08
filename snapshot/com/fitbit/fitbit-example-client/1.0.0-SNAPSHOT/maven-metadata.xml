@@ -1,37 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metadata modelVersion="1.1.0">
+<metadata>
   <groupId>com.fitbit</groupId>
   <artifactId>fitbit-example-client</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20110607.222134</timestamp>
-      <buildNumber>4</buildNumber>
+      <timestamp>20110608.130616</timestamp>
+      <buildNumber>5</buildNumber>
     </snapshot>
-    <lastUpdated>20110607222134</lastUpdated>
-    <snapshotVersions>
-      <snapshotVersion>
-        <extension>war</extension>
-        <value>1.0.0-20110607.222134-4</value>
-        <updated>20110607222134</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>pom</extension>
-        <value>1.0.0-20110607.222134-4</value>
-        <updated>20110607222134</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <classifier>sources</classifier>
-        <extension>jar</extension>
-        <value>1.0.0-20110607.222134-4</value>
-        <updated>20110607222134</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <classifier>javadoc</classifier>
-        <extension>jar</extension>
-        <value>1.0.0-20110607.222134-4</value>
-        <updated>20110607222134</updated>
-      </snapshotVersion>
-    </snapshotVersions>
+    <lastUpdated>20110608130649</lastUpdated>
   </versioning>
 </metadata>
