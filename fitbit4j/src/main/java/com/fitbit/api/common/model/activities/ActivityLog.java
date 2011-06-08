@@ -8,9 +8,9 @@ public class ActivityLog extends LoggedActivityReference {
     String startTime;
     boolean isFavorite;
 
-    public ActivityLog(long logId, long activityId, String name, String description, String startTime,
-                       int duration, double distance, int calories, boolean isFavorite) {
-        super(activityId, name, description, calories, duration, distance);
+    public ActivityLog(long logId, long activityId, String name, String description, Long activityParentId, String activityParentName, String startTime,
+                       int duration, double distance, int calories, Integer steps, boolean isFavorite) {
+        super(activityId, name, description, activityParentId, activityParentName, calories, duration, distance, steps);
         this.logId = logId;
         this.startTime = startTime;
         this.isFavorite = isFavorite;

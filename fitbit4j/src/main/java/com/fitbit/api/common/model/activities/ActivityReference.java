@@ -13,17 +13,23 @@ public class ActivityReference {
     long activityId;
     String name;
     String description;
+    Long activityParentId;
+    String activityParentName;
 
-    public ActivityReference(long activityId, String name, String description) {
+    public ActivityReference(long activityId, String name, String description, Long activityParentId, String activityParentName) {
         this.activityId = activityId;
         this.name = name;
         this.description = description;
+        this.activityParentId = activityParentId;
+        this.activityParentName = activityParentName;
     }
 
     public ActivityReference(JSONObject json) throws JSONException {
         activityId = json.getLong("activityId");
         name = json.getString("name");
         description = json.getString("description");
+        activityParentId = json.getLong("activityParentId");
+        activityParentName = json.getString("activityParentName");
     }
 
     public static List<ActivityReference> constructActivityReferenceList(Response res) throws FitbitAPIException {
@@ -53,5 +59,13 @@ public class ActivityReference {
 
     public String getDescription() {
         return description;
+    }
+
+    public Long getActivityParentId() {
+        return activityParentId;
+    }
+
+    public String getActivityParentName() {
+        return activityParentName;
     }
 }

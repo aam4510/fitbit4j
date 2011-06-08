@@ -13,12 +13,15 @@ public class LoggedActivityReference extends ActivityReference {
     int calories;
     int duration;
     double distance;
+    Integer steps;
 
-    public LoggedActivityReference(long activityId, String name, String description, int calories, int duration, double distance) {
-        super(activityId, name, description);
+    public LoggedActivityReference(long activityId, String name, String description, Long activityParentId, String activityParentName,
+                                   int calories, int duration, double distance, Integer steps) {
+        super(activityId, name, description, activityParentId, activityParentName);
         this.calories = calories;
         this.duration = duration;
         this.distance = distance;
+        this.steps = steps;
     }
 
     public LoggedActivityReference(JSONObject json) throws JSONException {
@@ -26,6 +29,7 @@ public class LoggedActivityReference extends ActivityReference {
         calories = json.getInt("calories");
         duration = json.getInt("duration");
         distance = json.getDouble("distance");
+        steps = json.getInt("steps");
     }
 
     public static List<LoggedActivityReference> constructLoggedActivityReferenceList(Response res) throws FitbitAPIException {
@@ -55,5 +59,9 @@ public class LoggedActivityReference extends ActivityReference {
 
     public double getDistance() {
         return distance;
+    }
+
+    public Integer getSteps() {
+        return steps;
     }
 }
