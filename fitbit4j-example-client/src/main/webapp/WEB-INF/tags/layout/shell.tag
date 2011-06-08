@@ -54,6 +54,7 @@
         <h2>Example User Actions:</h2>
 
         <div class="parag left normal">
+                    <p><a href="${exampleBaseUrl}/profile">See and update profile</a></p>
             <c:choose>
                 <c:when test="${!isSubscribed}">
                     <p><a href="${exampleBaseUrl}/subscribe">Subscribe this application to your activity and food

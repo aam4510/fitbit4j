@@ -3,6 +3,7 @@ package com.fitbit.web.controller;
 import com.fitbit.api.FitbitAPIException;
 import com.fitbit.api.FitbitApiError;
 import com.fitbit.api.client.*;
+import com.fitbit.api.client.http.PostParameter;
 import com.fitbit.api.client.service.FitbitAPIClientService;
 import com.fitbit.api.common.model.activities.Activities;
 import com.fitbit.api.common.model.foods.Food;
@@ -11,6 +12,7 @@ import com.fitbit.api.common.model.foods.Foods;
 import com.fitbit.api.common.model.foods.NutritionalValuesEntry;
 import com.fitbit.api.common.model.units.UnitSystem;
 import com.fitbit.api.common.model.user.Account;
+import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIResourceCredentials;
 import com.fitbit.api.model.ApiRateLimitStatus;
@@ -143,7 +145,7 @@ public class FitbitApiClientController {
         RequestContext context = new RequestContext();
         populate(context, request, response);
         if (!isAuthorized(context, request)) {
-            showAuthorize( request, response);
+            showAuthorize(request, response);
         }
 
         try {
@@ -198,6 +200,70 @@ public class FitbitApiClientController {
         return "subscriptions";
     }
 
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public String showProfileForm(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        request.setAttribute("unitSystem", UnitSystem.getUnitSystem(Locale.US));
+
+        try {
+            UserInfo userInfo = context.getApiClientService().getClient().getUserInfo(context.getOurUser());
+            request.setAttribute("userInfo", userInfo);
+        } catch (FitbitAPIException e) {
+            request.setAttribute("errors", Collections.singletonList(e.getMessage()));
+            log.error(e);
+        }
+
+        return "profile";
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.POST)
+    protected String processProfileForm(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+
+        String fullName = request.getParameter("fullName");
+        String nickname = request.getParameter("nickname");
+        String gender = request.getParameter("gender");
+        String dateOfBirth = request.getParameter("dateOfBirth");
+        String height = request.getParameter("height");
+        String weight = request.getParameter("weight");
+        String timezone = request.getParameter("timezone");
+        List<String> messages = new ArrayList<String>();
+        try {
+            List<PostParameter> parameters = new ArrayList<PostParameter>();
+            parameters.add(new PostParameter("fullname", fullName));
+            parameters.add(new PostParameter("nickname", nickname));
+            parameters.add(new PostParameter("gender", gender));
+            parameters.add(new PostParameter("birthday", dateOfBirth));
+            parameters.add(new PostParameter("height", height));
+            parameters.add(new PostParameter("weight", weight));
+            parameters.add(new PostParameter("timezone", timezone));
+
+            UserInfo userInfo = context.getApiClientService().getClient().updateUserInfo(context.getOurUser(), parameters);
+            String message = "Profile is successfully updated";
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error : e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error during updating profile.", e);
+        }
+
+        request.setAttribute("messages", messages);
+        return showProfileForm(request, response);
+    }
+
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String showRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
@@ -217,7 +283,7 @@ public class FitbitApiClientController {
         String emailSubscribe = request.getParameter("emailSubscribe");
         log.info("Creating new account :: email = " + email + ", password = " + password + ", timezone = " + timezone +
                 ", emailSubscribe = " + (emailSubscribe != null));
-        List<String> messages  =  new ArrayList<String>();
+        List<String> messages = new ArrayList<String>();
         try {
             Account account = context.getApiClientService().getClient().registerAccount(email, password, timezone, emailSubscribe != null);
             String message = "Account registered :: encodedId = " + account.getEncodedId() + ", profileUpdateUuid = " + account.getProfileUpdateUuid();
@@ -225,7 +291,7 @@ public class FitbitApiClientController {
             log.info(message);
         } catch (FitbitAPIException e) {
             if (e.getApiErrors() != null) {
-                for (FitbitApiError error: e.getApiErrors()) {
+                for (FitbitApiError error : e.getApiErrors()) {
                     messages.add(error.getMessage());
                 }
             } else {
@@ -299,7 +365,7 @@ public class FitbitApiClientController {
         float pantothenicAcid = getParameterAsFloat(request, "pantothenicAcid", 0f);
         float vitaminD = getParameterAsFloat(request, "vitaminD", 0f);
 
-        NutritionalValuesEntry nutritionalValuesEntry =  new NutritionalValuesEntry();
+        NutritionalValuesEntry nutritionalValuesEntry = new NutritionalValuesEntry();
         nutritionalValuesEntry.setCalories(caloriesPerServingSize);
         nutritionalValuesEntry.setCaloriesFromFat(caloriesFromFat);
         nutritionalValuesEntry.setTotalFat(totalFat);
@@ -333,8 +399,8 @@ public class FitbitApiClientController {
         nutritionalValuesEntry.setVitaminD(vitaminD);
 
         log.info("Creating new food :: name = " + name + ", description = " + description + ", defaultFoodMeasurementUnitId = " + defaultFoodMeasurementUnitId +
-               ", defaultServingSize" + defaultServingSize + ", caloriesPerServingSize" + caloriesPerServingSize + ", formType = " + formType);
-        List<String> messages  =  new ArrayList<String>();
+                ", defaultServingSize" + defaultServingSize + ", caloriesPerServingSize" + caloriesPerServingSize + ", formType = " + formType);
+        List<String> messages = new ArrayList<String>();
         try {
             Food food = context.getApiClientService().getClient().createFood(context.getOurUser(), name, description,
                     defaultFoodMeasurementUnitId, defaultServingSize, formType, nutritionalValuesEntry);
@@ -343,7 +409,7 @@ public class FitbitApiClientController {
             log.info(message);
         } catch (FitbitAPIException e) {
             if (e.getApiErrors() != null) {
-                for (FitbitApiError error: e.getApiErrors()) {
+                for (FitbitApiError error : e.getApiErrors()) {
                     messages.add(error.getMessage());
                 }
             } else {
@@ -485,7 +551,7 @@ public class FitbitApiClientController {
             log.error(e);
         }
 
-        if(errors.size() > 0) {
+        if (errors.size() > 0) {
             request.setAttribute("errors", errors);
         }
 

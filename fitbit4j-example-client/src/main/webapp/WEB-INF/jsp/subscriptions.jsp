@@ -2,14 +2,6 @@
 <%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="layout" uri="http://fitbit.com/api/layout" %>
-<%--@elvariable id="activities" type="com.fitbit.api.common.model.activities.Activities"--%>
-<%--@elvariable id="foods" type="com.fitbit.api.common.model.foods.Foods"--%>
-<%--@elvariable id="showSubscriptions" type="java.lang.Boolean"--%>
-<%--@elvariable id="isAuthorized" type="java.lang.Boolean"--%>
-<%--@elvariable id="isSubscribed" type="java.lang.Boolean"--%>
-<%--@elvariable id="exampleBaseUrl" type="java.lang.String"--%>
-<%--@elvariable id="encodedUserId" type="java.lang.String"--%>
-<%--@elvariable id="userProfileURL" type="java.lang.String"--%>
 <layout:shell>
 
     <c:if test="${isAuthorized}">
