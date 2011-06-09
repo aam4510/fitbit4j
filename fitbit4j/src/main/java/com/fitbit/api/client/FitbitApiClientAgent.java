@@ -532,7 +532,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("vitaminD", nutritionalValuesEntry.getVitaminD()));
 
         // Example: POST /1/food/create.json
-        String url = APIUtil.contextualizeUrl(getApiBaseSecuredUrl(), getApiVersion(), "/foods/create", APIFormat.JSON);
+        String url = APIUtil.contextualizeUrl(getApiBaseSecuredUrl(), getApiVersion(), "/foods", APIFormat.JSON);
 
         Response response = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
 
