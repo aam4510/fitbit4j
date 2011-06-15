@@ -2,10 +2,20 @@ package com.fitbit.api.common.model.user;
 
 public class FriendStats {
     private UserInfo user;
-    private StatisticInfo summary = new StatisticInfo();
-    private StatisticInfo average = new StatisticInfo();
+    private StatisticInfo summary;
+    private StatisticInfo average;
 
-    public FriendStats(UserInfo user) {
+    public FriendStats(UserInfo user, StatisticInfo summary, StatisticInfo average) {
+        this.user = user;
+        this.summary = summary;
+        this.average = average;
+    }
+
+    public UserInfo getUser() {
+        return user;
+    }
+
+    public void setUser(UserInfo user) {
         this.user = user;
     }
 
@@ -13,12 +23,16 @@ public class FriendStats {
         return summary;
     }
 
+    public void setSummary(StatisticInfo summary) {
+        this.summary = summary;
+    }
+
     public StatisticInfo getAverage() {
         return average;
     }
 
-    public UserInfo getUser() {
-        return user;
+    public void setAverage(StatisticInfo average) {
+        this.average = average;
     }
 
     public static class StatisticInfo {
