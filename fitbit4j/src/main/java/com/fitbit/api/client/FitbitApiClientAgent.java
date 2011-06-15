@@ -2,11 +2,7 @@ package com.fitbit.api.client;
 
 import com.fitbit.api.APIUtil;
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.AccessToken;
-import com.fitbit.api.client.http.HttpClient;
-import com.fitbit.api.client.http.PostParameter;
-import com.fitbit.api.client.http.Response;
-import com.fitbit.api.client.http.TempCredentials;
+import com.fitbit.api.client.http.*;
 import com.fitbit.api.common.model.activities.Activities;
 import com.fitbit.api.common.model.activities.Activity;
 import com.fitbit.api.common.model.activities.ActivityReference;
@@ -18,6 +14,7 @@ import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.timeseries.Data;
 import com.fitbit.api.common.model.timeseries.TimePeriod;
 import com.fitbit.api.common.model.timeseries.TimeSeriesResourceType;
+import com.fitbit.api.common.model.units.VolumeUnits;
 import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
@@ -25,15 +22,12 @@ import com.fitbit.api.model.*;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 
 @SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext"})
@@ -924,6 +918,50 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    public WaterLog logWater(LocalUserDetail localUser, float amount, VolumeUnits volumeUnit, LocalDate date) throws FitbitAPIException {
+        List<PostParameter> params = new ArrayList<PostParameter>(2);
+        params.add(new PostParameter("amount", amount));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+        if (volumeUnit != null) {
+            params.add(new PostParameter("unit", volumeUnit.toString()));
+        }
+
+        return logWater(localUser, params);
+    }
+
+    public WaterLog logWater(LocalUserDetail localUser, float amount, LocalDate date) throws FitbitAPIException {
+        return logWater(localUser, amount, null, date);
+    }
+
+    public WaterLog logWater(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: POST /1/user/-/foods/log/water.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/foods/log/water", APIFormat.JSON);
+
+        Response res = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+        try {
+            return new WaterLog(res.asJSONObject().getJSONObject("waterLog"));
+        } catch (FitbitAPIException e) {
+            throw new FitbitAPIException("Error logging water: " + e, e);
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error logging water: " + e, e);
+        }
+    }
+
+    public Water getLoggedWater(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: GET /1/user/228TQ4/foods/log/water/date/2010-02-25.xml
+        String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, APICollectionType.water, date, APIFormat.JSON);
+
+        Response res = httpGet(url, true);
+        throwExceptionIfError(res);
+        try {
+            return new Water(res.asJSONObject());
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error retrieving water: " + e, e);
+        }
+    }
+
     /**
      * Get a user's profile
      *
@@ -984,7 +1022,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param password password
      * @param timezone timezone string
      * @return Account
-     * @throws com.fitbit.api.FitbitAPIException fitbit api Exception
+     * @throws com.fitbit.api.FitbitAPIException
+     *          fitbit api Exception
      */
     public Account registerAccount(String email, String password, String timezone) throws FitbitAPIException {
         return registerAccount(email, password, timezone, false);
@@ -1000,7 +1039,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param timezone       timezone string
      * @param emailSubscribe Subscribe to email newsletter
      * @return Account
-     * @throws com.fitbit.api.FitbitAPIException api exception
+     * @throws com.fitbit.api.FitbitAPIException
+     *          api exception
      */
     public Account registerAccount(String email, String password, String timezone, boolean emailSubscribe) throws FitbitAPIException {
 
@@ -1025,9 +1065,10 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Authorized user invites another user to be a friend by userId
      *
-     * @param localUser sender
+     * @param localUser     sender
      * @param invitedUserId invitee user's id
-     * @throws com.fitbit.api.FitbitAPIException api exception
+     * @throws com.fitbit.api.FitbitAPIException
+     *          api exception
      */
     public void inviteByUserId(LocalUserDetail localUser, String invitedUserId) throws FitbitAPIException {
         setAccessToken(localUser);
@@ -1044,9 +1085,10 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Authorized user invites another user to be a friend by email
      *
-     * @param localUser sender
+     * @param localUser        sender
      * @param invitedUserEmail invitee email
-     * @throws com.fitbit.api.FitbitAPIException api exception
+     * @throws com.fitbit.api.FitbitAPIException
+     *          api exception
      */
     public void inviteByEmail(LocalUserDetail localUser, String invitedUserEmail) throws FitbitAPIException {
         setAccessToken(localUser);
@@ -1063,9 +1105,10 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Authorized user accepts invitation from another user
      *
-     * @param localUser current user
+     * @param localUser  current user
      * @param fitbitUser inviter
-     * @throws com.fitbit.api.FitbitAPIException api exception
+     * @throws com.fitbit.api.FitbitAPIException
+     *          api exception
      */
     public void acceptInvitationFromUser(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
         setAccessToken(localUser);
@@ -1082,9 +1125,10 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Authorized user rejects invitation from another user
      *
-     * @param localUser current user
+     * @param localUser  current user
      * @param fitbitUser inviter
-     * @throws com.fitbit.api.FitbitAPIException api exception
+     * @throws com.fitbit.api.FitbitAPIException
+     *          api exception
      */
     public void rejectInvitationFromUser(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
         setAccessToken(localUser);
