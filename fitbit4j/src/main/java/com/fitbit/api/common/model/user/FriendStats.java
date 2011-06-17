@@ -36,40 +36,40 @@ public class FriendStats {
     }
 
     public static class StatisticInfo {
-        private String steps;
-        private String calories;
-        private String distance;
-        private String activeScore;
+        private int steps;
+        private int calories;
+        private double distance;
+        private int activeScore;
 
-        public String getSteps() {
+        public int getSteps() {
             return steps;
         }
 
-        public void setSteps(String steps) {
+        public void setSteps(int steps) {
             this.steps = steps;
         }
 
-        public String getCalories() {
+        public int getCalories() {
             return calories;
         }
 
-        public void setCalories(String calories) {
+        public void setCalories(int calories) {
             this.calories = calories;
         }
 
-        public String getDistance() {
+        public double getDistance() {
             return distance;
         }
 
-        public void setDistance(String distance) {
+        public void setDistance(double distance) {
             this.distance = distance;
         }
 
-        public String getActiveScore() {
+        public int getActiveScore() {
             return activeScore;
         }
 
-        public void setActiveScore(String activeScore) {
+        public void setActiveScore(int activeScore) {
             this.activeScore = activeScore;
         }
     }
