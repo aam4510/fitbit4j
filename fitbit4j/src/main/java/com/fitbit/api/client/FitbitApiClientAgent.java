@@ -15,6 +15,8 @@ import com.fitbit.api.common.model.body.Body;
 import com.fitbit.api.common.model.devices.Device;
 import com.fitbit.api.common.model.devices.DeviceType;
 import com.fitbit.api.common.model.foods.*;
+import com.fitbit.api.common.model.sleep.Sleep;
+import com.fitbit.api.common.model.sleep.SleepLog;
 import com.fitbit.api.common.model.timeseries.Data;
 import com.fitbit.api.common.model.timeseries.TimePeriod;
 import com.fitbit.api.common.model.timeseries.TimeSeriesResourceType;
@@ -23,6 +25,7 @@ import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
 import com.fitbit.api.model.*;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
 
@@ -1148,6 +1151,54 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         httpPost(url, params.toArray(new PostParameter[params.size()]), true);
     }
 
+    /*****  SLEEP CALLS START  *****/
+
+    /**
+     * Get a summary and list of a user's sleep log entries and sleep summary for a given day
+     *
+     * @param localUser  authorized user
+     * @param fitbitUser user to retrieve data from
+     * @param date       date to retrieve data dor
+     * @return sleep for a given day
+     * @throws com.fitbit.api.FitbitAPIException api exception
+     */
+    public Sleep getSleep(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
+        // Example: GET /1/user/228TQ4/sleep/date/2010-02-25.json
+        Response res = getCollectionResponseForDate(localUser, fitbitUser, APICollectionType.sleep, date);
+        throwExceptionIfError(res);
+        return Sleep.constructSleep(res);
+    }
+
+    public SleepLog logSleep(LocalUserDetail localUser, LocalDate date, LocalTime startTime, long duration) throws FitbitAPIException {
+        setAccessToken(localUser);
+
+        List<PostParameter> params = new ArrayList<PostParameter>();
+        params.add(new PostParameter("date", FitbitApiService.LOCAL_DATE_FORMATTER.print(date)));
+        params.add(new PostParameter("startTime", FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime)));
+        params.add(new PostParameter("duration", duration));
+
+        // POST /1/user/-/sleep.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/sleep", APIFormat.JSON);
+
+        Response response = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+
+        try {
+            return new SleepLog(response.asJSONObject().getJSONObject("sleep"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error parsing json response to SleepLog object: ", e);
+        }
+    }
+
+    public void deleteSleepLog(LocalUserDetail localUser, Long sleepLogId) throws FitbitAPIException {
+        setAccessToken(localUser);
+
+        // POST /1/user/-/sleep/345275.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/sleep/" + sleepLogId, APIFormat.JSON);
+
+        httpDelete(url, true);
+    }
+
+    /*****  SLEEP CALLS END  *****/
 
     /**
      * Get Rate Limiting Quota left for the IP
