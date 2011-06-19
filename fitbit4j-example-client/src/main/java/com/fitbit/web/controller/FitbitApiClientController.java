@@ -10,9 +10,12 @@ import com.fitbit.api.common.model.foods.Food;
 import com.fitbit.api.common.model.foods.FoodFormType;
 import com.fitbit.api.common.model.foods.Foods;
 import com.fitbit.api.common.model.foods.NutritionalValuesEntry;
+import com.fitbit.api.common.model.sleep.Sleep;
+import com.fitbit.api.common.model.sleep.SleepLog;
 import com.fitbit.api.common.model.units.UnitSystem;
 import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.common.model.user.UserInfo;
+import com.fitbit.api.common.service.FitbitApiService;
 import com.fitbit.api.model.APICollectionType;
 import com.fitbit.api.model.APIResourceCredentials;
 import com.fitbit.api.model.ApiRateLimitStatus;
@@ -515,6 +518,111 @@ public class FitbitApiClientController {
         return "invitations";
     }
 
+    @RequestMapping(value = "/sleep", method = RequestMethod.GET)
+    public String showSleepPage(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+        return "sleep";
+    }
+
+    @RequestMapping(value = "/getSleepLogs", method = RequestMethod.POST)
+    public String getSleepLogs(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        String userId = request.getParameter("userId");
+        String date = request.getParameter("date");
+
+        log.info("Get sleep by date :: userId = " + userId + ", date = " + date);
+        List<String> messages  =  new ArrayList<String>();
+        Sleep sleep = null;
+        try {
+            sleep = context.getApiClientService().getClient().getSleep(context.getOurUser(), new FitbitUser(userId), FitbitApiService.getValidLocalDateOrNull(date));
+            String message = "Sleep for userId =  '" + userId + "'  received.";
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            populateMessages(messages, e);
+            log.error("Error during getting sleep.", e);
+        }
+        request.setAttribute("messages", messages);
+        //return attributes back
+        request.setAttribute("sleep", sleep);
+        request.setAttribute("userId", userId);
+        request.setAttribute("date", date);
+
+        return "sleep";
+    }
+
+    @RequestMapping(value = "/logSleep", method = RequestMethod.POST)
+    public String logSleep(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        String logDate = request.getParameter("logDate");
+        String startTime = request.getParameter("startTime");
+        String duration = request.getParameter("duration");
+
+        log.info("Log sleep :: date =  "+  logDate +", startTime = " + startTime + ", duration = " + duration);
+        List<String> messages  =  new ArrayList<String>();
+        SleepLog sleepLog;
+        try {
+            sleepLog = context.getApiClientService().getClient().logSleep(
+                    context.getOurUser(),
+                    FitbitApiService.getValidLocalDateOrNull(logDate),
+                    FitbitApiService.getValidTimeOrNull(startTime),
+                    Long.valueOf(duration)
+            );
+            String message = "Log sleep added. logId =  " + sleepLog.getLogId() + ".";
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            populateMessages(messages, e);
+            log.error("Error during log sleep.", e);
+        }
+        request.setAttribute("messages", messages);
+        //return attributes back
+        request.setAttribute("logDate", logDate);
+        request.setAttribute("startTime", startTime);
+        request.setAttribute("duration", duration);
+        return "sleep";
+    }
+
+    @RequestMapping(value = "/deleteSleepLog", method = RequestMethod.POST)
+    public String deleteSleepLog(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        String sleepLogId = request.getParameter("sleepLogId");
+
+        log.info("Delete sleep log :: sleepLogId =  " +  sleepLogId);
+        List<String> messages  =  new ArrayList<String>();
+        try {
+            context.getApiClientService().getClient().deleteSleepLog(context.getOurUser(), Long.valueOf(sleepLogId));
+            String message = "Sleep log was deleted. sleepLogId = " + sleepLogId;
+            messages.add(message);
+            log.info(message);
+        } catch (FitbitAPIException e) {
+            populateMessages(messages, e);
+            log.error("Error during delete sleep log.", e);
+        }
+        request.setAttribute("messages", messages);
+        //return attributes back
+        request.setAttribute("sleepLogId", sleepLogId);
+        return "sleep";
+    }
 
     protected void showHome(RequestContext context, HttpServletRequest request, HttpServletResponse response) {
         List<String> errors = new ArrayList<String>();
@@ -659,5 +767,15 @@ public class FitbitApiClientController {
     private Float getParameterAsFloat(HttpServletRequest request, String parameterName, Float defaultValue) {
         String parameterValue = request.getParameter(parameterName);
         return StringUtils.isEmpty(parameterValue) ? defaultValue : Float.valueOf(parameterValue);
+    }
+
+    private void populateMessages(List<String> messages, FitbitAPIException e) {
+        if (e.getApiErrors() != null) {
+            for (FitbitApiError error: e.getApiErrors()) {
+                messages.add(error.getMessage());
+            }
+        } else {
+            messages.add(e.getMessage());
+        }
     }
 }

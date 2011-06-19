@@ -78,6 +78,7 @@
             <c:if test="${isAuthorized}">
                 <p><a href="${exampleBaseUrl}/createFoodForm">Create New Food</a></p>
                 <p><a href="${exampleBaseUrl}/invitations">Invitations</a></p>
+                <p><a href="${exampleBaseUrl}/sleep">Sleep</a></p>
             </c:if>
 
             <c:if test="${showAccountRegistrationForm}">
