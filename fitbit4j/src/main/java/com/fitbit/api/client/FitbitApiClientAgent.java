@@ -481,7 +481,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param defaultServingSize           Default size of a serving
      * @param caloriesPerServingSize       Calories in default serving
      * @param formType                     Form type
-     * @return created food object
+     * @return new food object
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Create-Food">Fitbit API: API-Create-Food</a>
      */
@@ -502,7 +502,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param defaultServingSize           Default size of a serving
      * @param formType                     Form type
      * @param nutritionalValuesEntry       Set of nutritional values for a default serving
-     * @return created food object
+     * @return new food object
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Create-Food">Fitbit API: API-Create-Food</a>
      */
@@ -1154,13 +1154,14 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /*****  SLEEP CALLS START  *****/
 
     /**
-     * Get a summary and list of a user's sleep log entries and sleep summary for a given day
+     * Get a summary and list of a user's sleep log entries for a given day
      *
      * @param localUser  authorized user
      * @param fitbitUser user to retrieve data from
-     * @param date       date to retrieve data dor
+     * @param date       date to retrieve data for
      * @return sleep for a given day
-     * @throws com.fitbit.api.FitbitAPIException api exception
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Sleep">Fitbit API: API-Get-Sleep</a>
      */
     public Sleep getSleep(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
         // Example: GET /1/user/228TQ4/sleep/date/2010-02-25.json
@@ -1169,6 +1170,17 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return Sleep.constructSleep(res);
     }
 
+    /**
+     * Get a summary and list of a user's sleep log entries for a given day
+     *
+     * @param localUser  authorized user
+     * @param date       Log entry date
+     * @param startTime       Start time
+     * @param duration       Duration
+     * @return new sleep log entry
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Sleep">Fitbit API: API-Log-Sleep</a>
+     */
     public SleepLog logSleep(LocalUserDetail localUser, LocalDate date, LocalTime startTime, long duration) throws FitbitAPIException {
         setAccessToken(localUser);
 
@@ -1189,6 +1201,14 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Delete user's sleep log entry with the given id
+     *
+     * @param localUser     authorized user
+     * @param sleepLogId Sleep log entry id
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Delete-Sleep-Log">Fitbit API: API-Delete-Sleep-Log</a>
+     */
     public void deleteSleepLog(LocalUserDetail localUser, Long sleepLogId) throws FitbitAPIException {
         setAccessToken(localUser);
 
