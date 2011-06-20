@@ -9,7 +9,7 @@ The Fitbit Java client uses a significant amount of code from Twitter4J, the Jav
 
 # Fitbit4J Required Open-Source Libraries #
 
-In addition to the standard Java runtime library, the Fitbit API Java Client library depends on the following third-party libraries: 
+In addition to the standard Java runtime library, the Fitbit API Java Client library depends on the following third-party libraries:
 
 Apache Commons Logging 1.1.1
 Joda Time Library 1.5
