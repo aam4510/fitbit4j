@@ -958,7 +958,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("amount", amount));
         params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
         if (volumeUnit != null) {
-            params.add(new PostParameter("unit", volumeUnit.toString()));
+            params.add(new PostParameter("unit", volumeUnit.getText()));
         }
 
         return logWater(localUser, params);
@@ -973,8 +973,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         // Example: POST /1/user/-/foods/log/water.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/foods/log/water", APIFormat.JSON);
 
-        Response res = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
         try {
+            Response res = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
             return new WaterLog(res.asJSONObject().getJSONObject("waterLog"));
         } catch (FitbitAPIException e) {
             throw new FitbitAPIException("Error logging water: " + e, e);
@@ -995,6 +995,18 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         } catch (JSONException e) {
             throw new FitbitAPIException("Error retrieving water: " + e, e);
         }
+    }
+
+    public void deleteWater(LocalUserDetail localUser, String logWaterId) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: DELETE /1/user/-/food/log/water/123.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/foods/log/water/" + logWaterId, APIFormat.JSON);
+        try {
+            httpDelete(url, true);
+        } catch (Exception e) {
+            throw new FitbitAPIException("Error deleting water: " + e, e);
+        }
+
     }
 
     /**
