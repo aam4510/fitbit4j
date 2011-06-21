@@ -55,6 +55,10 @@
 
         <div class="parag left normal">
                     <p><a href="${exampleBaseUrl}/profile">See and update profile</a></p>
+
+                    <p><a href="${exampleBaseUrl}/sleep">Sleep</a></p>
+
+                    <p><a href="${exampleBaseUrl}/water">Water</a></p>
             <c:choose>
                 <c:when test="${!isSubscribed}">
                     <p><a href="${exampleBaseUrl}/subscribe">Subscribe this application to your activity and food
@@ -78,7 +82,6 @@
             <c:if test="${isAuthorized}">
                 <p><a href="${exampleBaseUrl}/createFoodForm">Create New Food</a></p>
                 <p><a href="${exampleBaseUrl}/invitations">Invitations</a></p>
-                <p><a href="${exampleBaseUrl}/sleep">Sleep</a></p>
             </c:if>
 
             <c:if test="${showAccountRegistrationForm}">

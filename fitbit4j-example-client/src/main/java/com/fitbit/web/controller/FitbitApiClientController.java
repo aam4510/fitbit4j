@@ -6,10 +6,7 @@ import com.fitbit.api.client.*;
 import com.fitbit.api.client.http.PostParameter;
 import com.fitbit.api.client.service.FitbitAPIClientService;
 import com.fitbit.api.common.model.activities.Activities;
-import com.fitbit.api.common.model.foods.Food;
-import com.fitbit.api.common.model.foods.FoodFormType;
-import com.fitbit.api.common.model.foods.Foods;
-import com.fitbit.api.common.model.foods.NutritionalValuesEntry;
+import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.sleep.Sleep;
 import com.fitbit.api.common.model.sleep.SleepLog;
 import com.fitbit.api.common.model.units.UnitSystem;
@@ -267,6 +264,98 @@ public class FitbitApiClientController {
         return showProfileForm(request, response);
     }
 
+    @RequestMapping(value = "/water", method = RequestMethod.GET)
+    public String showLogWater(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        List<String> messages = new ArrayList<String>();
+        try {
+            Water loggedWater = context.getApiClientService().getClient().getLoggedWater(context.getOurUser(), FitbitUser.CURRENT_AUTHORIZED_USER, context.getParsedLocalDate());
+            request.setAttribute("water", loggedWater);
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error : e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error during logging water.", e);
+        }
+        request.setAttribute("messages", messages);
+
+        return "water";
+    }
+
+    @RequestMapping(value = "/water", method = RequestMethod.POST)
+    public String showLogWaterPost(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        List<String> messages = new ArrayList<String>();
+        try {
+            String amountString = request.getParameter("amount");
+            float amount = Float.parseFloat(amountString);
+            context.getApiClientService().getClient().logWater(context.getOurUser(), amount, context.getParsedLocalDate());
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error : e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error during logging water.", e);
+            request.setAttribute("messages", messages);
+            return "water";
+        } catch (NumberFormatException e) {
+            messages.add(e.getMessage());
+            log.error("Error during logging water.", e);
+            request.setAttribute("messages", messages);
+            return "water";
+        }
+
+        return "redirect:/app/water";
+    }
+
+    @RequestMapping(value = "/deleteWater", method = RequestMethod.GET)
+    public String deleteLogWater(HttpServletRequest request, HttpServletResponse response) {
+        RequestContext context = new RequestContext();
+        populate(context, request, response);
+
+        if (!isAuthorized(context, request)) {
+            showAuthorize(request, response);
+        }
+
+        List<String> messages = new ArrayList<String>();
+        try {
+            String logId = request.getParameter("id");
+            context.getApiClientService().getClient().deleteWater(context.getOurUser(), logId);
+        } catch (FitbitAPIException e) {
+            if (e.getApiErrors() != null) {
+                for (FitbitApiError error : e.getApiErrors()) {
+                    messages.add(error.getMessage());
+                }
+            } else {
+                messages.add(e.getMessage());
+            }
+            log.error("Error during deleting water.", e);
+            request.setAttribute("messages", messages);
+            return "water";
+        }
+
+        return "redirect:/app/water";
+    }
+
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String showRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
         RequestContext context = new RequestContext();
@@ -454,7 +543,7 @@ public class FitbitApiClientController {
         String invitedUserIdOrEMail = request.getParameter("invitedUserIdOrEMail");
 
         log.info("Sending invitation :: invitationMethod = " + invitationMethod + ", invitedUserIdOrEMail = " + invitedUserIdOrEMail);
-        List<String> messages  =  new ArrayList<String>();
+        List<String> messages = new ArrayList<String>();
         try {
             if (invitationMethod.equals("USER")) {
                 context.getApiClientService().getClient().inviteByUserId(context.getOurUser(), invitedUserIdOrEMail);
@@ -468,7 +557,7 @@ public class FitbitApiClientController {
             log.info(message);
         } catch (FitbitAPIException e) {
             if (e.getApiErrors() != null) {
-                for (FitbitApiError error: e.getApiErrors()) {
+                for (FitbitApiError error : e.getApiErrors()) {
                     messages.add(error.getMessage());
                 }
             } else {
@@ -495,7 +584,7 @@ public class FitbitApiClientController {
         String senderUserId = request.getParameter("senderUserId");
 
         log.info("Accept invitation :: senderUserId = " + senderUserId);
-        List<String> messages  =  new ArrayList<String>();
+        List<String> messages = new ArrayList<String>();
         try {
             context.getApiClientService().getClient().acceptInvitationFromUser(context.getOurUser(), new FitbitUser(senderUserId));
             String message = "Invitation from senderUserId =  " + senderUserId + " successfully accepted. Congratulations - you are friends.";
@@ -503,7 +592,7 @@ public class FitbitApiClientController {
             log.info(message);
         } catch (FitbitAPIException e) {
             if (e.getApiErrors() != null) {
-                for (FitbitApiError error: e.getApiErrors()) {
+                for (FitbitApiError error : e.getApiErrors()) {
                     messages.add(error.getMessage());
                 }
             } else {
@@ -540,7 +629,7 @@ public class FitbitApiClientController {
         String date = request.getParameter("date");
 
         log.info("Get sleep by date :: userId = " + userId + ", date = " + date);
-        List<String> messages  =  new ArrayList<String>();
+        List<String> messages = new ArrayList<String>();
         Sleep sleep = null;
         try {
             sleep = context.getApiClientService().getClient().getSleep(context.getOurUser(), new FitbitUser(userId), FitbitApiService.getValidLocalDateOrNull(date));
@@ -572,8 +661,8 @@ public class FitbitApiClientController {
         String startTime = request.getParameter("startTime");
         String duration = request.getParameter("duration");
 
-        log.info("Log sleep :: date =  "+  logDate +", startTime = " + startTime + ", duration = " + duration);
-        List<String> messages  =  new ArrayList<String>();
+        log.info("Log sleep :: date =  " + logDate + ", startTime = " + startTime + ", duration = " + duration);
+        List<String> messages = new ArrayList<String>();
         SleepLog sleepLog;
         try {
             sleepLog = context.getApiClientService().getClient().logSleep(
@@ -607,8 +696,8 @@ public class FitbitApiClientController {
 
         String sleepLogId = request.getParameter("sleepLogId");
 
-        log.info("Delete sleep log :: sleepLogId =  " +  sleepLogId);
-        List<String> messages  =  new ArrayList<String>();
+        log.info("Delete sleep log :: sleepLogId =  " + sleepLogId);
+        List<String> messages = new ArrayList<String>();
         try {
             context.getApiClientService().getClient().deleteSleepLog(context.getOurUser(), Long.valueOf(sleepLogId));
             String message = "Sleep log was deleted. sleepLogId = " + sleepLogId;
@@ -771,7 +860,7 @@ public class FitbitApiClientController {
 
     private void populateMessages(List<String> messages, FitbitAPIException e) {
         if (e.getApiErrors() != null) {
-            for (FitbitApiError error: e.getApiErrors()) {
+            for (FitbitApiError error : e.getApiErrors()) {
                 messages.add(error.getMessage());
             }
         } else {
