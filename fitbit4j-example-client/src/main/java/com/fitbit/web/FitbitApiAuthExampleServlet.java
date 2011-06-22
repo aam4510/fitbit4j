@@ -42,7 +42,7 @@ public class FitbitApiAuthExampleServlet extends HttpServlet {
             properties.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
             apiBaseUrl = properties.getProperty("apiBaseUrl");
             fitbitSiteBaseUrl = properties.getProperty("fitbitSiteBaseUrl");
-            exampleBaseUrl = properties.getProperty("exampleBaseUrl");
+            exampleBaseUrl = properties.getProperty("exampleBaseUrl").replace("/app", "");
             clientConsumerKey = properties.getProperty("clientConsumerKey");
             clientSecret = properties.getProperty("clientSecret");
         } catch (IOException e) {
