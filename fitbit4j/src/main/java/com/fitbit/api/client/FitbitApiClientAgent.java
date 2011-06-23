@@ -871,7 +871,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     public Response getCollectionResponseForDate(LocalUserDetail localUser, FitbitUser fitbitUser, APICollectionType type, LocalDate date) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example: GET /1/user/228TQ4/foods/log/date/2010-02-25.xml
+        // Example: GET /1/user/228TQ4/foods/log/date/2010-02-25.json
         String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, type, date, APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
@@ -880,7 +880,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
     public Response getCollectionResponseForProperty(LocalUserDetail localUser, FitbitUser fitbitUser, APICollectionType type, ApiCollectionProperty property) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example: GET /1/user/228TQ4/foods/log/recent.xml
+        // Example: GET /1/user/228TQ4/foods/log/recent.json
         String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, type, property, APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
@@ -945,7 +945,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      */
     public Body getBody(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example: GET /1/user/228TQ4/body/2010-02-25.xml
+        // Example: GET /1/user/228TQ4/body/2010-02-25.json
         String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, APICollectionType.body, date, APIFormat.JSON);
 
         Response res = httpGet(url, true);
@@ -970,7 +970,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      */
     public Body getBody(LocalUserDetail localUser, String date) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example: GET /1/user/-/body/date/2010-02-25.xml
+        // Example: GET /1/user/-/body/date/2010-02-25.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/body/date/" + date, APIFormat.JSON);
 
         Response res = httpGet(url, true);
@@ -1090,7 +1090,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      */
     public Water getLoggedWater(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
         setAccessToken(localUser);
-        // Example: GET /1/user/228TQ4/foods/log/water/date/2010-02-25.xml
+        // Example: GET /1/user/228TQ4/foods/log/water/date/2010-02-25.json
         String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, APICollectionType.water, date, APIFormat.JSON);
 
         Response res = httpGet(url, true);
