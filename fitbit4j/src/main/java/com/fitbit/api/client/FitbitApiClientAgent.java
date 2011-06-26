@@ -24,6 +24,7 @@ import com.fitbit.api.model.*;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -1091,7 +1092,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     public Water getLoggedWater(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
         setAccessToken(localUser);
         // Example: GET /1/user/228TQ4/foods/log/water/date/2010-02-25.json
-        String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, APICollectionType.water, date, APIFormat.JSON);
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/" + fitbitUser.getId() + "/foods/log/water/date/" + DateTimeFormat.forPattern("yyyy-MM-dd").print(date), APIFormat.JSON);
 
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
@@ -1245,7 +1246,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Invite another user to be a friend given his userId
      *
-     * @param localUser authorized user
+     * @param localUser     authorized user
      * @param invitedUserId invited user id
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -1266,7 +1267,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Invite another user to be a friend given his email
      *
-     * @param localUser authorized user
+     * @param localUser        authorized user
      * @param invitedUserEmail invited user's email
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -1287,7 +1288,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Accept friend invitation from another user
      *
-     * @param localUser authorized user
+     * @param localUser  authorized user
      * @param fitbitUser inviting user
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -1308,7 +1309,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Reject friend invitation from another user
      *
-     * @param localUser authorized user
+     * @param localUser  authorized user
      * @param fitbitUser inviting user
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -1565,6 +1566,35 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         setSubscriberId(subscriberId);
 
         httpDelete(url, true);
+    }
+
+    public List<ApiSubscription> getSubscriptions(LocalUserDetail localUser) throws FitbitAPIException {
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/apiSubscriptions", APIFormat.JSON);
+        return getSubscriptions(localUser, url);
+    }
+
+    public List<ApiSubscription> getSubscriptions(LocalUserDetail localUser, APICollectionType collectionType) throws FitbitAPIException {
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/" + collectionType +"/apiSubscriptions", APIFormat.JSON);
+        return getSubscriptions(localUser, url);
+    }
+
+    private List<ApiSubscription> getSubscriptions(LocalUserDetail localUser, String url) throws FitbitAPIException {
+        setAccessToken(localUser);
+
+        Response res = httpGet(url, true);
+        throwExceptionIfError(res);
+        try {
+            JSONObject jsonObject = res.asJSONObject();
+            JSONArray jsonArray = jsonObject.getJSONArray("apiSubscriptions");
+            List<ApiSubscription> result = new ArrayList<ApiSubscription>(jsonArray.length());
+            for(int i = 0; i < jsonArray.length(); i++) {
+                ApiSubscription apiSubscription = new ApiSubscription(jsonArray.getJSONObject(i));
+                result.add(apiSubscription);
+            }
+            return result;
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error retrieving water: " + e, e);
+        }
     }
 
     /**

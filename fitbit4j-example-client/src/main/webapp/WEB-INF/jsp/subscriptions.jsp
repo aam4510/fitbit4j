@@ -20,21 +20,18 @@
                 <th width="13%">Fitbit Owner Type</th>
                 <th width="13%">Fitbit Owner ID</th>
                 <th width="13%">Feed type</th>
-                <th width="19%">Last Notification</th>
-                <th width="19%">Notes</th>
+                <%--<th width="19%">Last Notification</th>--%>
+                <%--<th width="19%">Notes</th>--%>
             </tr>
             </thead>
+            <%--@elvariable id="subscriptions" type="java.util.List<com.fitbit.api.model.ApiSubscription>"--%>
             <c:forEach items="${subscriptions}" var="subscription">
-                <tr
-                        <c:if test="${actionBean.ourUser.userId == subscription.subscriptionDetail.subscriptionId}">
-                            style="background-color: lightyellow; font-weight: bold;"
-                        </c:if>
-                        >
-                    <td>${subscription.subscriptionDetail.subscriptionId}</td>
-                    <td>${subscription.subscriptionDetail.owner.resourceOwnerType}</td>
-                    <td>${subscription.subscriptionDetail.owner.id}</td>
-                    <td>${subscription.subscriptionDetail.collectionType}</td>
-                    <td>
+                <tr>
+                    <td>${subscription.subscriptionId}</td>
+                    <td>${subscription.ownerType}</td>
+                    <td>${subscription.ownerId}</td>
+                    <td>${subscription.collectionType}</td>
+<%--                    <td>
                         <c:choose>
                             <c:when test="${not empty subscription.lastUpdateNotificationDate}">
                                 <fmt:formatDate value="${subscription.lastUpdateNotificationDate}"
@@ -49,7 +46,7 @@
                         <c:if test="${not subscription.knownSubscription}">
                             Auto-created after receiving update notification.
                         </c:if>
-                    </td>
+                    </td>--%>
                 </tr>
             </c:forEach>
         </table>

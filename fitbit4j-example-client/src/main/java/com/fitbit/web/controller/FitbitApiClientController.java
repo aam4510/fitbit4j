@@ -13,14 +13,12 @@ import com.fitbit.api.common.model.units.UnitSystem;
 import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
-import com.fitbit.api.model.APICollectionType;
-import com.fitbit.api.model.APIResourceCredentials;
-import com.fitbit.api.model.ApiRateLimitStatus;
-import com.fitbit.api.model.FitbitUser;
+import com.fitbit.api.model.*;
 import com.fitbit.web.context.RequestContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Controller
-public class FitbitApiClientController {
+public class FitbitApiClientController implements InitializingBean {
     protected Log log = LogFactory.getLog(getClass());
 
     private static final int APP_USER_COOKIE_TTL = 60 * 60 * 24 * 7 * 4;
@@ -65,6 +63,20 @@ public class FitbitApiClientController {
 
     @Value("#{config['showAccountRegistrationForm']}")
     private Boolean showAccountRegistrationForm;
+
+    private FitbitAPIClientService<FitbitApiClientAgent> apiClientService;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        apiClientService = new FitbitAPIClientService<FitbitApiClientAgent>(
+                new FitbitApiClientAgent(getApiBaseUrl(), getFitbitSiteBaseUrl(), credentialsCache),
+                clientConsumerKey,
+                clientSecret,
+                credentialsCache,
+                entityCache,
+                subscriptionStore
+        );
+    }
 
     @RequestMapping("/")
     public String index(HttpServletRequest request, HttpServletResponse response) {
@@ -135,7 +147,11 @@ public class FitbitApiClientController {
         if (!isAuthorized(context, request)) {
             showAuthorize(request, response);
         }
-        request.setAttribute("subscriptions", subscriptionStore.getAllSubscriptions());
+        try {
+            request.setAttribute("subscriptions", apiClientService.getClient().getSubscriptions(context.getOurUser()));
+        } catch (FitbitAPIException e) {
+            log.error("Subscription error: " + e, e);
+        }
 
         return "subscriptions";
     }
@@ -163,7 +179,11 @@ public class FitbitApiClientController {
             request.setAttribute("errors", Collections.singletonList(e.getMessage()));
             log.error("Unable to subscribe: " + e, e);
         }
-        request.setAttribute("subscriptions", subscriptionStore.getAllSubscriptions());
+         try {
+            request.setAttribute("subscriptions", apiClientService.getClient().getSubscriptions(context.getOurUser()));
+        } catch (FitbitAPIException e) {
+            log.error("Subscription error: " + e, e);
+        }
 
         return "subscriptions";
     }
@@ -195,7 +215,11 @@ public class FitbitApiClientController {
             request.setAttribute("errors", Collections.singletonList(e.getMessage()));
             log.error("Unable to unsubscribe: " + e, e);
         }
-        request.setAttribute("subscriptions", subscriptionStore.getAllSubscriptions());
+         try {
+            request.setAttribute("subscriptions", apiClientService.getClient().getSubscriptions(context.getOurUser()));
+        } catch (FitbitAPIException e) {
+            log.error("Subscription error: " + e, e);
+        }
 
         return "subscriptions";
     }
@@ -207,6 +231,12 @@ public class FitbitApiClientController {
 
         if (!isAuthorized(context, request)) {
             showAuthorize(request, response);
+        }
+
+        try {
+            apiClientService.getClient().getSubscriptions(context.getOurUser(), APICollectionType.activities);
+        } catch (FitbitAPIException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         request.setAttribute("unitSystem", UnitSystem.getUnitSystem(Locale.US));
@@ -769,20 +799,23 @@ public class FitbitApiClientController {
     }
 
     public void populate(RequestContext context, HttpServletRequest request, HttpServletResponse response) {
-        context.setApiClientService(
-                new FitbitAPIClientService<FitbitApiClientAgent>(
-                        new FitbitApiClientAgent(getApiBaseUrl(), getFitbitSiteBaseUrl(), credentialsCache),
-                        clientConsumerKey,
-                        clientSecret,
-                        credentialsCache,
-                        entityCache,
-                        subscriptionStore
-                ));
+        context.setApiClientService(apiClientService);
 
         context.setOurUser(getOrMakeExampleAppUser(request, response));
+
+        APIResourceCredentials resourceCredentials = context.getApiClientService().getResourceCredentialsByUser(context.getOurUser());
+        boolean isAuthorized = resourceCredentials != null && resourceCredentials.isAuthorized();
         boolean isSubscribed = false;
-        if (null != context.getOurUser() && null != subscriptionStore.getBySubscriptionId(getActivitiesSubscriptionId(context))) {
-            isSubscribed = true;
+        if (isAuthorized) {
+            List<ApiSubscription> subscriptions = Collections.emptyList();
+            try {
+                subscriptions = apiClientService.getClient().getSubscriptions(context.getOurUser());
+            } catch (FitbitAPIException e) {
+                log.error("Subscription error: " + e, e);
+            }
+            if (null != context.getOurUser() && subscriptions.size() > 0) {
+                isSubscribed = true;
+            }
         }
         request.setAttribute("actionBean", context);
         request.setAttribute("isSubscribed", isSubscribed);
