@@ -13,9 +13,7 @@ import com.fitbit.api.common.model.devices.DeviceType;
 import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.sleep.Sleep;
 import com.fitbit.api.common.model.sleep.SleepLog;
-import com.fitbit.api.common.model.timeseries.Data;
-import com.fitbit.api.common.model.timeseries.TimePeriod;
-import com.fitbit.api.common.model.timeseries.TimeSeriesResourceType;
+import com.fitbit.api.common.model.timeseries.*;
 import com.fitbit.api.common.model.units.VolumeUnits;
 import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.common.model.user.UserInfo;
@@ -1608,7 +1606,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
      */
-    public Map<String, List<Data>> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, TimePeriod period) throws FitbitAPIException {
+    public List<Data> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, TimePeriod period) throws FitbitAPIException {
         return getTimeSeries(null, user, resourceType, startDate.toString(), period.getShortForm());
     }
 
@@ -1623,7 +1621,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
      */
-    public Map<String, List<Data>> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, String startDate, TimePeriod period) throws FitbitAPIException {
+    public List<Data> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, String startDate, TimePeriod period) throws FitbitAPIException {
         return getTimeSeries(null, user, resourceType, startDate, period.getShortForm());
     }
 
@@ -1638,7 +1636,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
      */
-    public Map<String, List<Data>> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, LocalDate endDate) throws FitbitAPIException {
+    public List<Data> getTimeSeries(FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, LocalDate endDate) throws FitbitAPIException {
         return getTimeSeries(null, user, resourceType, startDate.toString(), endDate.toString());
     }
 
@@ -1654,7 +1652,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
      */
-    public Map<String, List<Data>> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, TimePeriod period) throws FitbitAPIException {
+    public List<Data> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, TimePeriod period) throws FitbitAPIException {
         return getTimeSeries(localUser, user, resourceType, startDate.toString(), period.getShortForm());
     }
 
@@ -1670,7 +1668,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
      */
-    public Map<String, List<Data>> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String startDate, TimePeriod period) throws FitbitAPIException {
+    public List<Data> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String startDate, TimePeriod period) throws FitbitAPIException {
         return getTimeSeries(localUser, user, resourceType, startDate, period.getShortForm());
     }
 
@@ -1686,11 +1684,11 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Time-Series">Fitbit API: API-Get-Time-Series</a>
      */
-    public Map<String, List<Data>> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, LocalDate endDate) throws FitbitAPIException {
+    public List<Data> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate startDate, LocalDate endDate) throws FitbitAPIException {
         return getTimeSeries(localUser, user, resourceType, startDate.toString(), endDate.toString());
     }
 
-    public Map<String, List<Data>> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String startDate, String periodOrEndDate) throws FitbitAPIException {
+    public List<Data> getTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String startDate, String periodOrEndDate) throws FitbitAPIException {
         if (localUser != null) {
             setAccessToken(localUser);
         } else {
@@ -1700,7 +1698,34 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         String url = APIUtil.constructTimeSeriesUrl(getApiBaseUrl(), getApiVersion(), user, resourceType, startDate, periodOrEndDate, APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
-        return Data.constructDataListMap(res);
+        try {
+            return Data.jsonArrayToDataList(res.asJSONObject().getJSONArray(resourceType.getResourcePath().substring(1).replace('/', '-')));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error parsing json response to data list : ", e);
+        }
+    }
+
+    public IntradaySummary getIntraDayTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate date) throws FitbitAPIException {
+        return getIntraDayTimeSeries(localUser, user, resourceType, date.toString());
+    }
+
+    public IntradaySummary getIntraDayTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String date) throws FitbitAPIException {
+        if (localUser != null) {
+            setAccessToken(localUser);
+        } else {
+            clearAccessToken();
+        }
+
+        String url = APIUtil.constructTimeSeriesUrl(getApiBaseUrl(), getApiVersion(), user, resourceType, date, TimePeriod.INTRADAY.getShortForm(), APIFormat.JSON);
+        Response res = httpGet(url, true);
+        throwExceptionIfError(res);
+        try {
+            List<Data> dataList = Data.jsonArrayToDataList(res.asJSONObject().getJSONArray(resourceType.getResourcePath().substring(1).replace('/', '-')));
+            IntradayDataset intradayDataset = new IntradayDataset(res.asJSONObject().getJSONObject(resourceType.getResourcePath().substring(1).replace('/', '-') + "-intraday"));
+            return new IntradaySummary(dataList.get(0), intradayDataset);
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error parsing json response to IntradaySummary : ", e);
+        }
     }
 
     /* ********************************************************************* */
