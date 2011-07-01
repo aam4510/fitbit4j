@@ -2,6 +2,7 @@ package com.fitbit.api.common.model.activities;
 
 import com.fitbit.api.FitbitAPIException;
 import com.fitbit.api.client.http.Response;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,11 +13,11 @@ import java.util.List;
 public class LoggedActivityReference extends ActivityReference {
     int calories;
     int duration;
-    double distance;
+    Double distance;
     Integer steps;
 
     public LoggedActivityReference(long activityId, String name, String description, Long activityParentId, String activityParentName,
-                                   int calories, int duration, double distance, Integer steps) {
+                                   int calories, int duration, Double distance, Integer steps) {
         super(activityId, name, description, activityParentId, activityParentName);
         this.calories = calories;
         this.duration = duration;
@@ -28,8 +29,14 @@ public class LoggedActivityReference extends ActivityReference {
         super(json);
         calories = json.getInt("calories");
         duration = json.getInt("duration");
-        distance = json.getDouble("distance");
-        steps = json.getInt("steps");
+
+        if (StringUtils.isNotBlank(json.optString("distance"))) {
+            distance = json.getDouble("distance");
+        }
+
+        if (StringUtils.isNotBlank(json.optString("steps"))) {
+            steps = json.getInt("steps");
+        }
     }
 
     public static List<LoggedActivityReference> constructLoggedActivityReferenceList(Response res) throws FitbitAPIException {
@@ -57,7 +64,7 @@ public class LoggedActivityReference extends ActivityReference {
         return duration;
     }
 
-    public double getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
