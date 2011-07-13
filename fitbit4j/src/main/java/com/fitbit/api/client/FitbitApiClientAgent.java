@@ -25,7 +25,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
@@ -1288,12 +1287,12 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      */
     public ApiRateLimitStatus getClientAndUserRateLimitStatus(LocalUserDetail localUser) throws FitbitAPIException {
         setAccessToken(localUser);
-        return getRateLimitStatus(ApiQuotaType.CLIENT_AND_OWNER);
+        return getRateLimitStatus(ApiQuotaType.CLIENT_AND_VIEWER);
     }
 
     public ApiRateLimitStatus getRateLimitStatus(ApiQuotaType quotaType) throws FitbitAPIException {
         // Example: GET /1/account/clientAndUserRateLimitStatus.json OR /1/account/ipRateLimitStatus.json
-        String relativePath = "/account/" + (quotaType == ApiQuotaType.CLIENT_AND_OWNER ? "clientAndUser" : "ip") + "RateLimitStatus";
+        String relativePath = "/account/" + (quotaType == ApiQuotaType.CLIENT_AND_VIEWER ? "clientAndUser" : "ip") + "RateLimitStatus";
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), APIVersion.BETA_1, relativePath, APIFormat.JSON);
         return new ApiRateLimitStatus(httpGet(url, true));
     }
