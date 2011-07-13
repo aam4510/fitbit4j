@@ -4,7 +4,7 @@
     <groupId>com.fitbit</groupId>
     <artifactId>fitbit-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <name>Fitbit</name>
     <url>http://fitbit.com</url>
 
