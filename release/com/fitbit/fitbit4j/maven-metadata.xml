@@ -3,10 +3,11 @@
   <groupId>com.fitbit</groupId>
   <artifactId>fitbit4j</artifactId>
   <versioning>
-    <release>1.0.1</release>
+    <release>1.0.2</release>
     <versions>
       <version>1.0.1</version>
+      <version>1.0.2</version>
     </versions>
-    <lastUpdated>20110701052425</lastUpdated>
+    <lastUpdated>20110713123244</lastUpdated>
   </versioning>
 </metadata>
