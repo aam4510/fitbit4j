@@ -2,6 +2,7 @@ package com.fitbit.api.common.model.activities;
 
 import com.fitbit.api.FitbitAPIException;
 import com.fitbit.api.client.http.Response;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +29,12 @@ public class ActivityReference {
         activityId = json.getLong("activityId");
         name = json.getString("name");
         description = json.getString("description");
-        activityParentId = json.getLong("activityParentId");
-        activityParentName = json.getString("activityParentName");
+
+        if (StringUtils.isNotBlank(json.optString("activityParentId"))) {
+            activityParentId = json.getLong("activityParentId");
+        }
+
+        activityParentName = json.optString("activityParentName");
     }
 
     public static List<ActivityReference> constructActivityReferenceList(Response res) throws FitbitAPIException {

@@ -1,7 +1,7 @@
 package com.fitbit.api.client.subscription.storage;
 
 import com.fitbit.api.client.LocalSubscriptionDetail;
-import com.fitbit.api.client.subscription.model.Subscription;
+//import com.fitbit.api.client.subscription.model.Subscription;
 import com.fitbit.api.model.FitbitResourceOwner;
 import com.fitbit.api.model.SubscriptionDetail;
 
@@ -13,7 +13,7 @@ public final class SubscriptionAdaptor {
     private SubscriptionAdaptor() {
     }
 
-    public static LocalSubscriptionDetail toLocalSubscriptionDetails(Subscription subscription) {
+/*    public static LocalSubscriptionDetail toLocalSubscriptionDetails(Subscription subscription) {
         SubscriptionDetail subscriptionDetail = new SubscriptionDetail(subscription.getSubscriberId(), subscription.getSubscriptionId(), FitbitResourceOwner.fromIdentifier(subscription.getResourceOwnerType(), subscription.getResourceOwnerId()), subscription.getCollectionType());
         LocalSubscriptionDetail localSubscriptionDetail = new LocalSubscriptionDetail(subscriptionDetail, subscription.isKnownSubscription());
         localSubscriptionDetail.setLastUpdateNotificationDate(subscription.getLastUpdateNotificationDate());
@@ -38,5 +38,5 @@ public final class SubscriptionAdaptor {
         subscription.setKnownSubscription(localSubscriptionDetail.isKnownSubscription());
         subscription.setLastUpdateNotificationDate(localSubscriptionDetail.getLastUpdateNotificationDate());
         return subscription;
-    }
+    }*/
 }
