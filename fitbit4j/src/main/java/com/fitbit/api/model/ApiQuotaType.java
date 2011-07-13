@@ -3,7 +3,7 @@ package com.fitbit.api.model;
 public enum ApiQuotaType {
     ANY,
     CLIENT,
-    CLIENT_AND_OWNER,
+    CLIENT_AND_VIEWER,
     CLIENT_AND_IP,
     IP_ADDRESS,
     OWNER;
