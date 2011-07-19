@@ -77,11 +77,11 @@
     <distributionManagement>
         <repository>
             <id>gh-pages-release</id>
-	    <url>file:///${basedir}/../../../fitbit4j-pages/release/</url>
+	    <url>file:///${basedir}/../../../../fitbit4j-pages/release/</url>
         </repository>
         <snapshotRepository>
             <id>gh-pages-snapshot</id>
-	    <url>file:///${basedir}/../../../fitbit4j-pages/snapshot/</url>
+	    <url>file:///${basedir}/../../../../fitbit4j-pages/snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
 
