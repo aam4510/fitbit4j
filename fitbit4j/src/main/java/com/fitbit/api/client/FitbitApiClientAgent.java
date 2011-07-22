@@ -371,6 +371,82 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * Create log entry for an activity
      *
      * @param localUser authorized user
+     * @param activityId Activity id
+     * @param steps Start time
+     * @param durationMillis Duration
+     * @param distance Distance
+     * @param distanceUnit distance measurement unit;
+     * @param date Log entry date
+     * @param startTime Start time
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
+     */
+    public void logActivity(LocalUserDetail localUser,
+                            long activityId,
+                            int steps,
+                            int durationMillis,
+                            float distance,
+                            String distanceUnit,
+                            LocalDate date,
+                            LocalDate startTime) throws FitbitAPIException {
+
+        List<PostParameter> params = new ArrayList<PostParameter>(5);
+        params.add(new PostParameter("activityId", activityId));
+        params.add(new PostParameter("steps", steps));
+        params.add(new PostParameter("durationMillis", durationMillis));
+        params.add(new PostParameter("distance", distance));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+        params.add(new PostParameter("startTime", FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime)));
+        params.add(new PostParameter("distanceUnit", distanceUnit));
+
+        logActivity(localUser, params);
+    }
+
+    /**
+     * Create log entry for an activity
+     *
+     * @param localUser authorized user
+     * @param activityId Activity id
+     * @param steps Start time
+     * @param durationMillis Duration
+     * @param distance Distance
+     * @param distanceUnit distance measurement unit;
+     * @param date Log entry date
+     * @param startTime Start time
+     * @param manualCalories manual calories
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
+     */
+    public void logActivity(LocalUserDetail localUser,
+                            long activityId,
+                            int steps,
+                            int durationMillis,
+                            float distance,
+                            String distanceUnit,
+                            LocalDate date,
+                            LocalDate startTime,
+                            int manualCalories) throws FitbitAPIException {
+
+        List<PostParameter> params = new ArrayList<PostParameter>(5);
+        params.add(new PostParameter("activityId", activityId));
+        params.add(new PostParameter("steps", steps));
+        params.add(new PostParameter("durationMillis", durationMillis));
+        params.add(new PostParameter("distance", distance));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+        params.add(new PostParameter("startTime", FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime)));
+        params.add(new PostParameter("manualCalories", manualCalories));
+        params.add(new PostParameter("distanceUnit", distanceUnit));
+
+        logActivity(localUser, params);
+    }
+
+
+    /**
+     * Create log entry for an activity
+     *
+     * @param localUser authorized user
      * @param params POST request parameters
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -849,16 +925,17 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * Retrieve the attributes of user's Fitbit device
      *
      * @param localUser authorized user
+     * @param deviceId device id
      *
      * @return device
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Device">Fitbit API: API-Get-Device</a>
      */
-    public Device getDevice(LocalUserDetail localUser, String deviceId, DeviceType type) throws FitbitAPIException {
+    public Device getDevice(LocalUserDetail localUser, String deviceId) throws FitbitAPIException {
         setAccessToken(localUser);
         // Example: GET /1/user/-/devices/1234.json
-        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/devices/" + type.name().toLowerCase() + '/' + deviceId, APIFormat.JSON);
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/devices/" + deviceId, APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
         try {
