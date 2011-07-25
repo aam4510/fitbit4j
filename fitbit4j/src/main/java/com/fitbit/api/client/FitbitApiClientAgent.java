@@ -1473,31 +1473,52 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         httpDelete(url, true);
     }
 
-
     /**
-     * Get Rate Limiting Quota left for the IP
+     * Get Rate Limiting Quota left for the Client
      *
      * @return quota
      */
-    public ApiRateLimitStatus getIpRateLimitStatus() throws FitbitAPIException {
-        return getRateLimitStatus(ApiQuotaType.IP_ADDRESS);
+    public ApiRateLimitStatus getClientRateLimitStatus() throws FitbitAPIException {
+        return getRateLimitStatus(ApiQuotaType.CLIENT);
     }
 
     /**
-     * Get Rate Limiting Quota left for the Client+Owner
+     * Get Rate Limiting Quota left for the Client+Viewer
      *
      * @param localUser authorized user
      *
      * @return quota
      */
     public ApiRateLimitStatus getClientAndUserRateLimitStatus(LocalUserDetail localUser) throws FitbitAPIException {
+        return getClientAndViewerRateLimitStatus(localUser);
+    }
+
+    /**
+     * Get Rate Limiting Quota left for the Client+Viewer
+     *
+     * @param localUser authorized user
+     *
+     * @return quota
+     */
+    public ApiRateLimitStatus getClientAndViewerRateLimitStatus(LocalUserDetail localUser) throws FitbitAPIException {
         setAccessToken(localUser);
         return getRateLimitStatus(ApiQuotaType.CLIENT_AND_VIEWER);
     }
 
     public ApiRateLimitStatus getRateLimitStatus(ApiQuotaType quotaType) throws FitbitAPIException {
-        // Example: GET /1/account/clientAndUserRateLimitStatus.json OR /1/account/ipRateLimitStatus.json
-        String relativePath = "/account/" + (quotaType == ApiQuotaType.CLIENT_AND_VIEWER ? "clientAndUser" : "ip") + "RateLimitStatus";
+        // Example: GET /1/account/clientAndUserRateLimitStatus.json OR /1/account/clientRateLimitStatus.json
+        String quoteTypeToken = quotaType == ApiQuotaType.CLIENT_AND_VIEWER ? "" : "ip";
+        switch (quotaType) {
+            case CLIENT_AND_VIEWER:
+                quoteTypeToken = "clientAndUser";
+                break;
+            case CLIENT:
+                quoteTypeToken = "client";
+                break;
+            default:
+                throw new FitbitAPIException(String.format("Illegal quote type '%s'", quotaType));
+        }
+        String relativePath = "/account/" + quoteTypeToken + "RateLimitStatus";
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), APIVersion.BETA_1, relativePath, APIFormat.JSON);
         return new ApiRateLimitStatus(httpGet(url, true));
     }

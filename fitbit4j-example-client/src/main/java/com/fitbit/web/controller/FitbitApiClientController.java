@@ -771,8 +771,8 @@ public class FitbitApiClientController implements InitializingBean {
         }
 
         try {
-            ApiRateLimitStatus ipRateLimitStatus = context.getApiClientService().getIpRateLimitStatus();
-            request.setAttribute("ipRateLimitStatus", ipRateLimitStatus);
+            ApiRateLimitStatus clientRateLimitStatus = context.getApiClientService().getClientRateLimitStatus();
+            request.setAttribute("clientRateLimitStatus", clientRateLimitStatus);
         } catch (FitbitAPIException e) {
             errors.add(e.getMessage());
             log.error(e);

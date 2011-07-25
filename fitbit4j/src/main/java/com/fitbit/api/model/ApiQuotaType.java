@@ -1,12 +1,8 @@
 package com.fitbit.api.model;
 
 public enum ApiQuotaType {
-    ANY,
     CLIENT,
-    CLIENT_AND_VIEWER,
-    CLIENT_AND_IP,
-    IP_ADDRESS,
-    OWNER;
+    CLIENT_AND_VIEWER;
 
     private static int length = values().length;
 
