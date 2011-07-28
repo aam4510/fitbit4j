@@ -1489,28 +1489,17 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      *
      * @return quota
      */
-    public ApiRateLimitStatus getClientAndUserRateLimitStatus(LocalUserDetail localUser) throws FitbitAPIException {
-        return getClientAndViewerRateLimitStatus(localUser);
-    }
-
-    /**
-     * Get Rate Limiting Quota left for the Client+Viewer
-     *
-     * @param localUser authorized user
-     *
-     * @return quota
-     */
     public ApiRateLimitStatus getClientAndViewerRateLimitStatus(LocalUserDetail localUser) throws FitbitAPIException {
         setAccessToken(localUser);
         return getRateLimitStatus(ApiQuotaType.CLIENT_AND_VIEWER);
     }
 
     public ApiRateLimitStatus getRateLimitStatus(ApiQuotaType quotaType) throws FitbitAPIException {
-        // Example: GET /1/account/clientAndUserRateLimitStatus.json OR /1/account/clientRateLimitStatus.json
-        String quoteTypeToken = quotaType == ApiQuotaType.CLIENT_AND_VIEWER ? "" : "ip";
+        // Example: GET /1/account/clientAndViewerRateLimitStatus.json OR /1/account/clientRateLimitStatus.json
+        String quoteTypeToken;
         switch (quotaType) {
             case CLIENT_AND_VIEWER:
-                quoteTypeToken = "clientAndUser";
+                quoteTypeToken = "clientAndViewer";
                 break;
             case CLIENT:
                 quoteTypeToken = "client";

@@ -15,28 +15,28 @@
     <h3>This application's Fitbit API Rate Limit Status</h3>
 </div>
 <%--@elvariable id="clientRateLimitStatus" type="com.fitbit.api.model.ApiRateLimitStatus"--%>
-<%--@elvariable id="clientAndUserRateLimitStatus" type="com.fitbit.api.model.ApiRateLimitStatus"--%>
+<%--@elvariable id="clientAndViewerRateLimitStatus" type="com.fitbit.api.model.ApiRateLimitStatus"--%>
 <div class="parag left">
     <div class="columns">
         <div class="column">
             <div class="line">Rate Limit Type</div>
             <div class="line red">CLIENT:</div>
-            <div class="line red">CLIENT+OWNER</div>
+            <div class="line red">CLIENT+VIEWER</div>
         </div>
         <div class="column">
             <div class="line">Remaining Hits</div>
             <div class="line red">${clientRateLimitStatus.remainingHits}</div>
-            <div class="line red">${!empty clientAndUserRateLimitStatus ? clientAndUserRateLimitStatus.remainingHits : "N/A"}</div>
+            <div class="line red">${!empty clientAndViewerRateLimitStatus ? clientAndViewerRateLimitStatus.remainingHits : "N/A"}</div>
         </div>
         <div class="column">
             <div class="line">Hourly Limit</div>
             <div class="line red">${clientRateLimitStatus.hourlyLimit}</div>
-            <div class="line red">${!empty clientAndUserRateLimitStatus ? clientAndUserRateLimitStatus.hourlyLimit : "N/A"}</div>
+            <div class="line red">${!empty clientAndViewerRateLimitStatus ? clientAndViewerRateLimitStatus.hourlyLimit : "N/A"}</div>
         </div>
         <div class="column">
             <div class="line">Reset Time</div>
             <div class="line red">${clientRateLimitStatus.resetTime}</div>
-            <div class="line red">${!empty clientAndUserRateLimitStatus ? clientAndUserRateLimitStatus.resetTime : "N/A"}</div>
+            <div class="line red">${!empty clientAndViewerRateLimitStatus ? clientAndViewerRateLimitStatus.resetTime : "N/A"}</div>
         </div>
     </div>
 </div>
