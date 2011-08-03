@@ -3,8 +3,12 @@ package com.fitbit.api.common.model.user;
 import com.fitbit.api.common.service.FitbitApiService;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserInfo {
 
@@ -68,6 +72,16 @@ public class UserInfo {
         timezone = DateTimeZone.forID(userJson.getString("timezone"));
         offsetFromUTCMillis = userJson.optInt("offsetFromUTCMillis");
     }
+
+    public static List<UserInfo> friendJsonArrayToUserInfoList(JSONArray array) throws JSONException {
+        List<UserInfo> userInfoList = new ArrayList<UserInfo>(array.length());
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject jsonFriendObject = array.getJSONObject(i);
+            userInfoList.add(new UserInfo(jsonFriendObject));
+        }
+        return userInfoList;
+    }
+
 
     public String getEncodedId() {
         return encodedId;

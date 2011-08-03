@@ -9,13 +9,13 @@ import com.fitbit.api.common.model.activities.ActivityReference;
 import com.fitbit.api.common.model.activities.LoggedActivityReference;
 import com.fitbit.api.common.model.body.Body;
 import com.fitbit.api.common.model.devices.Device;
-import com.fitbit.api.common.model.devices.DeviceType;
 import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.sleep.Sleep;
 import com.fitbit.api.common.model.sleep.SleepLog;
 import com.fitbit.api.common.model.timeseries.*;
 import com.fitbit.api.common.model.units.VolumeUnits;
 import com.fitbit.api.common.model.user.Account;
+import com.fitbit.api.common.model.user.FriendStats;
 import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
 import com.fitbit.api.model.*;
@@ -1472,6 +1472,59 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
         httpDelete(url, true);
     }
+
+    public List<UserInfo> getFriends(LocalUserDetail localUser) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // GET /1/user/-/friends.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/friends", APIFormat.JSON);
+        return getFriends(url);
+    }
+
+    public List<UserInfo>  getFriends(FitbitUser owner) throws FitbitAPIException {
+        // GET /1/user/XXXX/friends.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/" + owner.getId() + "/friends", APIFormat.JSON);
+        return getFriends(url);
+     }
+
+    public List<UserInfo> getFriends(LocalUserDetail localUser, FitbitUser owner) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // GET /1/user/-/friends.json
+        // GET /1/user/XXX/friends.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/" + owner.getId() + "/friends", APIFormat.JSON);
+        return getFriends(url);
+    }
+
+    private List<UserInfo> getFriends(String url) throws FitbitAPIException {
+        Response response = httpGet(url, true);
+        throwExceptionIfError(response);
+
+        try {
+            return UserInfo.friendJsonArrayToUserInfoList(response.asJSONObject().getJSONArray("friends"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error parsing json response to list of UserInfo : ", e);
+        }
+    }
+
+    /**
+     * Gets a leaderboard of user's friends progress
+     * @param localUser authorized user
+     * @param timePeriod time period (currently support only  SEVEN_DAYS and THIRTY_DAYS)
+     * @return list of friend's stats
+     * @throws FitbitAPIException Fitbit API Exception
+     */
+    public List<FriendStats> getFriendsLeaderboard(LocalUserDetail localUser, TimePeriod timePeriod) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // GET /1/user/-/friends/leaders.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/friends/leaders/" + timePeriod.getShortForm(), APIFormat.JSON);
+        Response response = httpGet(url, true);
+        throwExceptionIfError(response);
+        try {
+            return FriendStats.jsonArrayToFriendStatsList(response.asJSONObject().getJSONArray("friends"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error parsing json response to list of FriendStats : ", e);
+        }
+    }
+
 
     /**
      * Get Rate Limiting Quota left for the Client
