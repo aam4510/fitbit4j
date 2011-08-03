@@ -46,36 +46,36 @@ public class NutritionalValuesEntry {
 
     public NutritionalValuesEntry(JSONObject json) throws JSONException {
         this.calories = json.getInt("calories");
-        this.caloriesFromFat = json.getInt("caloriesFromFat");
-        this.totalFat = (float) json.getDouble("totalFat");
-        this.saturatedFat = (float) json.getDouble("saturatedFat");
-        this.transFat = (float) json.getDouble("transFat");
-        this.cholesterol = (float) json.getDouble("cholesterol");
-        this.sodium = (float) json.getDouble("sodium");
-        this.totalCarbohydrate = (float) json.getDouble("totalCarbohydrate");
-        this.dietaryFiber = (float) json.getDouble("dietaryFiber");
-        this.sugars = (float) json.getDouble("sugars");
-        this.protein = (float) json.getDouble("protein");
-        this.vitaminA = (float) json.getDouble("vitaminA");
-        this.vitaminC = (float) json.getDouble("vitaminC");
-        this.iron = (float) json.getDouble("iron");
-        this.calcium = (float) json.getDouble("calcium");
-        this.potassium = (float) json.getDouble("potassium");
-        this.thiamin = (float) json.getDouble("thiamin");
-        this.riboflavin = (float) json.getDouble("riboflavin");
-        this.niacin = (float) json.getDouble("niacin");
-        this.vitaminD = (float) json.getDouble("vitaminD");
-        this.vitaminE = (float) json.getDouble("vitaminE");
-        this.vitaminB6 = (float) json.getDouble("vitaminB6");
-        this.folicAcid = (float) json.getDouble("folicAcid");
-        this.vitaminB12 = (float) json.getDouble("vitaminB12");
-        this.phosphorus = (float) json.getDouble("phosphorus");
-        this.iodine = (float) json.getDouble("iodine");
-        this.magnesium = (float) json.getDouble("magnesium");
-        this.zinc = (float) json.getDouble("zinc");
-        this.copper = (float) json.getDouble("copper");
-        this.biotin = (float) json.getDouble("biotin");
-        this.pantothenicAcid = (float) json.getDouble("pantothenicAcid");
+        this.caloriesFromFat = json.optInt("caloriesFromFat");
+        this.totalFat = (float) json.optDouble("totalFat");
+        this.saturatedFat = (float) json.optDouble("saturatedFat");
+        this.transFat = (float) json.optDouble("transFat");
+        this.cholesterol = (float) json.optDouble("cholesterol");
+        this.sodium = (float) json.optDouble("sodium");
+        this.totalCarbohydrate = (float) json.optDouble("totalCarbohydrate");
+        this.dietaryFiber = (float) json.optDouble("dietaryFiber");
+        this.sugars = (float) json.optDouble("sugars");
+        this.protein = (float) json.optDouble("protein");
+        this.vitaminA = (float) json.optDouble("vitaminA");
+        this.vitaminC = (float) json.optDouble("vitaminC");
+        this.iron = (float) json.optDouble("iron");
+        this.calcium = (float) json.optDouble("calcium");
+        this.potassium = (float) json.optDouble("potassium");
+        this.thiamin = (float) json.optDouble("thiamin");
+        this.riboflavin = (float) json.optDouble("riboflavin");
+        this.niacin = (float) json.optDouble("niacin");
+        this.vitaminD = (float) json.optDouble("vitaminD");
+        this.vitaminE = (float) json.optDouble("vitaminE");
+        this.vitaminB6 = (float) json.optDouble("vitaminB6");
+        this.folicAcid = (float) json.optDouble("folicAcid");
+        this.vitaminB12 = (float) json.optDouble("vitaminB12");
+        this.phosphorus = (float) json.optDouble("phosphorus");
+        this.iodine = (float) json.optDouble("iodine");
+        this.magnesium = (float) json.optDouble("magnesium");
+        this.zinc = (float) json.optDouble("zinc");
+        this.copper = (float) json.optDouble("copper");
+        this.biotin = (float) json.optDouble("biotin");
+        this.pantothenicAcid = (float) json.optDouble("pantothenicAcid");
     }
 
     public int getCalories() {
