@@ -762,8 +762,8 @@ public class FitbitApiClientController implements InitializingBean {
                 log.error(e);
             }
             try {
-                ApiRateLimitStatus clientAndUserRateLimitStatus = context.getApiClientService().getClientAndUserRateLimitStatus(context.getOurUser());
-                request.setAttribute("clientAndUserRateLimitStatus", clientAndUserRateLimitStatus);
+                ApiRateLimitStatus clientAndViewerRateLimitStatus = context.getApiClientService().getClientAndViewerRateLimitStatus(context.getOurUser());
+                request.setAttribute("clientAndViewerRateLimitStatus", clientAndViewerRateLimitStatus);
             } catch (FitbitAPIException e) {
                 errors.add(e.getMessage());
                 log.error(e);
@@ -771,8 +771,8 @@ public class FitbitApiClientController implements InitializingBean {
         }
 
         try {
-            ApiRateLimitStatus ipRateLimitStatus = context.getApiClientService().getIpRateLimitStatus();
-            request.setAttribute("ipRateLimitStatus", ipRateLimitStatus);
+            ApiRateLimitStatus clientRateLimitStatus = context.getApiClientService().getClientRateLimitStatus();
+            request.setAttribute("clientRateLimitStatus", clientRateLimitStatus);
         } catch (FitbitAPIException e) {
             errors.add(e.getMessage());
             log.error(e);

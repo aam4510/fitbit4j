@@ -156,12 +156,12 @@ public class FitbitAPIClientService<C extends FitbitApiClientAgent> {
         }
     }
 
-    public ApiRateLimitStatus getIpRateLimitStatus() throws FitbitAPIException {
-        return client.getIpRateLimitStatus();
+    public ApiRateLimitStatus getClientRateLimitStatus() throws FitbitAPIException {
+        return client.getClientRateLimitStatus();
     }
 
-    public ApiRateLimitStatus getClientAndUserRateLimitStatus(LocalUserDetail user) throws FitbitAPIException {
-        return client.getClientAndUserRateLimitStatus(user);
+    public ApiRateLimitStatus getClientAndViewerRateLimitStatus(LocalUserDetail user) throws FitbitAPIException {
+        return client.getClientAndViewerRateLimitStatus(user);
     }
 
     /**

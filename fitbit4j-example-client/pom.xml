@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.fitbit</groupId>
         <artifactId>fitbit-parent</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.5-SNAPSHOT</version>
     </parent>
     <artifactId>fitbit-example-client</artifactId>
     <packaging>war</packaging>
@@ -141,11 +140,11 @@
     <distributionManagement>
         <repository>
             <id>gh-pages-release</id>
-            <url>file:///${basedir}/../../fitbit4j-pages/release/</url>
+	    <url>file:///${basedir}/../../../../fitbit4j-pages/release/</url>
         </repository>
         <snapshotRepository>
             <id>gh-pages-snapshot</id>
-            <url>file:///${basedir}/../../fitbit4j-pages/snapshot/</url>
+	    <url>file:///${basedir}/../../../../fitbit4j-pages/snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
 

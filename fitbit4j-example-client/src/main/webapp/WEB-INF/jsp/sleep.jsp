@@ -78,6 +78,7 @@
                 <div>Minutes to fall asleep: ${sleepLog.minutesToFallAsleep}</div>
                 <div>Minutes asleep: ${sleepLog.minutesAsleep}</div>
                 <div>Minutes awake: ${sleepLog.minutesAwake}</div>
+                <div>Minutes after wakeup: ${sleepLog.minutesAfterWakeup}</div>
                 <div>Awakenings count: ${sleepLog.awakeningsCount}</div>
                 <div>Time in bed: ${sleepLog.timeInBed}</div>
             </c:forEach>

@@ -11,11 +11,12 @@ public class SleepLog {
     int minutesToFallAsleep;
     int minutesAsleep;
     int minutesAwake;
+    int minutesAfterWakeup;
     int awakeningsCount;
     int timeInBed;
 
     public SleepLog(long logId, String startTime, boolean mainSleep, long duration, int minutesToFallAsleep,
-                    int minutesAsleep, int minutesAwake, int awakeningsCount, int timeInBed) {
+                    int minutesAsleep, int minutesAwake, int minutesAfterWakeup, int awakeningsCount, int timeInBed) {
         this.logId = logId;
         this.startTime = startTime;
         isMainSleep = mainSleep;
@@ -23,6 +24,7 @@ public class SleepLog {
         this.minutesToFallAsleep = minutesToFallAsleep;
         this.minutesAsleep = minutesAsleep;
         this.minutesAwake = minutesAwake;
+        this.minutesAfterWakeup = minutesAfterWakeup;
         this.awakeningsCount = awakeningsCount;
         this.timeInBed = timeInBed;
     }
@@ -35,6 +37,7 @@ public class SleepLog {
         minutesToFallAsleep = json.getInt("minutesToFallAsleep");
         minutesAsleep = json.getInt("minutesAsleep");
         minutesAwake = json.getInt("minutesAwake");
+        minutesAfterWakeup = json.getInt("minutesAfterWakeup");
         awakeningsCount = json.getInt("awakeningsCount");
         timeInBed = json.getInt("timeInBed");
     }
@@ -65,6 +68,10 @@ public class SleepLog {
 
     public int getMinutesAwake() {
         return minutesAwake;
+    }
+
+    public int getMinutesAfterWakeup() {
+        return minutesAfterWakeup;
     }
 
     public int getAwakeningsCount() {
