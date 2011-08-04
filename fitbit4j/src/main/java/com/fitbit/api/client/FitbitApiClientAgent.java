@@ -1321,7 +1321,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Invite another user to be a friend given his userId
      *
-     * @param localUser     authorized user
+     * @param localUser authorized user
      * @param invitedUserId invited user id
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -1342,7 +1342,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Invite another user to be a friend given his email
      *
-     * @param localUser        authorized user
+     * @param localUser authorized user
      * @param invitedUserEmail invited user's email
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -1363,7 +1363,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Accept friend invitation from another user
      *
-     * @param localUser  authorized user
+     * @param localUser authorized user
      * @param fitbitUser inviting user
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -1384,7 +1384,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     /**
      * Reject friend invitation from another user
      *
-     * @param localUser  authorized user
+     * @param localUser authorized user
      * @param fitbitUser inviting user
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
@@ -1461,6 +1461,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param localUser authorized user
      * @param sleepLogId Sleep log entry id
      *
+     * @return list of friends
+     *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Delete-Sleep-Log">Fitbit API: API-Delete-Sleep-Log</a>
      */
@@ -1473,6 +1475,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         httpDelete(url, true);
     }
 
+    /**
+     * Get a list of user's friends
+     *
+     * @param localUser authorized user
+     *
+     * @return list of user's friends
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Friends">Fitbit API: API-Get-Friends</a>
+     */
     public List<UserInfo> getFriends(LocalUserDetail localUser) throws FitbitAPIException {
         setAccessToken(localUser);
         // GET /1/user/-/friends.json
@@ -1480,12 +1492,33 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return getFriends(url);
     }
 
-    public List<UserInfo>  getFriends(FitbitUser owner) throws FitbitAPIException {
+    /**
+     * Get a list of user's friends
+     *
+     * @param fitbitUser user to retrieve data from
+     *
+     * @return list of user's friends
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Friends">Fitbit API: API-Get-Friends</a>
+     */
+    public List<UserInfo> getFriends(FitbitUser owner) throws FitbitAPIException {
         // GET /1/user/XXXX/friends.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/" + owner.getId() + "/friends", APIFormat.JSON);
         return getFriends(url);
-     }
+    }
 
+    /**
+     * Get a list of user's friends
+     *
+     * @param localUser authorized user
+     * @param fitbitUser user to retrieve data from
+     *
+     * @return list of user's friends
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Friends">Fitbit API: API-Get-Friends</a>
+     */
     public List<UserInfo> getFriends(LocalUserDetail localUser, FitbitUser owner) throws FitbitAPIException {
         setAccessToken(localUser);
         // GET /1/user/-/friends.json
@@ -1494,6 +1527,16 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return getFriends(url);
     }
 
+    /**
+     * Get a list of user's friends
+     *
+     * @param url full url for the requested resource in the API in json format
+     *
+     * @return list of user's friends
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Friends">Fitbit API: API-Get-Friends</a>
+     */
     private List<UserInfo> getFriends(String url) throws FitbitAPIException {
         Response response = httpGet(url, true);
         throwExceptionIfError(response);
@@ -1506,11 +1549,15 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
-     * Gets a leaderboard of user's friends progress
+     * Get a leaderboard of user's friends progress
+     *
      * @param localUser authorized user
-     * @param timePeriod time period (currently support only  SEVEN_DAYS and THIRTY_DAYS)
-     * @return list of friend's stats
+     * @param timePeriod leaderboard time period (currently support only TimePeriod.SEVEN_DAYS and TimePeriod.THIRTY_DAYS)
+     *
+     * @return list of user friend's stats
+     *
      * @throws FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Friends-Leaderboard">Fitbit API: API-Get-Friends-Leaderboard</a>
      */
     public List<FriendStats> getFriendsLeaderboard(LocalUserDetail localUser, TimePeriod timePeriod) throws FitbitAPIException {
         setAccessToken(localUser);
@@ -1530,6 +1577,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * Get Rate Limiting Quota left for the Client
      *
      * @return quota
+     *
+     * @throws FitbitAPIException Fitbit API Exception
      */
     public ApiRateLimitStatus getClientRateLimitStatus() throws FitbitAPIException {
         return getRateLimitStatus(ApiQuotaType.CLIENT);
@@ -1541,6 +1590,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param localUser authorized user
      *
      * @return quota
+     *
+     * @throws FitbitAPIException Fitbit API Exception
      */
     public ApiRateLimitStatus getClientAndViewerRateLimitStatus(LocalUserDetail localUser) throws FitbitAPIException {
         setAccessToken(localUser);
@@ -1712,7 +1763,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     public List<ApiSubscription> getSubscriptions(LocalUserDetail localUser, APICollectionType collectionType) throws FitbitAPIException {
-        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/" + collectionType +"/apiSubscriptions", APIFormat.JSON);
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/" + collectionType + "/apiSubscriptions", APIFormat.JSON);
         return getSubscriptions(localUser, url);
     }
 
@@ -1725,7 +1776,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
             JSONObject jsonObject = res.asJSONObject();
             JSONArray jsonArray = jsonObject.getJSONArray("apiSubscriptions");
             List<ApiSubscription> result = new ArrayList<ApiSubscription>(jsonArray.length());
-            for(int i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 ApiSubscription apiSubscription = new ApiSubscription(jsonArray.getJSONObject(i));
                 result.add(apiSubscription);
             }
