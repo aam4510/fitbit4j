@@ -9,21 +9,21 @@ import java.util.List;
 
 public class IntradayData {
 
-    private String dateTime;
+    private String time;
     private double value;
 
-    public IntradayData(String dateTime, double value) {
-        this.dateTime = dateTime;
+    public IntradayData(String time, double value) {
+        this.time = time;
         this.value = value;
     }
 
     public IntradayData(JSONObject json) throws JSONException {
         value = json.getDouble("value");
-        dateTime = json.getString("dateTime");
+        time = json.getString("time");
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public String getTime() {
+        return time;
     }
 
     public double getValue() {
