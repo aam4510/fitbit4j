@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 public class ActivitiesSummary {
     private int caloriesOut;
+    private int activityCalories;
     private int activeScore;
     private int steps;
     private int sedentaryMinutes;
@@ -22,6 +23,7 @@ public class ActivitiesSummary {
     
     public ActivitiesSummary(JSONObject json) throws JSONException {
         caloriesOut = json.getInt("caloriesOut");
+        activityCalories = json.getInt("activityCalories");
         activeScore = json.getInt("activeScore");
         steps = json.getInt("steps");
         sedentaryMinutes = json.getInt("sedentaryMinutes");
@@ -46,6 +48,14 @@ public class ActivitiesSummary {
 
     public void setCaloriesOut(int caloriesOut) {
         this.caloriesOut = caloriesOut;
+    }
+
+    public int getActivityCalories() {
+        return activityCalories;
+    }
+
+    public void setActivityCalories(int activityCalories) {
+        this.activityCalories = activityCalories;
     }
 
     public int getActiveScore() {

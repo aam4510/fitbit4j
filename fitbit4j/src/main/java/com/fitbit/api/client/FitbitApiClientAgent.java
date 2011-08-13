@@ -3,10 +3,7 @@ package com.fitbit.api.client;
 import com.fitbit.api.APIUtil;
 import com.fitbit.api.FitbitAPIException;
 import com.fitbit.api.client.http.*;
-import com.fitbit.api.common.model.activities.Activities;
-import com.fitbit.api.common.model.activities.Activity;
-import com.fitbit.api.common.model.activities.ActivityReference;
-import com.fitbit.api.common.model.activities.LoggedActivityReference;
+import com.fitbit.api.common.model.activities.*;
 import com.fitbit.api.common.model.body.Body;
 import com.fitbit.api.common.model.devices.Device;
 import com.fitbit.api.common.model.foods.*;
@@ -348,7 +345,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
      */
-    public void logActivity(LocalUserDetail localUser,
+    public ActivityLog logActivity(LocalUserDetail localUser,
                             long activityId,
                             int steps,
                             int durationMillis,
@@ -364,7 +361,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
         params.add(new PostParameter("startTime", FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime)));
 
-        logActivity(localUser, params);
+        return logActivity(localUser, params);
     }
 
     /**
@@ -382,7 +379,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
      */
-    public void logActivity(LocalUserDetail localUser,
+    public ActivityLog logActivity(LocalUserDetail localUser,
                             long activityId,
                             int steps,
                             int durationMillis,
@@ -400,7 +397,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("startTime", FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime)));
         params.add(new PostParameter("distanceUnit", distanceUnit));
 
-        logActivity(localUser, params);
+        return logActivity(localUser, params);
     }
 
     /**
@@ -419,7 +416,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
      */
-    public void logActivity(LocalUserDetail localUser,
+    public ActivityLog logActivity(LocalUserDetail localUser,
                             long activityId,
                             int steps,
                             int durationMillis,
@@ -439,7 +436,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("manualCalories", manualCalories));
         params.add(new PostParameter("distanceUnit", distanceUnit));
 
-        logActivity(localUser, params);
+        return logActivity(localUser, params);
     }
 
 
@@ -452,7 +449,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
      */
-    public void logActivity(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
+    public ActivityLog logActivity(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
         setAccessToken(localUser);
         // Example: POST /1/user/-/activities.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/activities", APIFormat.JSON);
@@ -466,6 +463,11 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
         if (res.getStatusCode() != HttpServletResponse.SC_CREATED) {
             throw new FitbitAPIException("Error creating activity: " + res.getStatusCode());
+        }
+        try {
+            return new ActivityLog(res.asJSONObject().getJSONObject("activityLog"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error creating activity: " + e, e);
         }
     }
 
@@ -787,7 +789,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Food">Fitbit API: API-Log-Food</a>
      */
-    public void logFood(LocalUserDetail localUser, long foodId, int mealTypeId, int unitId, String amount, LocalDate date) throws FitbitAPIException {
+    public FoodLog logFood(LocalUserDetail localUser, long foodId, int mealTypeId, int unitId, String amount, LocalDate date) throws FitbitAPIException {
         List<PostParameter> params = new ArrayList<PostParameter>(5);
         params.add(new PostParameter("foodId", String.valueOf(foodId)));
         params.add(new PostParameter("mealTypeId", mealTypeId));
@@ -795,7 +797,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("amount", amount));
         params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
 
-        logFood(localUser, params);
+        return logFood(localUser, params);
     }
 
     /**
@@ -807,13 +809,23 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Food">Fitbit API: API-Log-Food</a>
      */
-    public void logFood(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
+    public FoodLog logFood(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
         setAccessToken(localUser);
         // Example: POST /1/user/-/food/log.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/foods/log", APIFormat.JSON);
+
+        Response res;
         try {
-            httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+            res = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
         } catch (Exception e) {
+            throw new FitbitAPIException("Error creating food log entry: " + e, e);
+        }
+        if (res.getStatusCode() != HttpServletResponse.SC_CREATED) {
+            throw new FitbitAPIException("Error creating activity: " + res.getStatusCode());
+        }
+        try {
+            return new FoodLog(res.asJSONObject().getJSONObject("foodLog"));
+        } catch (JSONException e) {
             throw new FitbitAPIException("Error creating food log entry: " + e, e);
         }
     }
