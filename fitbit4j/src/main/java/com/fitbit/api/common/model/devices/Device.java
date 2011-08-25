@@ -21,10 +21,19 @@ public class Device {
      */
 	private final String battery;
 
+    private String lastSyncTime;
+
     public Device(long id, DeviceType type, String battery) {
         this.id = id;
         this.type = type;
         this.battery = battery;
+    }
+
+    public Device(long id, DeviceType type, String battery, String lastSyncTime) {
+        this.id = id;
+        this.type = type;
+        this.battery = battery;
+        this.lastSyncTime = lastSyncTime;
     }
 
     public Device(JSONObject json) throws JSONException {
@@ -64,6 +73,14 @@ public class Device {
 
     public String getBattery() {
         return battery;
+    }
+
+    public void setLastSyncTime(String lastSyncTime) {
+        this.lastSyncTime = lastSyncTime;
+    }
+
+    public String getLastSyncTime() {
+        return lastSyncTime;
     }
 
     @SuppressWarnings({"RedundantIfStatement"})
