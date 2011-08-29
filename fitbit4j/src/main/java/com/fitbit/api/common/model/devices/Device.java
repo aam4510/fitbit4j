@@ -23,12 +23,6 @@ public class Device {
 
     private String lastSyncTime;
 
-    public Device(long id, DeviceType type, String battery) {
-        this.id = id;
-        this.type = type;
-        this.battery = battery;
-    }
-
     public Device(long id, DeviceType type, String battery, String lastSyncTime) {
         this.id = id;
         this.type = type;
@@ -40,6 +34,7 @@ public class Device {
         id = json.getLong("id");
         type =  DeviceType.valueOf(json.getString("type"));
         battery = json.getString("battery");
+        lastSyncTime = json.getString("lastSyncTime");
     }
 
     public static List<Device> constructDeviceList(Response res) throws FitbitAPIException {
@@ -93,6 +88,8 @@ public class Device {
 
         if (id != device.id) return false;
         if (battery != null ? !battery.equals(device.battery) : device.battery != null) return false;
+        if (lastSyncTime != null ? !lastSyncTime.equals(device.lastSyncTime) : device.lastSyncTime != null)
+            return false;
         if (type != device.type) return false;
 
         return true;
@@ -104,6 +101,7 @@ public class Device {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (battery != null ? battery.hashCode() : 0);
+        result = 31 * result + (lastSyncTime != null ? lastSyncTime.hashCode() : 0);
         return result;
     }
 
