@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.fitbit</groupId>
+    <artifactId>fitbit-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.12</version>
+    <name>Fitbit</name>
+    <url>http://fitbit.com</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>	    
+        </plugins>
+    </build>
+
+    <modules>
+        <module>fitbit4j</module>
+        <module>fitbit4j-example-client</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>gh-pages-release</id>
+	        <url>file:///${basedir}/../../../fitbit4j-pages/release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>gh-pages-snapshot</id>
+	        <url>file:///${basedir}/../../../fitbit4j-pages/snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
+        <url>http://github.com/o1egon/fitbit4j</url>
+        <connection>scm:git:git://github.com/o1egon/fitbit4j.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/o1egon/fitbit4j.git</developerConnection>
+    </scm>
+</project>
