@@ -16,6 +16,7 @@ import com.fitbit.api.common.model.user.FriendStats;
 import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
 import com.fitbit.api.model.*;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -621,37 +622,9 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         params.add(new PostParameter("defaultServingSize", defaultServingSize));
         params.add(new PostParameter("formType", formType.toString()));
 
-        params.add(new PostParameter("calories", nutritionalValuesEntry.getCalories()));
-        params.add(new PostParameter("caloriesFromFat", nutritionalValuesEntry.getCaloriesFromFat()));
-        params.add(new PostParameter("totalFat", nutritionalValuesEntry.getTotalFat()));
-        params.add(new PostParameter("transFat", nutritionalValuesEntry.getTransFat()));
-        params.add(new PostParameter("saturatedFat", nutritionalValuesEntry.getSaturatedFat()));
-        params.add(new PostParameter("cholesterol", nutritionalValuesEntry.getCholesterol()));
-        params.add(new PostParameter("sodium", nutritionalValuesEntry.getSodium()));
-        params.add(new PostParameter("potassium", nutritionalValuesEntry.getPotassium()));
-        params.add(new PostParameter("totalCarbohydrate", nutritionalValuesEntry.getTotalCarbohydrate()));
-        params.add(new PostParameter("dietaryFiber", nutritionalValuesEntry.getDietaryFiber()));
-        params.add(new PostParameter("sugars", nutritionalValuesEntry.getSugars()));
-        params.add(new PostParameter("protein", nutritionalValuesEntry.getProtein()));
-        params.add(new PostParameter("vitaminA", nutritionalValuesEntry.getVitaminA()));
-        params.add(new PostParameter("vitaminC", nutritionalValuesEntry.getVitaminC()));
-        params.add(new PostParameter("iron", nutritionalValuesEntry.getIron()));
-        params.add(new PostParameter("calcium", nutritionalValuesEntry.getCalcium()));
-        params.add(new PostParameter("thiamin", nutritionalValuesEntry.getThiamin()));
-        params.add(new PostParameter("riboflavin", nutritionalValuesEntry.getRiboflavin()));
-        params.add(new PostParameter("vitaminB6", nutritionalValuesEntry.getVitaminB6()));
-        params.add(new PostParameter("vitaminB12", nutritionalValuesEntry.getVitaminB12()));
-        params.add(new PostParameter("vitaminE", nutritionalValuesEntry.getVitaminE()));
-        params.add(new PostParameter("folicAcid", nutritionalValuesEntry.getFolicAcid()));
-        params.add(new PostParameter("niacin", nutritionalValuesEntry.getNiacin()));
-        params.add(new PostParameter("magnesium", nutritionalValuesEntry.getMagnesium()));
-        params.add(new PostParameter("phosphorus", nutritionalValuesEntry.getPhosphorus()));
-        params.add(new PostParameter("iodine", nutritionalValuesEntry.getIodine()));
-        params.add(new PostParameter("zinc", nutritionalValuesEntry.getZinc()));
-        params.add(new PostParameter("copper", nutritionalValuesEntry.getCopper()));
-        params.add(new PostParameter("biotin", nutritionalValuesEntry.getBiotin()));
-        params.add(new PostParameter("pantothenicAcid", nutritionalValuesEntry.getPantothenicAcid()));
-        params.add(new PostParameter("vitaminD", nutritionalValuesEntry.getVitaminD()));
+        for(Map.Entry<String, Number> entry  : nutritionalValuesEntry.asMap().entrySet()) {
+            params.add(new PostParameter(entry.getKey(), entry.getValue().toString()));
+        }
 
         // Example: POST /1/food/create.json
         String url = APIUtil.contextualizeUrl(getApiBaseSecuredUrl(), getApiVersion(), "/foods", APIFormat.JSON);
@@ -792,6 +765,38 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     public FoodLog logFood(LocalUserDetail localUser, long foodId, int mealTypeId, int unitId, String amount, LocalDate date) throws FitbitAPIException {
         List<PostParameter> params = new ArrayList<PostParameter>(5);
         params.add(new PostParameter("foodId", String.valueOf(foodId)));
+        params.add(new PostParameter("mealTypeId", mealTypeId));
+        params.add(new PostParameter("unitId", String.valueOf(unitId)));
+        params.add(new PostParameter("amount", amount));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+
+        return logFood(localUser, params);
+    }
+
+        /**
+     * Create log entry for a food
+     *
+     * @param localUser authorized user
+     * @param foodName Food name
+     * @param brandName Brand name
+     * @param nutritionalValuesEntry Nutritional Values
+     * @param mealTypeId Meal type id
+     * @param unitId Unit id
+     * @param amount Amount consumed
+     * @param date Log entry date
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Food">Fitbit API: API-Log-Food</a>
+     */
+    public FoodLog logFood(LocalUserDetail localUser, String foodName, String brandName, NutritionalValuesEntry nutritionalValuesEntry, int mealTypeId, int unitId, String amount, LocalDate date) throws FitbitAPIException {
+        List<PostParameter> params = new ArrayList<PostParameter>(5);
+        params.add(new PostParameter("foodName", foodName));
+        if(StringUtils.isNotBlank(brandName)) {
+            params.add(new PostParameter("brandName", brandName));
+        }
+        for(Map.Entry<String, Number> entry  : nutritionalValuesEntry.asMap().entrySet()) {
+            params.add(new PostParameter(entry.getKey(), entry.getValue().toString()));
+        }
         params.add(new PostParameter("mealTypeId", mealTypeId));
         params.add(new PostParameter("unitId", String.valueOf(unitId)));
         params.add(new PostParameter("amount", amount));

@@ -3,6 +3,10 @@ package com.fitbit.api.common.model.foods;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * User: Dzmitry Krutko
  * Date: Jan 16, 2011
@@ -324,5 +328,23 @@ public class NutritionalValuesEntry {
 
     public void setPantothenicAcid(float pantothenicAcid) {
         this.pantothenicAcid = pantothenicAcid;
+    }
+
+    public Map<String, Number> asMap() {
+        Map<String, Number> result = new LinkedHashMap<String, Number>();
+        try {
+            for (Field field : getClass().getDeclaredFields()) {
+                if (field.getType().equals(int.class)) {
+                    int thisValue = field.getInt(this);
+                    result.put(field.getName(), thisValue);
+                } else if (field.getType().equals(float.class)) {
+                    float thisValue = field.getFloat(this);
+                    result.put(field.getName(), thisValue);
+                }
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to get/set nutritional value", e);
+        }
+        return result;
     }
 }
