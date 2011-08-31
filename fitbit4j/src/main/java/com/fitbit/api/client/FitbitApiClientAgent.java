@@ -440,6 +440,102 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return logActivity(localUser, params);
     }
 
+    /**
+     * Create log entry for an activity
+     *
+     * @param localUser authorized user
+     * @param activityName Activity name
+     * @param durationMillis Duration
+     * @param date Log entry date
+     * @param startTime Start time
+     * @param manualCalories manual calories
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
+     */
+    public ActivityLog logActivity(LocalUserDetail localUser,
+                            String activityName,
+                            int durationMillis,
+                            LocalDate date,
+                            LocalDate startTime,
+                            int manualCalories) throws FitbitAPIException {
+        List<PostParameter> params = new ArrayList<PostParameter>(5);
+        params.add(new PostParameter("activityName", activityName));
+        params.add(new PostParameter("durationMillis", durationMillis));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+        params.add(new PostParameter("startTime", FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime)));
+        params.add(new PostParameter("manualCalories", manualCalories));
+
+        return logActivity(localUser, params);
+    }
+
+    /**
+     * Create log entry for an activity
+     *
+     * @param localUser authorized user
+     * @param activityName Activity name
+     * @param durationMillis Duration
+     * @param distance Distance
+     * @param date Log entry date
+     * @param startTime Start time
+     * @param manualCalories manual calories
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
+     */
+    public ActivityLog logActivity(LocalUserDetail localUser,
+                            String activityName,
+                            int durationMillis,
+                            float distance,
+                            LocalDate date,
+                            LocalDate startTime,
+                            int manualCalories) throws FitbitAPIException {
+        List<PostParameter> params = new ArrayList<PostParameter>(6);
+        params.add(new PostParameter("activityName", activityName));
+        params.add(new PostParameter("durationMillis", durationMillis));
+        params.add(new PostParameter("distance", distance));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+        params.add(new PostParameter("startTime", FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime)));
+        params.add(new PostParameter("manualCalories", manualCalories));
+
+        return logActivity(localUser, params);
+    }
+
+    /**
+     * Create log entry for an activity
+     *
+     * @param localUser authorized user
+     * @param activityName Activity name
+     * @param durationMillis Duration
+     * @param distance Distance
+     * @param distanceUnit distance measurement unit;
+     * @param date Log entry date
+     * @param startTime Start time
+     * @param manualCalories manual calories
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
+     */
+    public ActivityLog logActivity(LocalUserDetail localUser,
+                            String activityName,
+                            int durationMillis,
+                            float distance,
+                            String distanceUnit,
+                            LocalDate date,
+                            LocalDate startTime,
+                            int manualCalories) throws FitbitAPIException {
+        List<PostParameter> params = new ArrayList<PostParameter>(7);
+        params.add(new PostParameter("activityName", activityName));
+        params.add(new PostParameter("durationMillis", durationMillis));
+        params.add(new PostParameter("distance", distance));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+        params.add(new PostParameter("startTime", FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime)));
+        params.add(new PostParameter("manualCalories", manualCalories));
+        params.add(new PostParameter("distanceUnit", distanceUnit));
+
+        return logActivity(localUser, params);
+    }
+
 
     /**
      * Create log entry for an activity

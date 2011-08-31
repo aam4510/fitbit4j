@@ -6,6 +6,7 @@ import org.json.JSONObject;
 public class ActivityLog extends LoggedActivityReference {
     long logId;
     String startTime;
+    boolean hasStartTime;
     boolean isFavorite;
 
     public ActivityLog(long logId, long activityId, String name, String description, Long activityParentId, String activityParentName, String startTime,
@@ -13,6 +14,16 @@ public class ActivityLog extends LoggedActivityReference {
         super(activityId, name, description, activityParentId, activityParentName, calories, duration, distance, steps);
         this.logId = logId;
         this.startTime = startTime;
+        this.hasStartTime = true;
+        this.isFavorite = isFavorite;
+    }
+
+    public ActivityLog(long logId, long activityId, String name, String description, Long activityParentId, String activityParentName, String startTime,
+                       boolean hasStartTime, int duration, Double distance, int calories, Integer steps, boolean isFavorite) {
+        super(activityId, name, description, activityParentId, activityParentName, calories, duration, distance, steps);
+        this.logId = logId;
+        this.startTime = startTime;
+        this.hasStartTime = hasStartTime;
         this.isFavorite = isFavorite;
     }
 
@@ -20,6 +31,7 @@ public class ActivityLog extends LoggedActivityReference {
         super(json);
         logId = json.getLong("logId");
         startTime = json.getString("startTime");
+        hasStartTime = json.getBoolean("hasStartTime");
         isFavorite = json.getBoolean("isFavorite");
     }
 
@@ -35,4 +47,7 @@ public class ActivityLog extends LoggedActivityReference {
         return isFavorite;
     }
 
+    public boolean getHasStartTime() {
+        return hasStartTime;
+    }
 }
