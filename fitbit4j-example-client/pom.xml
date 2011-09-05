@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.fitbit</groupId>
         <artifactId>fitbit-parent</artifactId>
-        <version>1.0.15-SNAPSHOT</version>
+        <version>1.0.15</version>
     </parent>
     <artifactId>fitbit-example-client</artifactId>
     <packaging>war</packaging>
