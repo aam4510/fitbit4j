@@ -17,6 +17,7 @@ import java.util.List;
 public class Foods {
     private FoodsSummary summary;
     private List<FoodLog> foods;
+    private FoodsGoals foodsGoals;
 
     public Foods() {
     }
@@ -26,13 +27,20 @@ public class Foods {
         this.foods = foods;
     }
 
+    public Foods(FoodsSummary summary, List<FoodLog> foods, FoodsGoals foodsGoals) {
+        this.summary = summary;
+        this.foods = foods;
+        this.foodsGoals = foodsGoals;
+    }
 
     public static Foods constructFoods(Response res) throws FitbitAPIException {
         try {
             JSONObject json = res.asJSONObject();
             FoodsSummary summary = new FoodsSummary(json.getJSONObject("summary"));
+            JSONObject goalsJSON = json.optJSONObject("goals");
+            FoodsGoals foodsGoals = goalsJSON != null ? new FoodsGoals(goalsJSON) : null;
             List<FoodLog> foods = jsonArrayToFoodLogList(json.getJSONArray("foods"));
-            return new Foods(summary, foods);
+            return new Foods(summary, foods, foodsGoals);
          } catch (JSONException e) {
             throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
         }
@@ -68,4 +76,7 @@ public class Foods {
         return foods;
     }
 
+    public FoodsGoals getFoodsGoals() {
+        return foodsGoals;
+    }
 }
