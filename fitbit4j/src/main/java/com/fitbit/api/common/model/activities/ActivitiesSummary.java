@@ -13,7 +13,6 @@ public class ActivitiesSummary {
     private int marginalCalories;
     private int activeScore;
     private int steps;
-    private int floors;
     private int sedentaryMinutes;
     private int lightlyActiveMinutes;
     private int fairlyActiveMinutes;
@@ -29,7 +28,6 @@ public class ActivitiesSummary {
         marginalCalories = json.getInt("marginalCalories");
         activeScore = json.getInt("activeScore");
         steps = json.getInt("steps");
-        floors = json.getInt("floors");
         sedentaryMinutes = json.getInt("sedentaryMinutes");
         lightlyActiveMinutes = json.getInt("lightlyActiveMinutes");
         fairlyActiveMinutes = json.getInt("fairlyActiveMinutes");
@@ -84,14 +82,6 @@ public class ActivitiesSummary {
 
     public void setSteps(int steps) {
         this.steps = steps;
-    }
-
-    public int getFloors() {
-        return floors;
-    }
-
-    public void setFloors(int floors) {
-        this.floors = floors;
     }
 
     public int getSedentaryMinutes() {
