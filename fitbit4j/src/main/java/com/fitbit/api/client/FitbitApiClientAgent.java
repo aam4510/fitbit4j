@@ -769,10 +769,10 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Favorite-Foods">Fitbit API: API-Get-Favorite-Foods</a>
      */
-    public List<FavoriteFood> getFavoriteFoods(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
+    public List<Food> getFavoriteFoods(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
         // Example: GET /1/user/228TQ4/foods/log/favorite.json
         Response res = getCollectionResponseForProperty(localUser, fitbitUser, APICollectionType.foods, ApiCollectionProperty.favorite);
-        return FavoriteFood.constructFavoriteFoodList(res);
+        return Food.constructFoodListFromArrayResponse(res);
     }
 
     /**

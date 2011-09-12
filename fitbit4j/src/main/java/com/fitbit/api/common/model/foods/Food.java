@@ -18,15 +18,21 @@ public class Food {
     private final long foodId;
     private final String name;
     private final String brand;
-    private final int[] units;
     private final String accessLevel;
+    private final int calories;
+    private final double defaultServingSize;
+    private final FoodUnit defaultUnit;
+    private final int[] units;
 
-    public Food(long foodId, String name, String brand, String accessLevel, int[] units) {
+    public Food(long foodId, String name, String brand, String accessLevel, int calories, double defaultServingSize, FoodUnit defaultUnit, int[] units) {
         this.foodId = foodId;
         this.name = name;
         this.brand = brand;
-        this.units = units;
         this.accessLevel = accessLevel;
+        this.calories = calories;
+        this.defaultServingSize = defaultServingSize;
+        this.defaultUnit = defaultUnit;
+        this.units = units;
     }
 
     public Food(JSONObject json) throws JSONException {
@@ -35,6 +41,9 @@ public class Food {
         brand = json.getString("brand");
         units = jsonArrayToUnitIdArray(json.getJSONArray("units"));
         accessLevel = json.optString("accessLevel");
+        calories = json.getInt("calories");
+        defaultServingSize = json.getInt("defaultServingSize");
+        defaultUnit = new FoodUnit(json.getJSONObject("defaultUnit"));
     }
 
     public static List<Food> constructFoodList(Response res) throws FitbitAPIException {
@@ -45,6 +54,14 @@ public class Food {
         try {
             JSONObject json = res.asJSONObject();
             return jsonArrayToFoodList(json.getJSONArray(arrayName));
+         } catch (JSONException e) {
+            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+        }
+    }
+
+    public static List<Food> constructFoodListFromArrayResponse(Response res) throws FitbitAPIException {
+        try {
+            return jsonArrayToFoodList(res.asJSONArray());
          } catch (JSONException e) {
             throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
         }
@@ -85,5 +102,17 @@ public class Food {
 
     public String getAccessLevel() {
         return accessLevel;
+    }
+
+    public int getCalories() {
+        return calories;
+    }
+
+    public double getDefaultServingSize() {
+        return defaultServingSize;
+    }
+
+    public FoodUnit getDefaultUnit() {
+        return defaultUnit;
     }
 }
