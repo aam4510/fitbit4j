@@ -23,6 +23,7 @@ public class Food {
     private final double defaultServingSize;
     private final FoodUnit defaultUnit;
     private final int[] units;
+    private NutritionalValuesEntry nutritionalValues;
 
     public Food(long foodId, String name, String brand, String accessLevel, int calories, double defaultServingSize, FoodUnit defaultUnit, int[] units) {
         this.foodId = foodId;
@@ -44,6 +45,10 @@ public class Food {
         calories = json.getInt("calories");
         defaultServingSize = json.getInt("defaultServingSize");
         defaultUnit = new FoodUnit(json.getJSONObject("defaultUnit"));
+        JSONObject nutritionalValuesJSON = json.optJSONObject("nutritionalValues");
+        if (nutritionalValuesJSON != null) {
+            nutritionalValues = new NutritionalValuesEntry(json.getJSONObject("nutritionalValues"));
+        }
     }
 
     public static List<Food> constructFoodList(Response res) throws FitbitAPIException {
@@ -54,7 +59,7 @@ public class Food {
         try {
             JSONObject json = res.asJSONObject();
             return jsonArrayToFoodList(json.getJSONArray(arrayName));
-         } catch (JSONException e) {
+        } catch (JSONException e) {
             throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
         }
     }
@@ -62,7 +67,7 @@ public class Food {
     public static List<Food> constructFoodListFromArrayResponse(Response res) throws FitbitAPIException {
         try {
             return jsonArrayToFoodList(res.asJSONArray());
-         } catch (JSONException e) {
+        } catch (JSONException e) {
             throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
         }
     }
@@ -114,5 +119,13 @@ public class Food {
 
     public FoodUnit getDefaultUnit() {
         return defaultUnit;
+    }
+
+    public NutritionalValuesEntry getNutritionalValues() {
+        return nutritionalValues;
+    }
+
+    public void setNutritionalValues(NutritionalValuesEntry nutritionalValues) {
+        this.nutritionalValues = nutritionalValues;
     }
 }

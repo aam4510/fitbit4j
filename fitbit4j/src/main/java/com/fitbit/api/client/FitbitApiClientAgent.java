@@ -828,6 +828,20 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return Food.constructFoodList(res);
     }
 
+    public Food getFood(LocalUserDetail localUser, Long foodId) throws FitbitAPIException {
+        if (localUser != null) {
+            setAccessToken(localUser);
+        }
+        // Example: GET /1/foods/1.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/foods/" + foodId, APIFormat.JSON);
+        Response res = httpGet(url, true);
+        try {
+            return new Food(res.asJSONObject().getJSONObject("food"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error retrieving food details: " + e, e);
+        }
+    }
+
     /**
      * Get list of all valid Fitbit food units
      *
