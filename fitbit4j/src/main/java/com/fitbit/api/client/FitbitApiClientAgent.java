@@ -828,6 +828,17 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return Food.constructFoodList(res);
     }
 
+    /**
+     * Get the details of a specific food in Fitbit Food database (or private food for the user)
+     *
+     * @param localUser authorized user
+     * @param foodId Food id
+     *
+     * @return food description
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Food">Fitbit API: API-Get-Food</a>
+     */
     public Food getFood(LocalUserDetail localUser, Long foodId) throws FitbitAPIException {
         if (localUser != null) {
             setAccessToken(localUser);
