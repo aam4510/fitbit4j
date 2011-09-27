@@ -18,6 +18,8 @@ public enum TimeSeriesResourceType {
     MINUTES_VERY_ACTIVE("/activities/log/minutesVeryActive"),
     ACTIVE_SCORE("/activities/log/activeScore"),
     ACTIVITY_CALORIES("/activities/log/activityCalories"),
+    FLOORS("/activities/log/floors"),
+    ELEVATION("/activities/log/elevation"),
     //sleep
     MINUTES_ASLEEP("/sleep/minutesAsleep"),
     MINUTES_AWAKE("/sleep/minutesAwake"),
