@@ -13,21 +13,29 @@ public class ActivitiesSummary {
     private int marginalCalories;
     private int activeScore;
     private int steps;
+    private Integer floors = null;
+    private Double elevation = null;
     private int sedentaryMinutes;
     private int lightlyActiveMinutes;
     private int fairlyActiveMinutes;
     private int veryActiveMinutes;
     private List<ActivityDistance> distances;
 
-    public ActivitiesSummary() {
-    }
-    
     public ActivitiesSummary(JSONObject json) throws JSONException {
         caloriesOut = json.getInt("caloriesOut");
         activityCalories = json.getInt("activityCalories");
         marginalCalories = json.getInt("marginalCalories");
         activeScore = json.getInt("activeScore");
         steps = json.getInt("steps");
+        // for now its optional
+        if (json.has("floors")) {
+            floors = json.getInt("floors");
+        }
+
+        // for now its optional
+        if (json.has("elevation")) {
+            elevation = json.getDouble("elevation");
+        }
         sedentaryMinutes = json.getInt("sedentaryMinutes");
         lightlyActiveMinutes = json.getInt("lightlyActiveMinutes");
         fairlyActiveMinutes = json.getInt("fairlyActiveMinutes");
@@ -82,6 +90,14 @@ public class ActivitiesSummary {
 
     public void setSteps(int steps) {
         this.steps = steps;
+    }
+
+    public Integer getFloors() {
+        return floors;
+    }
+
+    public Double getElevation() {
+        return elevation;
     }
 
     public int getSedentaryMinutes() {
