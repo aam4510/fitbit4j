@@ -14,9 +14,11 @@ public class SleepLog {
     int minutesAfterWakeup;
     int awakeningsCount;
     int timeInBed;
+    int efficiency;
 
     public SleepLog(long logId, String startTime, boolean mainSleep, long duration, int minutesToFallAsleep,
-                    int minutesAsleep, int minutesAwake, int minutesAfterWakeup, int awakeningsCount, int timeInBed) {
+                    int minutesAsleep, int minutesAwake, int minutesAfterWakeup, int awakeningsCount, int timeInBed,
+                    int efficiency) {
         this.logId = logId;
         this.startTime = startTime;
         isMainSleep = mainSleep;
@@ -27,6 +29,7 @@ public class SleepLog {
         this.minutesAfterWakeup = minutesAfterWakeup;
         this.awakeningsCount = awakeningsCount;
         this.timeInBed = timeInBed;
+        this.efficiency = efficiency;
     }
 
     public SleepLog(JSONObject json) throws JSONException {
@@ -40,6 +43,7 @@ public class SleepLog {
         minutesAfterWakeup = json.getInt("minutesAfterWakeup");
         awakeningsCount = json.getInt("awakeningsCount");
         timeInBed = json.getInt("timeInBed");
+        efficiency = json.getInt("efficiency");
     }
 
     public long getLogId() {
@@ -80,5 +84,9 @@ public class SleepLog {
 
     public int getTimeInBed() {
         return timeInBed;
+    }
+
+    public int getEfficiency() {
+        return efficiency;
     }
 }
