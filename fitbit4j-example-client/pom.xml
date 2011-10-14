@@ -149,8 +149,8 @@
     </distributionManagement>
 
     <scm>
-        <url>http://github.com/pmolettiere/fitbit4j</url>
-        <connection>scm:git:git://github.com/pmolettiere/fitbit4j.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/pmolettiere/fitbit4j.git</developerConnection>
+        <url>http://github.com/Fitbit/fitbit4j</url>
+        <connection>scm:git:git://github.com/Fitbit/fitbit4j.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/Fitbit/fitbit4j.git</developerConnection>
     </scm>
 </project>
