@@ -8,6 +8,7 @@ package com.fitbit.api.common.model.timeseries;
 public enum TimeSeriesResourceType {
     //food
     CALORIES_IN("/foods/log/caloriesIn"),
+    WATER("/foods/log/water"),
     //activity
     CALORIES_OUT("/activities/log/calories"),
     STEPS("/activities/log/steps"),
@@ -25,6 +26,10 @@ public enum TimeSeriesResourceType {
     MINUTES_AWAKE("/sleep/minutesAwake"),
     AWAKENINGS_COUNT("/sleep/awakeningsCount"),
     TIME_IN_BED("/sleep/timeInBed"),
+    MINUTES_TO_FALL_ASLEEP("/sleep/minutesToFallAsleep"),
+    MINUTES_AFTER_WAKEUP("/sleep/minutesAfterWakeup"),
+    TIME_ENTERED_BED("/sleep/startTime"),
+    EFFICIENCY("/sleep/efficiency"),
     //body
     WEIGHT("/body/weight"),
     BMI("/body/bmi"),

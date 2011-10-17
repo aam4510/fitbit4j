@@ -13,17 +13,13 @@ import java.util.List;
  * Time: 11:22:33 PM
  */
 public class Data {
-    String dateTime;
-    double value;
 
-    public Data(String dateTime, double value) {
-        this.dateTime = dateTime;
-        this.value = value;
-    }
+    String dateTime;
+    String value;
 
     public Data(JSONObject json) throws JSONException {
         dateTime = json.getString("dateTime");
-        value = json.getDouble("value");
+        value = json.getString("value");
     }
 
     public static List<Data> jsonArrayToDataList(JSONArray array) throws JSONException {
@@ -35,11 +31,23 @@ public class Data {
         return dataList;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public String getValue() {
+        return value;
     }
 
-    public double getValue() {
-        return value;
+    public long longValue() {
+        return Long.valueOf(value);
+    }
+
+    public int intValue() {
+        return Integer.valueOf(value);
+    }
+
+    public short shortValue() {
+        return Short.valueOf(value);
+    }
+
+    public double doubleValue() {
+        return Double.valueOf(value);
     }
 }
