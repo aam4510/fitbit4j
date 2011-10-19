@@ -3,6 +3,7 @@ package com.fitbit.api.client;
 import com.fitbit.api.APIUtil;
 import com.fitbit.api.FitbitAPIException;
 import com.fitbit.api.client.http.*;
+import com.fitbit.api.common.model.achievement.LifetimeAchievements;
 import com.fitbit.api.common.model.activities.*;
 import com.fitbit.api.common.model.body.Body;
 import com.fitbit.api.common.model.body.BodyWithGoals;
@@ -260,6 +261,20 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      */
     public FitbitApiCredentialsCache getCredentialsCache() {
         return credentialsCache;
+    }
+
+    public LifetimeAchievements getActivitiesAchievements(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: GET /1/user/228TQ4/activities.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/" + fitbitUser.getId() + "/activities", APIFormat.JSON);
+        Response res = httpGet(url, true);
+        throwExceptionIfError(res);
+        try {
+            return new LifetimeAchievements(res.asJSONObject().getJSONObject("lifetime"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error parsing lifetime achievements: " + e, e);
+        }
+
     }
 
     /**
