@@ -60,6 +60,10 @@
         <td>Offset From UTC (Millis):</td>
         <td>${userInfo.offsetFromUTCMillis}</td>
     </tr>
+    <tr>
+        <td>Avatar:</td>
+        <td>${userInfo.avatar}</td>
+    </tr>
 </table>
 </body>
 </html>

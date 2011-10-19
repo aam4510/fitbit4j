@@ -31,10 +31,12 @@ public class UserInfo {
      * Millisecond offset to add to UTC to get timezone
      */
     private final int offsetFromUTCMillis;
+    private final String avatar;
 
     public UserInfo(String encodedId, String displayName, Gender gender, LocalDate dateOfBirth,
                     double height, double weight, double strideLengthWalking, double strideLengthRunning, String fullName,
-                    String nickname, String country, String state, String city, String aboutMe, DateTimeZone timezone, int offsetFromUTCMillis) {
+                    String nickname, String country, String state, String city, String aboutMe, DateTimeZone timezone, int offsetFromUTCMillis,
+                    String avatar) {
         this.encodedId = encodedId;
         this.displayName = displayName;
         this.gender = gender;
@@ -51,6 +53,7 @@ public class UserInfo {
         this.aboutMe = aboutMe;
         this.timezone = timezone;
         this.offsetFromUTCMillis = offsetFromUTCMillis;
+        this.avatar = avatar;
     }
 
     public UserInfo(JSONObject json) throws JSONException {
@@ -71,6 +74,7 @@ public class UserInfo {
         aboutMe = userJson.optString("aboutMe");
         timezone = DateTimeZone.forID(userJson.getString("timezone"));
         offsetFromUTCMillis = userJson.optInt("offsetFromUTCMillis");
+        avatar = userJson.optString("avatar");
     }
 
     public static List<UserInfo> friendJsonArrayToUserInfoList(JSONArray array) throws JSONException {
@@ -153,5 +157,9 @@ public class UserInfo {
 
     public int getOffsetFromUTCMillis() {
         return offsetFromUTCMillis;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 }
