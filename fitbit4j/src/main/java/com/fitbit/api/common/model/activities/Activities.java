@@ -11,22 +11,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Activities {
+
     private ActivitiesSummary summary;
     private List<ActivityLog> activities;
+    private ActivityGoals activityGoals;
 
-    public Activities() {
-    }
-
-    public Activities(ActivitiesSummary summary, List<ActivityLog> activities) {
+    public Activities(ActivitiesSummary summary, List<ActivityLog> activities, ActivityGoals activityGoals) {
         this.summary = summary;
         this.activities = activities;
+        this.activityGoals = activityGoals;
     }
 
     public static Activities constructActivities(Response res) throws FitbitAPIException {
         try {
             ActivitiesSummary summary = new ActivitiesSummary(res.asJSONObject().getJSONObject("summary"));
             List<ActivityLog> activities = jsonArrayToActivityList(res.asJSONObject().getJSONArray("activities"));
-            return new Activities(summary, activities);
+            JSONObject goalsJson = res.asJSONObject().optJSONObject("goals");
+            ActivityGoals activityGoals = goalsJson != null ? new ActivityGoals(goalsJson) : null;
+            return new Activities(summary, activities, activityGoals);
          } catch (JSONException e) {
             throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
         }        
@@ -45,16 +47,11 @@ public class Activities {
         return summary;
     }
 
-    public void setSummary(ActivitiesSummary summary) {
-        this.summary = summary;
-    }
-
     public List<ActivityLog> getActivities() {
         return activities;
     }
 
-    public void setActivities(List<ActivityLog> activities) {
-        this.activities = activities;
+    public ActivityGoals getActivityGoals() {
+        return activityGoals;
     }
-
 }

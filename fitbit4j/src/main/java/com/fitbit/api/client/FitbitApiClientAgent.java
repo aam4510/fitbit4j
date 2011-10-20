@@ -5,6 +5,7 @@ import com.fitbit.api.FitbitAPIException;
 import com.fitbit.api.client.http.*;
 import com.fitbit.api.common.model.activities.*;
 import com.fitbit.api.common.model.body.Body;
+import com.fitbit.api.common.model.body.BodyWithGoals;
 import com.fitbit.api.common.model.devices.Device;
 import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.sleep.Sleep;
@@ -1158,17 +1159,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Body-Measurements">Fitbit API: API-Get-Body-Measurements</a>
      */
     public Body getBody(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
-        setAccessToken(localUser);
-        // Example: GET /1/user/228TQ4/body/2010-02-25.json
-        String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, APICollectionType.body, date, APIFormat.JSON);
-
-        Response res = httpGet(url, true);
-        throwExceptionIfError(res);
-        try {
-            return new Body(res.asJSONObject());
-        } catch (JSONException e) {
-            throw new FitbitAPIException("Error retrieving body: " + e, e);
-        }
+        return getBodyWithGoals(localUser, fitbitUser, date).getBody();
     }
 
     /**
@@ -1183,18 +1174,41 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Body-Measurements">Fitbit API: API-Get-Body-Measurements</a>
      */
     public Body getBody(LocalUserDetail localUser, String date) throws FitbitAPIException {
-        setAccessToken(localUser);
+        return getBodyWithGoals(localUser, date).getBody();
+    }
+
+    public BodyWithGoals getBodyWithGoals(LocalUserDetail localUser, String date) throws FitbitAPIException {
+        if(localUser != null) {
+            setAccessToken(localUser);
+        }
         // Example: GET /1/user/-/body/date/2010-02-25.json
         String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/body/date/" + date, APIFormat.JSON);
 
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
         try {
-            return new Body(res.asJSONObject());
+            return BodyWithGoals.constructBodyWithGoals(res);
         } catch (JSONException e) {
-            throw new FitbitAPIException("Error retrieving body: " + e, e);
+            throw new FitbitAPIException("Error retrieving body with goals: " + e, e);
         }
     }
+
+    public BodyWithGoals getBodyWithGoals(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
+        if(localUser != null) {
+            setAccessToken(localUser);
+        }
+        // Example: GET /1/user/228TQ4/body/date/2010-02-25.json
+        String url = APIUtil.constructFullUrl(getApiBaseUrl(), getApiVersion(), fitbitUser, APICollectionType.body, date, APIFormat.JSON);
+
+        Response res = httpGet(url, true);
+        throwExceptionIfError(res);
+        try {
+            return BodyWithGoals.constructBodyWithGoals(res);
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error retrieving body with goals with goals: " + e, e);
+        }
+    }
+
 
     /**
      * Log weight
