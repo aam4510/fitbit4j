@@ -27,7 +27,7 @@ public class Achievement {
 
     public Achievement(JSONObject jsonObject) throws JSONException {
         this.caloriesOut = jsonObject.getLong("caloriesOut");
-        this.floors = jsonObject.getLong("floors");
+        this.floors = jsonObject.optLong("floors");
         this.distance = jsonObject.getDouble("distance");
         this.steps = jsonObject.getLong("steps");
         this.activeScore = jsonObject.getLong("activeScore");
