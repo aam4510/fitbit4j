@@ -607,6 +607,30 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
+     * Get all activity categories ans sub-categories with it's activities
+     *
+     * @param localUser authorized user
+     *
+     * @return list of activity categories
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public List<ActivityCategory> getActivityCategories(LocalUserDetail localUser) throws FitbitAPIException {
+        if (localUser != null) {
+            setAccessToken(localUser);
+        }
+        // Example: GET /1/activities.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/activities", APIFormat.JSON);
+        Response res = httpGet(url, true);
+        throwExceptionIfError(res);
+        try {
+            return ActivityCategory.jsonArrayToActivityCategoryList(res.asJSONObject().getJSONArray("categories"));
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error retrieving activity: " + e, e);
+        }
+    }
+
+    /**
      * Get the details of a specific activity in Fitbit activities database. If activity has levels, also get list of activity level details.
      *
      * @param localUser authorized user

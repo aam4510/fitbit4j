@@ -3,33 +3,16 @@ package com.fitbit.api.common.model.activities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ActivityLevel {
-    long id;
-    String name;
-    float minSpeedMPH;
-    float maxSpeedMPH;
+public class ActivityLevel extends DisplayableActivity{
 
-    public ActivityLevel(long id, String name, float minSpeedMPH, float maxSpeedMPH) {
-        this.id = id;
-        this.name = name;
-        this.minSpeedMPH = minSpeedMPH;
-        this.maxSpeedMPH = maxSpeedMPH;
-    }
+    private float minSpeedMPH;
+    private float maxSpeedMPH;
 
     @SuppressWarnings({"NumericCastThatLosesPrecision"})
     public ActivityLevel(JSONObject json) throws JSONException {
-        id = json.getInt("id");
-        name = json.getString("name");
+        super(json);
         minSpeedMPH = (float)json.getDouble("minSpeedMPH");
         maxSpeedMPH = (float)json.getDouble("maxSpeedMPH");
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public float getMaxSpeedMPH() {
