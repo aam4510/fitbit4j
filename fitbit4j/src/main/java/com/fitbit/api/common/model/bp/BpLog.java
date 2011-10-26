@@ -1,6 +1,5 @@
 package com.fitbit.api.common.model.bp;
 
-import com.fitbit.util.api.HiddenIfNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,7 +45,6 @@ public class BpLog {
         return diastolic;
     }
 
-    @HiddenIfNull
     public String getTime() {
         return time;
     }
