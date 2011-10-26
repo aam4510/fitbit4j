@@ -7,12 +7,10 @@ public class DisplayableActivity {
 
     private long id;
     private  String name;
-    private  String accessLevel;
 
     public DisplayableActivity(JSONObject json) throws JSONException {
         id = json.getInt("id");
         name = json.getString("name");
-        accessLevel = json.getString("accessLevel");
     }
 
     public DisplayableActivity(long id, String name) {
@@ -27,9 +25,4 @@ public class DisplayableActivity {
     public String getName() {
         return name;
     }
-
-    public String getAccessLevel() {
-        return accessLevel;
-    }
-
 }

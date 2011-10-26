@@ -9,11 +9,13 @@ import java.util.List;
 
 public class Activity extends DisplayableActivity {
 
+    private  String accessLevel;
     private boolean hasSpeed;
     private List<ActivityLevel> activityLevels;
 
     public Activity(JSONObject json) throws JSONException {
         super(json);
+        accessLevel = json.getString("accessLevel");
         hasSpeed = json.getBoolean("hasSpeed");
         if (json.has("activityLevels")) {
             activityLevels = jsonArrayToActivityLevelList(json.getJSONArray("activityLevels"));
@@ -31,6 +33,10 @@ public class Activity extends DisplayableActivity {
 
     public static Activity constructActivity(JSONObject json) throws JSONException {
         return new Activity(json.getJSONObject("activity"));
+    }
+
+    public String getAccessLevel() {
+        return accessLevel;
     }
 
     public boolean getHasSpeed() {
