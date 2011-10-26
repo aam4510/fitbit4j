@@ -1159,6 +1159,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Body-Measurements">Fitbit API: API-Get-Body-Measurements</a>
      */
+    @Deprecated
     public double getWeight(LocalUserDetail localUser, String date) throws FitbitAPIException {
         return getBody(localUser, date).getWeight();
     }
@@ -1226,6 +1227,57 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    public Body logBody(LocalUserDetail localUser, Body body, LocalDate date) throws FitbitAPIException {
+        List<PostParameter> params = new ArrayList<PostParameter>();
+        if(body.getWeight() > 0) {
+            params.add(new PostParameter("weight", body.getWeight()));
+        }
+        if(body.getFat() > 0) {
+            params.add(new PostParameter("fat", body.getFat()));
+        }
+        if(body.getNeck() > 0) {
+            params.add(new PostParameter("neck", body.getNeck()));
+        }
+        if(body.getBicep() > 0) {
+            params.add(new PostParameter("bicep", body.getBicep()));
+        }
+        if(body.getForearm() > 0) {
+            params.add(new PostParameter("forearm", body.getForearm()));
+        }
+        if(body.getChest() > 0) {
+            params.add(new PostParameter("chest", body.getChest()));
+        }
+        if(body.getWaist() > 0) {
+            params.add(new PostParameter("waist", body.getWaist()));
+        }
+        if(body.getHips() > 0) {
+            params.add(new PostParameter("hips", body.getHips()));
+        }
+        if(body.getThigh() > 0) {
+            params.add(new PostParameter("thigh", body.getThigh()));
+        }
+        if(body.getCalf() > 0) {
+            params.add(new PostParameter("calf", body.getCalf()));
+        }
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+
+        return logBody(localUser, params);
+    }
+
+    public Body logBody(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: POST /1/user/-/body.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/body", APIFormat.JSON);
+
+        try {
+            Response res = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+            return new Body(res.asJSONObject());
+        } catch (FitbitAPIException e) {
+            throw new FitbitAPIException("Error logging weight: " + e, e);
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error logging weight: " + e, e);
+        }
+    }
 
     /**
      * Log weight
@@ -1235,14 +1287,15 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param date Log entry date
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
-     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Weight">Fitbit API: API-Log-Weight</a>
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Body-Measurements">Fitbit API: API-Log-Body-Measurements</a>
      */
+    @Deprecated
     public void logWeight(LocalUserDetail localUser, float weight, LocalDate date) throws FitbitAPIException {
         List<PostParameter> params = new ArrayList<PostParameter>(2);
         params.add(new PostParameter("weight", weight));
         params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
 
-        logWeight(localUser, params);
+        logBody(localUser, params);
     }
 
     /**
@@ -1252,18 +1305,11 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param params POST request parameters
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
-     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Weight">Fitbit API: API-Log-Weight</a>
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Body-Measurements">Fitbit API: API-Log-Body-Measurements</a>
      */
+    @Deprecated
     public void logWeight(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
-        setAccessToken(localUser);
-        // Example: POST /1/user/-/body/weight.json
-        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/body/weight", APIFormat.JSON);
-
-        try {
-            httpPost(url, params.toArray(new PostParameter[params.size()]), true);
-        } catch (FitbitAPIException e) {
-            throw new FitbitAPIException("Error logging weight: " + e, e);
-        }
+        logBody(localUser, params);
     }
 
     /**
