@@ -6,6 +6,8 @@ import com.fitbit.api.client.http.*;
 import com.fitbit.api.common.model.activities.*;
 import com.fitbit.api.common.model.body.Body;
 import com.fitbit.api.common.model.body.BodyWithGoals;
+import com.fitbit.api.common.model.bp.Bp;
+import com.fitbit.api.common.model.bp.BpLog;
 import com.fitbit.api.common.model.devices.Device;
 import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.sleep.Sleep;
@@ -1349,6 +1351,107 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
             throw new FitbitAPIException("Error deleting water: " + e, e);
         }
 
+    }
+
+
+    /**
+     * Create log entry for a blood pressure
+     *
+     * @param localUser authorized user
+     * @param systolic Systolic blood pressure
+     * @param diastolic Diastolic blood pressure
+     * @param date Log entry date
+     * @param time Log entry time string
+     *
+     * @return new blood pressure log entry
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public BpLog logBp(LocalUserDetail localUser, int systolic, int diastolic, LocalDate date, String time) throws FitbitAPIException {
+        List<PostParameter> params = new ArrayList<PostParameter>(4);
+        params.add(new PostParameter("systolic", systolic));
+        params.add(new PostParameter("diastolic", diastolic));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+
+        if (time != null) {
+            params.add(new PostParameter("time", time));
+        }
+
+        return logBp(localUser, params);
+    }
+
+    /**
+     * Create log entry for a blood pressure
+     *
+     * @param localUser authorized user
+     * @param systolic Systolic blood pressure
+     * @param diastolic Diastolic blood pressure
+     * @param date Log entry date
+     *
+     * @return new blood pressure log entry
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public BpLog logBp(LocalUserDetail localUser, int systolic, int diastolic, LocalDate date) throws FitbitAPIException {
+        return logBp(localUser, systolic, diastolic, date, null);
+    }
+
+    public BpLog logBp(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
+        setAccessToken(localUser);
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/bp", APIFormat.JSON);
+
+        try {
+            Response res = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+            return new BpLog(res.asJSONObject().getJSONObject("bpLog"));
+        } catch (FitbitAPIException e) {
+            throw new FitbitAPIException("Error logging blood pressure: " + e, e);
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error logging blood pressure: " + e, e);
+        }
+    }
+
+    /**
+     * Get an average and list of a user's blood pressure log entries for a given day
+     *
+     * @param localUser authorized user
+     * @param fitbitUser user to retrieve data from
+     * @param date date to retrieve data for
+     *
+     * @return blood pressure entries for a given day
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public Bp getLoggedBp(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: GET /1/user/228TQ4/bp/date/2010-02-25.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/" + fitbitUser.getId() + "/bp/date/" + DateTimeFormat.forPattern("yyyy-MM-dd").print(date), APIFormat.JSON);
+
+        Response res = httpGet(url, true);
+        throwExceptionIfError(res);
+        try {
+            return new Bp(res.asJSONObject());
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error retrieving blood pressure: " + e, e);
+        }
+    }
+
+    /**
+     * Delete user's blood pressure log entry with the given id
+     *
+     * @param localUser authorized user
+     * @param logId Blood pressure log entry id
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public void deleteBp(LocalUserDetail localUser, String logId) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: DELETE /1/user/-/bp/123.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/bp/" + logId, APIFormat.JSON);
+        try {
+            httpDelete(url, true);
+        } catch (Exception e) {
+            throw new FitbitAPIException("Error deleting water: " + e, e);
+        }
     }
 
     /**
