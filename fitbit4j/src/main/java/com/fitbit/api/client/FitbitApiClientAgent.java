@@ -2181,9 +2181,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
         try {
-            List<Data> dataList = Data.jsonArrayToDataList(res.asJSONObject().getJSONArray(resourceType.getResourcePath().substring(1).replace('/', '-')));
-            IntradayDataset intradayDataset = new IntradayDataset(res.asJSONObject().getJSONObject(resourceType.getResourcePath().substring(1).replace('/', '-') + "-intraday"));
-            return new IntradaySummary(dataList.get(0), intradayDataset);
+            return new IntradaySummary(res.asJSONObject(), resourceType);
         } catch (JSONException e) {
             throw new FitbitAPIException("Error parsing json response to IntradaySummary : ", e);
         }
