@@ -31,6 +31,10 @@ public class Data {
         return dataList;
     }
 
+    public String getDateTime() {
+        return dateTime;
+    }
+
     public String getValue() {
         return value;
     }
