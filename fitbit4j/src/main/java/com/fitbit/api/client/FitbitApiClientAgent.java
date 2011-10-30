@@ -1271,7 +1271,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
         try {
             Response res = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
-            return new Body(res.asJSONObject());
+            return new Body(res.asJSONObject().getJSONObject("body"));
         } catch (FitbitAPIException e) {
             throw new FitbitAPIException("Error logging weight: " + e, e);
         } catch (JSONException e) {
