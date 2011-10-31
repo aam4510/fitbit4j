@@ -263,6 +263,17 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         return credentialsCache;
     }
 
+    /**
+     * Get user's activity statistics (lifetime and bests)
+     *
+     * @param localUser authorized user
+     * @param fitbitUser user to retrieve data from
+     *
+     * @return user's activity statistics
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Activity-Stats">Fitbit API: API-Get-Activity-Stats</a>
+     */
     public LifetimeAchievements getActivitiesAchievements(LocalUserDetail localUser, FitbitUser fitbitUser) throws FitbitAPIException {
         setAccessToken(localUser);
         // Example: GET /1/user/228TQ4/activities.json
@@ -361,6 +372,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param date Log entry date
      * @param startTime Start time
      *
+     * @return new activity log entry
+     *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
      */
@@ -394,6 +407,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param distanceUnit distance measurement unit;
      * @param date Log entry date
      * @param startTime Start time
+     *
+     * @return new activity log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
@@ -431,6 +446,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param date Log entry date
      * @param startTime Start time
      * @param manualCalories manual calories
+     *
+     * @return new activity log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
@@ -459,7 +476,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
-     * Create log entry for an activity
+     * Create log entry for a custom activity
      *
      * @param localUser authorized user
      * @param activityName Activity name
@@ -467,6 +484,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param date Log entry date
      * @param startTime Start time
      * @param manualCalories manual calories
+     *
+     * @return new activity log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
@@ -488,7 +507,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
-     * Create log entry for an activity
+     * Create log entry for a custom activity
      *
      * @param localUser authorized user
      * @param activityName Activity name
@@ -497,6 +516,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param date Log entry date
      * @param startTime Start time
      * @param manualCalories manual calories
+     *
+     * @return new activity log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
@@ -520,7 +541,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
-     * Create log entry for an activity
+     * Create log entry for a custom activity
      *
      * @param localUser authorized user
      * @param activityName Activity name
@@ -530,6 +551,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param date Log entry date
      * @param startTime Start time
      * @param manualCalories manual calories
+     *
+     * @return new activity log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
@@ -560,6 +583,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      *
      * @param localUser authorized user
      * @param params POST request parameters
+     *
+     * @return new activity log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Activity">Fitbit API: API-Log-Activity</a>
@@ -607,13 +632,14 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
-     * Get all activity categories ans sub-categories with it's activities
+     * Get a tree of all valid Fitbit public activities from the activities catalog as well as private custom activities the user created
      *
      * @param localUser authorized user
      *
-     * @return list of activity categories
+     * @return activities catalog
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Browse-Activities">Fitbit API: API-Browse-Activities</a>
      */
     public List<ActivityCategory> getActivityCategories(LocalUserDetail localUser) throws FitbitAPIException {
         if (localUser != null) {
@@ -922,6 +948,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param amount Amount consumed
      * @param date Log entry date
      *
+     * @return new food log entry
+     *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Food">Fitbit API: API-Log-Food</a>
      */
@@ -948,6 +976,9 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param amount Amount consumed
      * @param date Log entry date
      *
+     * @return new food log entry
+     *
+     *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Food">Fitbit API: API-Log-Food</a>
      */
@@ -973,6 +1004,8 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      *
      * @param localUser authorized user
      * @param params POST request parameters
+     *
+     * @return new food log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
      * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Food">Fitbit API: API-Log-Food</a>
@@ -1251,6 +1284,18 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    /**
+     * Get a summary of a user's body measurements for a given day
+     *
+     * @param localUser authorized user
+     * @param body updated body measurements
+     * @param date day to retrieve data for
+     *
+     * @return updated body measurements for selected date
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Body-Measurements">Fitbit API: API-Log-Body-Measurements</a>
+     */
     public Body logBody(LocalUserDetail localUser, Body body, LocalDate date) throws FitbitAPIException {
         List<PostParameter> params = new ArrayList<PostParameter>();
         if(body.getWeight() > 0) {
@@ -1440,7 +1485,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
 
 
     /**
-     * Create log entry for a blood pressure
+     * Create log entry for a blood pressure measurement
      *
      * @param localUser authorized user
      * @param systolic Systolic blood pressure
@@ -1451,6 +1496,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @return new blood pressure log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Blood-Pressure">Fitbit API: API-Log-Blood-Pressure</a>
      */
     public BpLog logBp(LocalUserDetail localUser, int systolic, int diastolic, LocalDate date, String time) throws FitbitAPIException {
         List<PostParameter> params = new ArrayList<PostParameter>(4);
@@ -1466,7 +1512,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
     }
 
     /**
-     * Create log entry for a blood pressure
+     * Create log entry for a blood pressure measurement
      *
      * @param localUser authorized user
      * @param systolic Systolic blood pressure
@@ -1476,6 +1522,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @return new blood pressure log entry
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Log-Blood-Pressure">Fitbit API: API-Log-Blood-Pressure</a>
      */
     public BpLog logBp(LocalUserDetail localUser, int systolic, int diastolic, LocalDate date) throws FitbitAPIException {
         return logBp(localUser, systolic, diastolic, date, null);
@@ -1505,6 +1552,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @return blood pressure entries for a given day
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Get-Blood-Pressure">Fitbit API: API-Get-Blood-Pressure</a>
      */
     public Bp getLoggedBp(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
         setAccessToken(localUser);
@@ -1527,6 +1575,7 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
      * @param logId Blood pressure log entry id
      *
      * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     * @see <a href="http://wiki.fitbit.com/display/API/API-Delete-Blood-Pressure-Log">Fitbit API: API-Delete-Blood-Pressure-Log</a>
      */
     public void deleteBp(LocalUserDetail localUser, String logId) throws FitbitAPIException {
         setAccessToken(localUser);
