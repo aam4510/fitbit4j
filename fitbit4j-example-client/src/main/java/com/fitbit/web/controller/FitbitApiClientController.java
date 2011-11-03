@@ -10,7 +10,6 @@ import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.sleep.Sleep;
 import com.fitbit.api.common.model.sleep.SleepLog;
 import com.fitbit.api.common.model.units.UnitSystem;
-import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
 import com.fitbit.api.model.*;
@@ -60,9 +59,6 @@ public class FitbitApiClientController implements InitializingBean {
     private String clientConsumerKey;
     @Value("#{config['clientSecret']}")
     private String clientSecret;
-
-    @Value("#{config['showAccountRegistrationForm']}")
-    private Boolean showAccountRegistrationForm;
 
     private FitbitAPIClientService<FitbitApiClientAgent> apiClientService;
 
@@ -384,51 +380,6 @@ public class FitbitApiClientController implements InitializingBean {
         }
 
         return "redirect:/app/water";
-    }
-
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String showRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
-        RequestContext context = new RequestContext();
-        populate(context, request, response);
-
-        return "register";
-    }
-
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    protected String processRegistrationForm(HttpServletRequest request, HttpServletResponse response) {
-        RequestContext context = new RequestContext();
-        populate(context, request, response);
-
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String timezone = request.getParameter("timezone");
-        String emailSubscribe = request.getParameter("emailSubscribe");
-        log.info("Creating new account :: email = " + email + ", password = " + password + ", timezone = " + timezone +
-                ", emailSubscribe = " + (emailSubscribe != null));
-        List<String> messages = new ArrayList<String>();
-        try {
-            Account account = context.getApiClientService().getClient().registerAccount(email, password, timezone, emailSubscribe != null);
-            String message = "Account registered :: encodedId = " + account.getEncodedId() + ", profileUpdateUuid = " + account.getProfileUpdateUuid();
-            messages.add(message);
-            log.info(message);
-        } catch (FitbitAPIException e) {
-            if (e.getApiErrors() != null) {
-                for (FitbitApiError error : e.getApiErrors()) {
-                    messages.add(error.getMessage());
-                }
-            } else {
-                messages.add(e.getMessage());
-            }
-            log.error("Error registering new account.", e);
-        }
-        request.setAttribute("messages", messages);
-        //return attributes back
-        request.setAttribute("email", email);
-        request.setAttribute("password", password);
-        request.setAttribute("timezone", timezone);
-        request.setAttribute("emailSubscribe", emailSubscribe != null);
-
-        return "register";
     }
 
     @RequestMapping(value = "/createFoodForm", method = RequestMethod.GET)
@@ -820,7 +771,6 @@ public class FitbitApiClientController implements InitializingBean {
         request.setAttribute("actionBean", context);
         request.setAttribute("isSubscribed", isSubscribed);
         request.setAttribute("exampleBaseUrl", getExampleBaseUrl());
-        request.setAttribute("showAccountRegistrationForm", showAccountRegistrationForm);
     }
 
     protected LocalUserDetail getOrMakeExampleAppUser(HttpServletRequest request, HttpServletResponse response) {

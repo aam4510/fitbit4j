@@ -83,11 +83,6 @@
                 <p><a href="${exampleBaseUrl}/createFoodForm">Create New Food</a></p>
                 <p><a href="${exampleBaseUrl}/invitations">Invitations</a></p>
             </c:if>
-
-            <c:if test="${showAccountRegistrationForm}">
-                <p><a href="${exampleBaseUrl}/register">Set up a new account</a></p>
-            </c:if>
-
             <c:if test="${isAuthorized}">
                 <p><a href="${exampleBaseUrl}/allSubscriptions">View all of this application's subscriptions and received
                     notifications</a> (localtransient data)</p>

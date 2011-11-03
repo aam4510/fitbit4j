@@ -18,7 +18,6 @@ import com.fitbit.api.common.model.sleep.Sleep;
 import com.fitbit.api.common.model.sleep.SleepLog;
 import com.fitbit.api.common.model.timeseries.*;
 import com.fitbit.api.common.model.units.VolumeUnits;
-import com.fitbit.api.common.model.user.Account;
 import com.fitbit.api.common.model.user.FriendStats;
 import com.fitbit.api.common.model.user.UserInfo;
 import com.fitbit.api.common.service.FitbitApiService;
@@ -1845,57 +1844,6 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
             throw new FitbitAPIException("Error updating profile: " + e, e);
         } catch (JSONException e) {
             throw new FitbitAPIException("Error updating profile: " + e, e);
-        }
-    }
-
-    /**
-     * Register new Fitbit user account
-     * <p/>
-     * <b>Info: This method is not generally available in public API, though this permission could be given to partners that need this functionality</b>
-     *
-     * @param email Email
-     * @param password password
-     * @param timezone timezone string
-     *
-     * @return Account
-     *
-     * @throws com.fitbit.api.FitbitAPIException fitbit api Exception
-     */
-    public Account registerAccount(String email, String password, String timezone) throws FitbitAPIException {
-        return registerAccount(email, password, timezone, false);
-    }
-
-    /**
-     * Register new Fitbit user account
-     * <p/>
-     * <b>Info: This method is not generally available in public API, though this permission could be given to partners that need this functionality</b>
-     *
-     * @param email Email
-     * @param password password
-     * @param timezone timezone string
-     * @param emailSubscribe Subscribe to email newsletter
-     *
-     * @return Account
-     *
-     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
-     */
-    public Account registerAccount(String email, String password, String timezone, boolean emailSubscribe) throws FitbitAPIException {
-
-        List<PostParameter> params = new ArrayList<PostParameter>();
-        params.add(new PostParameter("email", email));
-        params.add(new PostParameter("password", password));
-        params.add(new PostParameter("timezone", timezone));
-        params.add(new PostParameter("emailSubscribe", String.valueOf(emailSubscribe)));
-
-        // POST /1/user/-/account/register.json
-        String url = APIUtil.contextualizeUrl(getApiBaseSecuredUrl(), getApiVersion(), "/account/register", APIFormat.JSON);
-
-        Response response = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
-
-        try {
-            return new Account(response.asJSONObject().getJSONObject("account"));
-        } catch (JSONException e) {
-            throw new FitbitAPIException("Error parsing json response to Account object: ", e);
         }
     }
 

@@ -4,6 +4,3 @@ exampleBaseUrl=http://your.application.host/path/
 
 clientConsumerKey=local-fitbit-example-client-application
 clientSecret=your.secret.key.from.dev.fitbit.com
-
-#account registration properties
-showAccountRegistrationForm=true
