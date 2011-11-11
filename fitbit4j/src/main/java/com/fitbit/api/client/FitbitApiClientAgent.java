@@ -2425,18 +2425,31 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
         }
     }
 
+    public IntradaySummary getIntraDayTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate date, LocalTime startTime, LocalTime endTime) throws FitbitAPIException {
+        return getIntraDayTimeSeries(localUser, user, resourceType, date.toString(), FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(startTime), FitbitApiService.LOCAL_TIME_HOURS_MINUTES_FORMATTER.print(endTime));
+    }
+
+    public IntradaySummary getIntraDayTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String date, String startTime, String endTime) throws FitbitAPIException {
+        String url = APIUtil.constructTimeSeriesUrl(getApiBaseUrl(), getApiVersion(), user, resourceType, date, TimePeriod.INTRADAY.getShortForm(), startTime, endTime, APIFormat.JSON);
+        return getIntraDayTimeSeries(localUser, resourceType, url);
+    }
+
     public IntradaySummary getIntraDayTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, LocalDate date) throws FitbitAPIException {
         return getIntraDayTimeSeries(localUser, user, resourceType, date.toString());
     }
 
     public IntradaySummary getIntraDayTimeSeries(LocalUserDetail localUser, FitbitUser user, TimeSeriesResourceType resourceType, String date) throws FitbitAPIException {
+        String url = APIUtil.constructTimeSeriesUrl(getApiBaseUrl(), getApiVersion(), user, resourceType, date, TimePeriod.INTRADAY.getShortForm(), APIFormat.JSON);
+        return getIntraDayTimeSeries(localUser, resourceType, url);
+    }
+
+    private IntradaySummary getIntraDayTimeSeries(LocalUserDetail localUser, TimeSeriesResourceType resourceType, String url) throws FitbitAPIException {
         if (localUser != null) {
             setAccessToken(localUser);
         } else {
             clearAccessToken();
         }
 
-        String url = APIUtil.constructTimeSeriesUrl(getApiBaseUrl(), getApiVersion(), user, resourceType, date, TimePeriod.INTRADAY.getShortForm(), APIFormat.JSON);
         Response res = httpGet(url, true);
         throwExceptionIfError(res);
         try {

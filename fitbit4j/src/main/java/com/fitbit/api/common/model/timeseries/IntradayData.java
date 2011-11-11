@@ -11,6 +11,7 @@ public class IntradayData {
 
     private String time;
     private double value;
+    private Integer level;
 
     public IntradayData(String time, double value) {
         this.time = time;
@@ -20,6 +21,9 @@ public class IntradayData {
     public IntradayData(JSONObject json) throws JSONException {
         value = json.getDouble("value");
         time = json.getString("time");
+        if(json.has("level")) {
+            level = json.getInt("level");
+        }
     }
 
     public String getTime() {
@@ -28,6 +32,10 @@ public class IntradayData {
 
     public double getValue() {
         return value;
+    }
+
+    public Integer getLevel() {
+        return level;
     }
 
     public static List<IntradayData> jsonArrayToDataList(JSONArray array) throws JSONException {

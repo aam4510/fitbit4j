@@ -219,6 +219,19 @@ public class APIUtil {
                 + '.' + format.toString().toLowerCase();
     }
 
+    public static String constructTimeSeriesUrl(String baseUrl, APIVersion version, FitbitResourceOwner owner, TimeSeriesResourceType resourceType,
+                                                String startDate, String endDateOrPeriod,
+                                                String startTime, String endTime, APIFormat format) {
+        return baseUrl + '/' + version.getVersion()
+                + '/' + owner.getResourceOwnerType().name() + '/' + owner.getId()
+                + resourceType.getResourcePath()
+                + "/date/" + startDate
+                + '/' + endDateOrPeriod
+                + "/time/" + startTime
+                + '/' + endTime
+                + '.' + format.toString().toLowerCase();
+    }
+
     public static String capitalize(String s) {
         if (s == null || s.length() == 0) return s;
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
