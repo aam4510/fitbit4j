@@ -49,7 +49,7 @@ public class Body {
         return weight;
     }
 
-    public double getBmi() {
+    public Double getBmi() {
         return bmi;
     }
 
