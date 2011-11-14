@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public class Body {
     private double weight;
-    private Double bmi;
+    private double bmi;
     private double fat;
     private double neck;
     private double bicep;
@@ -31,9 +31,7 @@ public class Body {
 
     public Body(JSONObject bodyJson) throws JSONException {
         weight = bodyJson.getDouble("weight");
-        if(bodyJson.has("bmi")) {
-            bmi = bodyJson.getDouble("bmi");
-        }
+        bmi = bodyJson.getDouble("bmi");
         fat = bodyJson.getDouble("fat");
         neck = bodyJson.getDouble("neck");
         bicep = bodyJson.getDouble("bicep");
@@ -49,7 +47,7 @@ public class Body {
         return weight;
     }
 
-    public Double getBmi() {
+    public double getBmi() {
         return bmi;
     }
 
