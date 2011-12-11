@@ -12,6 +12,8 @@ import com.fitbit.api.common.model.bp.BpLog;
 import com.fitbit.api.common.model.devices.Device;
 import com.fitbit.api.common.model.foods.*;
 import com.fitbit.api.common.model.glucose.Glucose;
+import com.fitbit.api.common.model.heart.Heart;
+import com.fitbit.api.common.model.heart.HeartLog;
 import com.fitbit.api.common.model.sleep.Sleep;
 import com.fitbit.api.common.model.sleep.SleepLog;
 import com.fitbit.api.common.model.timeseries.*;
@@ -1675,6 +1677,106 @@ public class FitbitApiClientAgent extends FitbitAPIClientSupport implements Seri
             return new Glucose(res.asJSONObject());
         } catch (JSONException e) {
             throw new FitbitAPIException("Error retrieving blood pressure: " + e, e);
+        }
+    }
+    
+    /**
+     * Create log entry for a heart rate
+     *
+     * @param localUser authorized user
+     * @param tracker Tracker name
+     * @param heartRate Heart rate
+     * @param date Log entry date
+     * @param time Log entry time string
+     *
+     * @return new heart rate log entry
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public HeartLog logHeartRate(LocalUserDetail localUser, String tracker, int heartRate, LocalDate date, String time) throws FitbitAPIException {
+        List<PostParameter> params = new ArrayList<PostParameter>(4);
+        params.add(new PostParameter("tracker", tracker));
+        params.add(new PostParameter("heartRate", heartRate));
+        params.add(new PostParameter("date", DateTimeFormat.forPattern("yyyy-MM-dd").print(date)));
+
+        if (time != null) {
+            params.add(new PostParameter("time", time));
+        }
+
+        return logHeartRate(localUser, params);
+    }
+
+    /**
+     * Create log entry for a heart rate
+     *
+     * @param localUser authorized user
+     * @param tracker Tracker name
+     * @param heartRate Heart rate
+     * @param date Log entry date
+     *
+     * @return new heart rate log entry
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public HeartLog logHeartRate(LocalUserDetail localUser, String tracker, int heartRate, LocalDate date) throws FitbitAPIException {
+        return logHeartRate(localUser, tracker, heartRate, date, null);
+    }
+
+    public HeartLog logHeartRate(LocalUserDetail localUser, List<PostParameter> params) throws FitbitAPIException {
+        setAccessToken(localUser);
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/heart", APIFormat.JSON);
+
+        try {
+            Response res = httpPost(url, params.toArray(new PostParameter[params.size()]), true);
+            return new HeartLog(res.asJSONObject().getJSONObject("heartLog"));
+        } catch (FitbitAPIException e) {
+            throw new FitbitAPIException("Error logging heart rate: " + e, e);
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error logging heart rate: " + e, e);
+        }
+    }
+
+    /**
+     * Get an average and list of a user's heart rate log entries for a given day
+     *
+     * @param localUser authorized user
+     * @param fitbitUser user to retrieve data from
+     * @param date date to retrieve data for
+     *
+     * @return heart rate entries for a given day
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public Heart getLoggedHeartRate(LocalUserDetail localUser, FitbitUser fitbitUser, LocalDate date) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: GET /1/user/228TQ4/heart/date/2010-02-25.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/" + fitbitUser.getId() + "/heart/date/" + DateTimeFormat.forPattern("yyyy-MM-dd").print(date), APIFormat.JSON);
+
+        Response res = httpGet(url, true);
+        throwExceptionIfError(res);
+        try {
+            return new Heart(res.asJSONObject());
+        } catch (JSONException e) {
+            throw new FitbitAPIException("Error retrieving heart rate: " + e, e);
+        }
+    }
+
+    /**
+     * Delete user's heart rate log entry with the given id
+     *
+     * @param localUser authorized user
+     * @param logId Heart rate log entry id
+     *
+     * @throws com.fitbit.api.FitbitAPIException Fitbit API Exception
+     */
+    public void deleteHeartRate(LocalUserDetail localUser, String logId) throws FitbitAPIException {
+        setAccessToken(localUser);
+        // Example: DELETE /1/user/-/heart/123.json
+        String url = APIUtil.contextualizeUrl(getApiBaseUrl(), getApiVersion(), "/user/-/heart/" + logId, APIFormat.JSON);
+        try {
+            httpDelete(url, true);
+        } catch (Exception e) {
+            throw new FitbitAPIException("Error deleting heart rate: " + e, e);
         }
     }
 
