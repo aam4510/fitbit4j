@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.fitbit</groupId>
         <artifactId>fitbit-parent</artifactId>
-        <version>1.0.21</version>
+        <version>1.0.22-SNAPSHOT</version>
     </parent>
     <artifactId>fitbit4j</artifactId>
     <packaging>jar</packaging>
